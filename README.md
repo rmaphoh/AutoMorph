@@ -10,6 +10,8 @@ Please see instruction.sh
 
 Put your images in folder 'images' and sh run.sh
 
+Please note, the resolution_information.csv includes the resolution for image, i.e., size for each pixel. Please prepare it for the customised data in the same format.
+
 ## Google Colab
 
 Enjoy the free Google gpu
