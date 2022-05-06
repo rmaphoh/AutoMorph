@@ -1,0 +1,17 @@
+language: python
+sudo: required
+dist: xenial
+python: "3.7"
+
+install:
+# build dependencies
+  - pip install numpy matplotlib pillow scikit-image scipy h5py scikit-learn flask opencv-python tensorflow keras
+# test dependencies
+  - pip install codecov
+  - pip install pytest pytest-cov
+
+script:
+  - pytest -v retipy/test/ --cov=retipy --cov-report term-missing
+
+after_success:
+  codecov
