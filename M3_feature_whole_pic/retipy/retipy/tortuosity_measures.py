@@ -18,7 +18,7 @@
 
 import math
 import numpy as np
-from lib import fractal_dimension, smoothing
+from function_ import fractal_dimension, smoothing
 from retipy import math as m
 from retipy.retina import Retina, Window, detect_vessel_border
 from scipy.interpolate import CubicSpline
