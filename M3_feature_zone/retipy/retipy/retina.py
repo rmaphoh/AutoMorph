@@ -22,7 +22,7 @@ import numpy as np
 import warnings
 from copy import copy
 from io import BytesIO
-from lib import thinning
+from function_ import thinning
 from matplotlib import pyplot as plt
 from os import path
 from PIL import Image

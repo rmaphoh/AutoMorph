@@ -17,8 +17,11 @@ Enjoy the free Google gpu
 ## Components
 
 [Vessel seg](https://github.com/rmaphoh/Learning-AVSegmentation.git)
+
 based on [Optic disc seg](https://github.com/rmaphoh/Learning-AVSegmentation.git)
+
 based on [Feature measurement](https://github.com/alevalv/retipy.git)
+
 etc.
 
 ## Citation
