@@ -8,7 +8,7 @@ Please see instruction.sh
 
 ## Quick Start
 
-Put your images in folder 'images' and sh run.sh
+Put the images in folder 'images' and sh run.sh
 
 Please note, the resolution_information.csv includes the resolution for image, i.e., size for each pixel. Please prepare it for the customised data in the same format.
 
@@ -16,7 +16,7 @@ Please note, the resolution_information.csv includes the resolution for image, i
 
 Enjoy the free Google gpu
 
-Colab link (TBC)
+Colab link (TBD)
 
 
 ## Components
