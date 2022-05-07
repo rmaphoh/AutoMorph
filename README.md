@@ -32,7 +32,7 @@ Colab link (TBD)
 
 1. Linux system. The windows version will be released soon.
 2. Anaconda or miniconda installed.
-4. GPU is essential. In our work, we utilise one Tesla T4 with 15 GB of DRAM. If with weaker GPU, we suggest to change the image size setting in `scripts.utils.py`
+4. GPU is essential.
 
 ### Miniconda install
 
@@ -41,14 +41,12 @@ If you already have miniconda or anaconda installed, please skip this section.
 Step 1: Enter the path you want to put the installation and download the installer
 ```sh
 $ cd <path/>
-```
-```sh
 $ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
 
 Step 2: install, there are a few selection during installation, just select 'yes'
 ```sh
-$ bash ~/miniconda3/miniconda.sh
+$ bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
 Step 3: activate
@@ -80,14 +78,12 @@ $ conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=
 Step 3: install other packages:
 ```sh
 $ pip install -r requirement.txt
-```
-```sh
 $ pip install efficientnet_pytorch
 ```
 
 ## Running
 
-Remember to activate virtual enviroment before running.
+Please remember to activate virtual enviroment before running.
 ```sh
 $ conda activate automorph
 ```
