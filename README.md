@@ -13,7 +13,7 @@
     - [Requirements](#requirements)
     - [Miniconda installation](#miniconda-installation)
     - [Package installation](#package-installation)
-  - [Running](#running)
+    - [Running](#running)
   - [Docker usage](#docker-usage)
   - [Components](#components)
   - [Citation](#citation)
@@ -26,7 +26,7 @@ Before start, we summarise the features for three running ways:
 * Configurate enviroment on local/virtual machine (data privacy, code development; packages conflict in some machines)
 * Docker image (data privacy, no need to set up enviroment; need some experience on docker)
 
-If you meet unsolved problems, feel free to open an issue or drop a message to yukun.zhou.19[at]ucl.ac.uk
+:star::star::star: If you meet unsolved problems, feel free to open an issue or drop a message to yukun.zhou.19[at]ucl.ac.uk
 
 
 ## Quick start with Colab
@@ -97,7 +97,7 @@ $ pip install efficientnet_pytorch
 
 &nbsp;
 
-## Running
+### Running
 
 Please remember to activate virtual enviroment before running.
 ```sh
