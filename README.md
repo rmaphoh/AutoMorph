@@ -8,18 +8,28 @@
 ## Index
 
 - [AutoMorph 👀](#AutoMorph-)
-  - [Quick start](#quick-start)
-  - [Install instruction](#install-instruction)
+  - [Quick start with Colab](#quick-start-with-colab)
+  - [Install instruction for local/virtual machine](#install-instruction-for-local/virtual-machine)
     - [Requirements](#requirements)
     - [Miniconda installation](#miniconda-installation)
     - [Package installation](#package-installation)
   - [Running](#running)
+  - [Docker usage](#docker-usage)
   - [Components](#components)
   - [Citation](#citation)
 
 &nbsp;
 
-## Quick start
+Before start, we summarise the features for three running ways:
+
+* Google Colab (no commands/code, free gpu for 12 hours; data privacy concern)
+* Configurate enviroment on local/virtual machine (data privacy, code development; packages conflict in some machines)
+* Docker image (data privacy, no need to set up enviroment; need some experience on docker)
+
+If you meet unsolved problems, feel free to open an issue or drop a message to yukun.zhou.19[at]ucl.ac.uk
+
+
+## Quick start with Colab
 
 Use the Google Colab and a free Tesla T4 Gpu
 
@@ -27,7 +37,7 @@ Use the Google Colab and a free Tesla T4 Gpu
 
 &nbsp;
 
-## Install instruction
+## Install instruction for local/virtual machine
 
 ### Requirements
 
@@ -92,6 +102,7 @@ $ pip install efficientnet_pytorch
 Please remember to activate virtual enviroment before running.
 ```sh
 $ conda activate automorph
+$ git clone https://github.com/rmaphoh/AutoMorph.git
 ```
 
 Put the images in folder 'images' and
@@ -103,6 +114,31 @@ $ sh run.sh
 Please note, the resolution_information.csv includes the resolution for image, i.e., size for each pixel. Please prepare it for the customised data in the same format.
 
 &nbsp;
+
+## Docker usage
+
+We also provide enviroment docker image for those who meet problems in package installation and familiar with docker.
+
+First, clone the github and put the images in ./images
+```sh
+$ git clone https://github.com/rmaphoh/AutoMorph.git
+```
+
+Then, download the [docker image]() and successively run the commands below.
+```sh
+$ cd <path/of/docker>
+$ docker load -i image_automorph.tar
+$ docker run  -v <path/of/AutoMorph, e.g., /home/AutoMorph>:/root/AutoMorph -ti --runtime=nvidia -e NVIDIA_DRIVER_CAPABILITIES=compute,utility -e NVIDIA_VISIBLE_DEVICES=all image_automorph
+$ conda activate automorph
+$ apt-get update
+$ sudo apt-get install -y libgl1-mesa-dev
+$ cd /root/AutoMorph
+$ sh run.sh
+```
+
+
+&nbsp;
+
 
 ## Components
 
