@@ -124,7 +124,7 @@ First, clone the github and put the images in ./images
 $ git clone https://github.com/rmaphoh/AutoMorph.git
 ```
 
-Then, download the [docker image]() and successively run the commands below.
+Then, download the [docker image](https://drive.google.com/file/d/166ItabA9V6Qzp-0bwpgifXOpjNab1DMS/view?usp=sharing) and successively run the commands below.
 ```sh
 $ cd <path/of/docker>
 $ docker load -i image_automorph.tar
