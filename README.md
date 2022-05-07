@@ -69,8 +69,6 @@ $ conda -V
 Step 1: create virtual enviroment and activate it:
 ```sh
 $ conda create -n automorph python=3.6 -y
-```
-```sh
 $ conda activate automorph
 ```
 
