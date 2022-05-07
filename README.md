@@ -8,7 +8,7 @@
 ## Index
 
 - [AutoMorph 👀](#AutoMorph-)
-  - [Quick start with Colab](#quick-start-with-colab)
+  - [Quickstart with Colab](#quickstart-with-colab)
   - [Install instruction for local/virtual machine](#install-instruction-for-local/virtual-machine)
     - [Requirements](#requirements)
     - [Miniconda installation](#miniconda-installation)
@@ -20,18 +20,18 @@
 
 &nbsp;
 
-Before start, we summarise the features for three running ways:
+Before starting, we summarise the features for three running ways:
 
 * Google Colab (no commands/code, free gpu for 12 hours; data privacy concern)
-* Configurate enviroment on local/virtual machine (data privacy, code development; packages conflict in some machines)
-* Docker image (data privacy, no need to set up enviroment; need some experience on docker)
+* Configurate environment on local/virtual machine (data privacy, code development; packages conflict in some machines)
+* Docker image (data privacy, no need to set up environment; need some experience on docker)
 
 :star::star::star: If you meet unsolved problems, feel free to open an issue or drop a message to yukun.zhou.19[at]ucl.ac.uk
 
 
-## Quick start with Colab
+## Quickstart with Colab
 
-Use the Google Colab and a free Tesla T4 Gpu
+Use the Google Colab and a free Tesla T4 gpu
 
 [Colab link](https://colab.research.google.com/drive/13Qh9umwRM1OMRiNLyILbpq3k9h55FjNZ?usp=sharing)
 
@@ -58,7 +58,7 @@ $ cd <path/>
 $ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
 
-Step 2: install, there are a few selection during installation, just select 'yes'
+Step 2: install, there are a few selections during installation, just select 'yes'
 ```sh
 $ bash Miniconda3-latest-Linux-x86_64.sh
 ```
@@ -77,7 +77,7 @@ $ conda -V
 
 ### Package installation
 
-Step 1: create virtual enviroment and activate it:
+Step 1: create virtual environment and activate it:
 ```sh
 $ conda update conda
 $ conda create -n automorph python=3.6 -y
@@ -99,7 +99,7 @@ $ pip install efficientnet_pytorch
 
 ### Running
 
-Please remember to activate virtual enviroment before running.
+Please remember to activate virtual environment before running.
 ```sh
 $ conda activate automorph
 $ git clone https://github.com/rmaphoh/AutoMorph.git
@@ -111,13 +111,13 @@ $ sh run.sh
 ```
 
 
-Please note, the resolution_information.csv includes the resolution for image, i.e., size for each pixel. Please prepare it for the customised data in the same format.
+Please not that resolution_information.csv includes the resolution for image, i.e., size for each pixel. Please prepare it for the customised data in the same format.
 
 &nbsp;
 
 ## Docker usage
 
-We also provide enviroment docker image for those who meet problems in package installation and familiar with docker.
+We also provide environment docker image for those who meet problems in package installation and are familiar with docker.
 
 First, clone the github and put the images in ./images
 ```sh
