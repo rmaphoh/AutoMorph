@@ -21,9 +21,9 @@
 
 ## Quick start
 
-Use the Google Colab and the free Google Gpu
+Use the Google Colab and a free Tesla T4 Gpu
 
-Colab link (TBD)
+[Colab link](https://colab.research.google.com/drive/13Qh9umwRM1OMRiNLyILbpq3k9h55FjNZ?usp=sharing)
 
 &nbsp;
 
@@ -31,8 +31,9 @@ Colab link (TBD)
 
 ### Requirements
 
-1. Linux system. The windows version will be released soon.
-2. Anaconda or miniconda installed.
+1. Linux operating system. The windows version will be released soon.
+2. Anaconda or miniconda installed (installation steps below).
+3. python=3.6, cudatoolkit=11.0, torch=1.7, etc. (installation steps below)
 4. GPU is essential.
 
 &nbsp;
@@ -68,6 +69,7 @@ $ conda -V
 
 Step 1: create virtual enviroment and activate it:
 ```sh
+$ conda update conda
 $ conda create -n automorph python=3.6 -y
 $ conda activate automorph
 ```
