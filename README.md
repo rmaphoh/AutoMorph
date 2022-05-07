@@ -106,13 +106,14 @@ Please note, the resolution_information.csv includes the resolution for image, i
 
 ## Components
 
-1. [Vessel seg](https://github.com/rmaphoh/Learning-AVSegmentation.git)
+1. Vessel segmentation [BF-Net](https://github.com/rmaphoh/Learning-AVSegmentation.git)
 
-2. Optic disc segmentation based on [lwnet](https://github.com/agaldran/lwnet.git)
+2. Image pre-processing [EyeQ](https://github.com/HzFu/EyeQ.git) 
 
-3. Feature measurement based on [retipy](https://github.com/alevalv/retipy.git)
+3. Optic disc segmentation [lwnet](https://github.com/agaldran/lwnet.git)
 
-etc.
+4. Feature measurement [retipy](https://github.com/alevalv/retipy.git)
+
 
 &nbsp;
 
