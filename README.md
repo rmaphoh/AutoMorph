@@ -17,6 +17,7 @@
   - [Components](#components)
   - [Citation](#citation)
 
+&nbsp;
 
 ## Quick start
 
@@ -24,7 +25,7 @@ Use the Google Colab and the free Google Gpu
 
 Colab link (TBD)
 
-
+&nbsp;
 
 ## Install instruction
 
@@ -34,9 +35,11 @@ Colab link (TBD)
 2. Anaconda or miniconda installed.
 4. GPU is essential.
 
+&nbsp;
+
 ### Miniconda install
 
-If you already have miniconda or anaconda installed, please skip this section.
+If you already have miniconda or anaconda installed, please skip this section and go for package installation.
 
 Step 1: Enter the path you want to put the installation and download the installer
 ```sh
@@ -59,6 +62,7 @@ Step 4: check the installation
 $ conda -V
 ```
 
+&nbsp;
 
 ### Package installation
 
@@ -81,6 +85,8 @@ $ pip install -r requirement.txt
 $ pip install efficientnet_pytorch
 ```
 
+&nbsp;
+
 ## Running
 
 Please remember to activate virtual enviroment before running.
@@ -96,7 +102,7 @@ $ sh run.sh
 
 Please note, the resolution_information.csv includes the resolution for image, i.e., size for each pixel. Please prepare it for the customised data in the same format.
 
-
+&nbsp;
 
 ## Components
 
@@ -107,6 +113,8 @@ Please note, the resolution_information.csv includes the resolution for image, i
 3. Feature measurement based on [retipy](https://github.com/alevalv/retipy.git)
 
 etc.
+
+&nbsp;
 
 ## Citation
 
