@@ -23,7 +23,7 @@
 Before starting, we summarise the features for three running ways:
 
 * Google Colab (no commands/code, free gpu for 12 hours; data privacy concern)
-* Configurate environment on local/virtual machine (data privacy, code development; packages conflict in some machines)
+* Configure environment on local/virtual machine (data privacy, code development; packages conflict in some machines)
 * Docker image (data privacy, no need to set up environment; need some experience on docker)
 
 :star::star::star: If you meet unsolved problems, feel free to open an issue or drop a message to yukun.zhou.19[at]ucl.ac.uk
