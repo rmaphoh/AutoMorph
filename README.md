@@ -15,6 +15,7 @@
     - [Package installation](#package-installation)
     - [Running](#running)
   - [Docker usage](#docker-usage)
+  - [Memory/ram error](#memory/ram-error)
   - [Components](#components)
   - [Citation](#citation)
 
@@ -41,7 +42,7 @@ Use the Google Colab and a free Tesla T4 gpu
 
 ### Requirements
 
-1. Linux operating system. The windows version will be released soon.
+1. Linux operating system. For windows, install [MinGW-w64](https://www.mingw-w64.org/) for using commands below to set enviroment or [docker desktop](https://docs.docker.com/desktop/windows/install/) for [docker usage](#docker-usage)
 2. Anaconda or miniconda installed (installation steps below).
 3. python=3.6, cudatoolkit=11.0, torch=1.7, etc. (installation steps below)
 4. GPU is essential.
@@ -138,6 +139,14 @@ $ sh run.sh
 
 
 &nbsp;
+
+## Memory/ram error
+
+We use Tesla T4 (16Gb) and 32vCPUs (120Gb). When you meet memory/ram issue in running, try to decrease batch size:
+
+* ./M1_Retinal_Image_quality_EyePACS/test_outside.sh -b=64 to smaller, e.g., 32 or 16.
+* ./M2_Artery_vein/test_outside.sh --batch-size=8 to smaller
+* ./M2_lwnet_disc_cup/test_outside.sh --batchsize=8 to smaller
 
 
 ## Components
