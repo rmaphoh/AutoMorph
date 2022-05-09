@@ -15,7 +15,9 @@
     - [Package installation](#package-installation)
     - [Running](#running)
   - [Docker usage](#docker-usage)
-  - [Memory/ram error](#memory/ram-error)
+  - [Common Questions](#common-questions)
+    - [Memory/ram error](#memory/ram-error)
+    - [Invalid results](#invalid-results)
   - [Components](#components)
   - [Citation](#citation)
 
@@ -120,27 +122,24 @@ Please not that resolution_information.csv includes the resolution for image, i.
 
 We also provide environment docker image for those who meet problems in package installation and are familiar with docker.
 
-First, clone the github and put the images in ./images
+First, clone the github to <path/of/AutoMorph, e.g., /home/AutoMorph> and put the images in AutoMorph/images
 ```sh
 $ git clone https://github.com/rmaphoh/AutoMorph.git
 ```
 
-Then, download the [docker image](https://drive.google.com/file/d/166ItabA9V6Qzp-0bwpgifXOpjNab1DMS/view?usp=sharing) and successively run the commands below.
+Then, pull our [docker image](https://hub.docker.com/r/yukundocker/image_automorph) and run the tool.
 ```sh
-$ cd <path/of/docker>
-$ docker load -i image_automorph.tar
-$ docker run  -v <path/of/AutoMorph, e.g., /home/AutoMorph>:/root/AutoMorph -ti --runtime=nvidia -e NVIDIA_DRIVER_CAPABILITIES=compute,utility -e NVIDIA_VISIBLE_DEVICES=all image_automorph
-$ conda activate automorph
-$ apt-get update
-$ sudo apt-get install -y libgl1-mesa-dev
-$ cd /root/AutoMorph
-$ sh run.sh
+$ docker pull yukundocker/image_automorph
+$ docker run  -v <path/of/AutoMorph>:/root/AutoMorph -ti --runtime=nvidia -e NVIDIA_DRIVER_CAPABILITIES=compute,utility -e NVIDIA_VISIBLE_DEVICES=all yukundocker/image_automorph
+$ source /root/set_up.sh
 ```
 
 
 &nbsp;
 
-## Memory/ram error
+## Common questions
+
+### Memory/ram error
 
 We use Tesla T4 (16Gb) and 32vCPUs (120Gb). When you meet memory/ram issue in running, try to decrease batch size:
 
@@ -148,6 +147,14 @@ We use Tesla T4 (16Gb) and 32vCPUs (120Gb). When you meet memory/ram issue in ru
 * ./M2_Artery_vein/test_outside.sh --batch-size=8 to smaller
 * ./M2_lwnet_disc_cup/test_outside.sh --batchsize=8 to smaller
 
+&nbsp;
+
+### Invalid results
+
+In results, invalid values (e.g., optic disc segmentation failure) is indicated by -1.  
+
+
+&nbsp;
 
 ## Components
 
