@@ -1,0 +1,11 @@
+image_dir = "/data/ukbiobank/blobs/fundus/data/"
+results_dir= "/data/anand/Automorph_data/biobank_results/"
+worker = 1
+resolution_csv= "/data/anand/Automorph/resolution_information.csv"
+M2_V_model = "/data/anand/Automorph/automorph/M2_Vessel_seg/Saved_model/"
+M2_AV_model = "/data/anand/Automorph/automorph/M2_Artery_vein/ALL-AV/"
+M2_optic_model = "/data/anand/Automorph/automorph/M2_lwnet_disc_cup/experiments/wnet_All_three_1024_disc_cup/"
+retipy_config = "/data/anand/Automorph/automorph/M3_feature_zone/retipy/resources/retipy.config"
+sample_num = 1000 #Put False if you do not want to sample
+device = "cuda:0" #can specify cuda:0  or cuda or CPU
+batch_size = 3

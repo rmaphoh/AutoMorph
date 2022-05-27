@@ -1,0 +1,2 @@
+Name,softmax_good,softmax_usable,softmax_bad,good_sd,usable_sd,bad_sd,Prediction
+/data/anand/Automorph/Results/M0/images/1.png,0.33217108,0.33984885,0.32798007,0.022263799,0.025849147,0.029170074,1

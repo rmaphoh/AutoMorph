@@ -1,0 +1,16 @@
+{
+    "cSpell.words": [
+        "color",
+        "exception",
+        "imread",
+        "imshow",
+        "imwrite",
+        "isfile",
+        "pyplot",
+        "tortuosity"
+    ],
+    "python.unitTest.pyTestArgs": [
+        "src/test"
+    ],
+    "python.unitTest.pyTestEnabled": true
+}

@@ -2,9 +2,12 @@
 # RUN FILE FOR DEEP RETINAL IMAGE ANALYSIS SYSTEM
 # YUKUN ZHOU 25/09/2021
 
+export CUDA_VISIBLE_DEVICES=""
+
 date
 rm -rf ./Results/*
-# STEP 1 IMAGE PREPROCESSING (EXTRA BACKGROUND REMOVE, SQUARE)
+
+#STEP 1 IMAGE PREPROCESSING (EXTRA BACKGROUND REMOVE, SQUARE)
 
 echo "### Preprocess Start ###"
 cd M0_Preprocess
@@ -22,6 +25,7 @@ python merge_quality_assessment.py
 # STEP 3 OPTIC DISC & VESSEL & ARTERY/VEIN SEG
 echo "### Segmentation Modules ###"
 
+cd M0_Preprocess
 cd ../M2_Vessel_seg
 sh test_outside.sh
 
@@ -44,7 +48,6 @@ cd ../../M3_feature_whole_pic/retipy/
 python create_datasets_macular_centred.py
 
 echo "### Done ###"
-
 
 # STEP 5 CORRELATION ANALYSIS
 #

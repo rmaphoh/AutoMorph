@@ -1,0 +1,48 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 
+  "Test for automorph lambda function"
+Globals:
+  Function:
+    Timeout: 50
+    MemorySize: 5000
+  Api:
+    OpenApiVersion: 3.0.1
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+  LambdaAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+  # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  AutomorphFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        Predict:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LambdaAPI
+            Path: /predict
+            Method: POST
+      Policies:
+        - AmazonS3FullAccess
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./
+      DockerTag: python3.6-v1
+
+Outputs:
+  LambdaApi:
+    Description: "API Gateway endpoint URL for Dev stage for Predict Lambda function"
+    Value: !Sub "https://${LambdaAPI}.execue-api.${AWS::Region}.amazonaws.com/${Stage}/predict"
