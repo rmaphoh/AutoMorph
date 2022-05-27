@@ -1,4 +1,4 @@
-import glob
+from glob import glob
 from sys import exit
 import os
 import cv2 as cv
@@ -11,6 +11,17 @@ from automorph.M0_Preprocess import fundus_prep as prep
 from random import sample
 from pathlib import Path
 
+def create_resolution_information():
+    # create resolution of 1 for all images if information not known.
+
+    images = glob("{}*.png".format(gv.image_dir))
+    print("{} images found with glob".format(len(images)))
+    
+    res_csv_pth = Path(__file__).parent / "../resolution_information.csv" 
+    with open(res_csv_pth, "w") as f:
+      f.write("fundus,res\n")
+      f.writelines("{},1\n".format(x.split('/')[-1]) for x in images)  	
+
 def process(image_list, save_path):
     
     radius_list = []
@@ -21,6 +32,8 @@ def process(image_list, save_path):
     scale_resolution = []
     
     resolution_csv_path = Path(__file__).parent / "../resolution_information.csv"
+    if not os.path.exists(resolution_csv_path):
+        create_resolution_information()
     resolution_list = pd.read_csv(resolution_csv_path)
    
     for image_path in image_list:
