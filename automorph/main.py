@@ -21,7 +21,7 @@ if __name__ == "__main__":
     M1_EP.M1_image_quality()
     M1_QA.quality_assessment()
 
-   #M2 stages
+    # M2 stages
     M2_VS.M2_vessel_seg()
     M2_AV.M2_artery_vein()
     M2_DC.M2_disc_cup()
