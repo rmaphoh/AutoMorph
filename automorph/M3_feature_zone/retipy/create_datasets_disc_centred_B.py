@@ -40,6 +40,7 @@ def create_data_disc_centred_B():
     from .retipy import configuration
     from .retipy import retina
     from .retipy import tortuosity_measures
+    from pathlib import Path
     
      
     
@@ -66,8 +67,9 @@ def create_data_disc_centred_B():
     args = parser.parse_args()
     
      
-    
-    CONFIG = configuration.Configuration(gv.retipy_config)
+        
+    cfg_path = Path(__file__).parent / "./resources/retipy.config"
+    CONFIG = configuration.Configuration(cfg_path)
     binary_FD_binary,binary_VD_binary,binary_Average_width,binary_t2_list,binary_t4_list,binary_t5_list = [],[],[],[],[],[]
     artery_FD_binary,artery_VD_binary,artery_Average_width,artery_t2_list,artery_t4_list,artery_t5_list = [],[],[],[],[],[]
     vein_FD_binary,vein_VD_binary,vein_Average_width,vein_t2_list,vein_t4_list,vein_t5_list = [],[],[],[],[],[]

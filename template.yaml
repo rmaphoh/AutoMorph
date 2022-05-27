@@ -40,9 +40,9 @@ Resources:
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./
-      DockerTag: python3.6-v1
+      DockerTag: image_automorph-v1
 
 Outputs:
   LambdaApi:
     Description: "API Gateway endpoint URL for Dev stage for Predict Lambda function"
-    Value: !Sub "https://${LambdaAPI}.execue-api.${AWS::Region}.amazonaws.com/${Stage}/predict"
+    Value: !Sub "https://${LambdaAPI}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/predict"

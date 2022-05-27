@@ -64,10 +64,18 @@ def lambda_handler(event,context):
 
 #    python create_datasets_macular_centred.py
     CDMC.create_dataset_macular_centred()
+    logger.info("finished pipeline")
 
     png = glob("/tmp/results/M0/*.png")[0]
     bucket.upload_file(png, 'M0/test.png')
 
+    return {
+        'statusCode': 200,
+        'headers':{
+            'Content-type':'application/json'
+        },
+        'body': "finished"
+    }
 
-if __name__ == "__main__":
-    lambda_handler()
+#if __name__ == "__main__":
+#    lambda_handler()

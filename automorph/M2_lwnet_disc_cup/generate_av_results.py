@@ -23,6 +23,7 @@ from skimage import filters, measure
 import skimage
 import pandas as pd
 from skimage.morphology import skeletonize,remove_small_objects
+from pathlib import Path
 
 
 def intersection(mask,vessel_, it_x, it_y):
@@ -679,16 +680,15 @@ def M2_disc_cup():
     model_6 = get_arch(model_name, n_classes=3).to(device)
     model_7 = get_arch(model_name, n_classes=3).to(device)
     model_8 = get_arch(model_name, n_classes=3).to(device)
-    
-    experiment_path_1 = '{}28/'.format(gv.M2_optic_model)
-    experiment_path_2 = '{}30/'.format(gv.M2_optic_model)
-    experiment_path_3 = '{}32/'.format(gv.M2_optic_model)
-    experiment_path_4 = '{}34/'.format(gv.M2_optic_model)
-    experiment_path_5 = '{}36/'.format(gv.M2_optic_model)
-    experiment_path_6 = '{}38/'.format(gv.M2_optic_model)
-    experiment_path_7 = '{}40/'.format(gv.M2_optic_model)
-    experiment_path_8 = '{}42/'.format(gv.M2_optic_model)
-
+        
+    experiment_path_1 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/28/'
+    experiment_path_2 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/30/'
+    experiment_path_3 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/32/'
+    experiment_path_4 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/34/'
+    experiment_path_5 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/36/'
+    experiment_path_6 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/38/'
+    experiment_path_7 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/40/'
+    experiment_path_8 = Path(__file__).parent / './experiments/wnet_All_three_1024_disc_cup/42/'
 
     model_1, stats = load_model(model_1, experiment_path_1, device)
     model_1.eval()

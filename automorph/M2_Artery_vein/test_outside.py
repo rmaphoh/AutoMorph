@@ -28,6 +28,7 @@ from .scripts.utils import Define_image_size
 from .FD_cal import fractal_dimension,vessel_density
 from skimage.morphology import skeletonize,remove_small_objects
 import automorph.config as gv 
+from pathlib import Path
 
 
 
@@ -352,22 +353,22 @@ def M2_artery_vein():
     net_G_V_8 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
     
     
-    checkpoint_saved_1="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,28)
-    checkpoint_saved_2="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,30)
-    checkpoint_saved_3="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,32)
-    checkpoint_saved_4="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,34)
-    checkpoint_saved_5="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,36)
-    checkpoint_saved_6="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,38)
-    checkpoint_saved_7="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,40)
-    checkpoint_saved_8="{}{}_randomseed_{}/Discriminator_unet/".format( gv.M2_AV_model, args.jn,42)
+    checkpoint_saved_1= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,28)
+    checkpoint_saved_2= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,30)
+    checkpoint_saved_3= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,32)
+    checkpoint_saved_4= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,34)
+    checkpoint_saved_5= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,36)
+    checkpoint_saved_6= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,38)
+    checkpoint_saved_7= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,40)
+    checkpoint_saved_8= Path(__file__).parent / "./ALL-AV/{}_randomseed_{}/Discriminator_unet/".format( args.jn,42)
     
     
     
     
     for i in range(1):
-        net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 / 'CP_best_F1_V.pth', map_location=device))
         net_G_1.eval()
         net_G_A_1.eval()
         net_G_V_1.eval()
@@ -375,9 +376,9 @@ def M2_artery_vein():
         net_G_A_1.to(device=device)
         net_G_V_1.to(device=device)
     
-        net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 / 'CP_best_F1_V.pth', map_location=device))
         net_G_2.eval()
         net_G_A_2.eval()
         net_G_V_2.eval()
@@ -385,9 +386,9 @@ def M2_artery_vein():
         net_G_A_2.to(device=device)
         net_G_V_2.to(device=device)
         
-        net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 / 'CP_best_F1_V.pth', map_location=device))
         net_G_3.eval()
         net_G_A_3.eval()
         net_G_V_3.eval()
@@ -395,9 +396,9 @@ def M2_artery_vein():
         net_G_A_3.to(device=device)
         net_G_V_3.to(device=device)
         
-        net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 / 'CP_best_F1_V.pth', map_location=device))
         net_G_4.eval()
         net_G_A_4.eval()
         net_G_V_4.eval()
@@ -405,9 +406,9 @@ def M2_artery_vein():
         net_G_A_4.to(device=device)
         net_G_V_4.to(device=device)
         
-        net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 / 'CP_best_F1_V.pth', map_location=device))
         net_G_5.eval()
         net_G_A_5.eval()
         net_G_V_5.eval()
@@ -415,9 +416,9 @@ def M2_artery_vein():
         net_G_A_5.to(device=device)
         net_G_V_5.to(device=device)
         
-        net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 / 'CP_best_F1_V.pth', map_location=device))
         net_G_6.eval()
         net_G_A_6.eval()
         net_G_V_6.eval()
@@ -425,9 +426,9 @@ def M2_artery_vein():
         net_G_A_6.to(device=device)
         net_G_V_6.to(device=device)
         
-        net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 / 'CP_best_F1_V.pth', map_location=device))
         net_G_7.eval()
         net_G_A_7.eval()
         net_G_V_7.eval()
@@ -435,9 +436,9 @@ def M2_artery_vein():
         net_G_A_7.to(device=device)
         net_G_V_7.to(device=device)
         
-        net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 + 'CP_best_F1_all.pth', map_location=device))
-        net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 + 'CP_best_F1_A.pth', map_location=device))
-        net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 + 'CP_best_F1_V.pth', map_location=device))
+        net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 / 'CP_best_F1_all.pth', map_location=device))
+        net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 / 'CP_best_F1_A.pth', map_location=device))
+        net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 / 'CP_best_F1_V.pth', map_location=device))
         net_G_8.eval()
         net_G_A_8.eval()
         net_G_V_8.eval()

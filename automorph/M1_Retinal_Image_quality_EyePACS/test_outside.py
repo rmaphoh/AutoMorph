@@ -19,6 +19,7 @@ from .dataset import BasicDataset_OUT
 from torch.utils.data import DataLoader
 from .model import Resnet101_fl, InceptionV3_fl, Densenet161_fl, Resnext101_32x8d_fl, MobilenetV2_fl, Vgg16_bn_fl, Efficientnet_fl
 import automorph.config as gv
+from pathlib import Path
 
 
 #torch.distributed.init_process_group(backend="nccl")
@@ -236,14 +237,14 @@ def M1_image_quality():
     if args.model == 'vgg16bn':   
         model_fl = Vgg16_bn_fl(pretrained=True)
 
-    checkpoint_path_1 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/7_seed_28/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_2 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/6_seed_30/best_loss_checkpoint.pth'.format(args.task, args.load, args.model  )
-    checkpoint_path_3 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/5_seed_32/best_loss_checkpoint.pth'.format(args.task, args.load, args.model  )
-    checkpoint_path_4 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/4_seed_34/best_loss_checkpoint.pth'.format(args.task, args.load, args.model  )
-    checkpoint_path_5 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/3_seed_36/best_loss_checkpoint.pth'.format(args.task, args.load, args.model  )
-    checkpoint_path_6 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/2_seed_38/best_loss_checkpoint.pth'.format(args.task, args.load, args.model  )
-    checkpoint_path_7 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/1_seed_40/best_loss_checkpoint.pth'.format(args.task, args.load, args.model  )
-    checkpoint_path_8 = 'Automorph/automorph/M1_Retinal_Image_quality_EyePACS/{}/{}/{}/0_seed_42/best_loss_checkpoint.pth'.format(args.task, args.load, args.model  )
+    checkpoint_path_1 = Path(__file__).parent / './{}/{}/{}/7_seed_28/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
+    checkpoint_path_2 = Path(__file__).parent / './{}/{}/{}/6_seed_30/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
+    checkpoint_path_3 = Path(__file__).parent / './{}/{}/{}/5_seed_32/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
+    checkpoint_path_4 = Path(__file__).parent / './{}/{}/{}/4_seed_34/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
+    checkpoint_path_5 = Path(__file__).parent / './{}/{}/{}/3_seed_36/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
+    checkpoint_path_6 = Path(__file__).parent / './{}/{}/{}/2_seed_38/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
+    checkpoint_path_7 = Path(__file__).parent / './{}/{}/{}/1_seed_40/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
+    checkpoint_path_8 = Path(__file__).parent / './{}/{}/{}/0_seed_42/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
     
     model_fl_1.to(device=device)
     model_fl_2.to(device=device)

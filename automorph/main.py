@@ -14,21 +14,21 @@ import M3_feature_zone.retipy.create_datasets_macular_centred_C as CDMCC
 if __name__ == "__main__":
 
     print("Running EyeQ process")
-    #M0_EQ.EyeQ_process()
+    M0_EQ.EyeQ_process()
 
     # Eye Quality
     print("Running Image quality assesment")
     M1_EP.M1_image_quality()
     M1_QA.quality_assessment()
 
-    #M2 stages
-#    M2_VS.M2_vessel_seg()
-#    M2_AV.M2_artery_vein()
-#    M2_DC.M2_disc_cup()
-#
-#    # M3 stages
-#    CDDCB.create_data_disc_centred_B()
-#    CDDCC.create_data_disc_centred_C()
-#    CDMCB.create_macular_centred_B()
-#    CDMCC.create_macular_centred_C() 
-#    CDMC.create_dataset_macular_centred()
+   #M2 stages
+    M2_VS.M2_vessel_seg()
+    M2_AV.M2_artery_vein()
+    M2_DC.M2_disc_cup()
+
+    # M3 stages
+    CDDCB.create_data_disc_centred_B()
+    CDDCC.create_data_disc_centred_C()
+    CDMCB.create_macular_centred_B()
+    CDMCC.create_macular_centred_C() 
+    CDMC.create_dataset_macular_centred()

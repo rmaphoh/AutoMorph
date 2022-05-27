@@ -1,4 +1,5 @@
 import glob
+from sys import exit
 import os
 import cv2 as cv
 import pandas as pd
@@ -8,6 +9,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 import automorph.config as gv 
 from automorph.M0_Preprocess import fundus_prep as prep
 from random import sample
+from pathlib import Path
 
 def process(image_list, save_path):
     
@@ -18,8 +20,8 @@ def process(image_list, save_path):
     list_resolution = []
     scale_resolution = []
     
-    resolution_list = pd.read_csv(gv.resolution_csv)
-
+    resolution_csv_path = Path(__file__).parent / "../resolution_information.csv"
+    resolution_list = pd.read_csv(resolution_csv_path)
    
     for image_path in image_list:
         
@@ -28,15 +30,19 @@ def process(image_list, save_path):
             print('continue...')
             continue
             
-        
-        resolution_ = resolution_list['res'][resolution_list['fundus']==image_path].values[0]
-        list_resolution.append(resolution_)
+        try:
+            resolution_ = resolution_list['res'][resolution_list['fundus']==image_path].values[0]
+            list_resolution.append(resolution_)
 
-        img = prep.imread(dst_image)
-        r_img, borders, mask, r_img, radius_list,centre_list_w, centre_list_h = prep.process_without_gb(img,img,radius_list,centre_list_w, centre_list_h)
-        prep.imwrite(save_path + image_path.split('.')[0] + '.png', r_img)
-        #prep.imwrite('../Results/M0/images/' + image_path.split('.')[0] + '.png', mask)
-
+            img = prep.imread(dst_image)
+            r_img, borders, mask, r_img, radius_list,centre_list_w, centre_list_h = prep.process_without_gb(img,img,radius_list,centre_list_w, centre_list_h)
+            prep.imwrite(save_path + image_path.split('.')[0] + '.png', r_img)
+            #prep.imwrite('../Results/M0/images/' + image_path.split('.')[0] + '.png', mask)
+        except IndexError:
+            print("\nThe file {} has not been added to the resolution_information.csv found at {}\n\
+                   Please update this file with the script found at /lee_lab_scripts/create_resolution.py and re-run the code".format( \
+                       image_path, resolution_csv_path))
+            exit(1)
 
         name_list.append(image_path.split('.')[0] + '.png')
         

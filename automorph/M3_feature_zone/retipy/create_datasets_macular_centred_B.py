@@ -21,23 +21,21 @@ script to estimate the linear tortuosity of a set of retinal images, it will out
 to a file in the output folder defined in the configuration. The output will only have the
 estimated value and it is sorted by image file name.
 """
+import argparse
+import glob
+# import numpy as np
+import os
+import h5py
+import shutil
+import pandas as pd
+# import scipy.stats as stats
+import automorph.config as gv
 
+from .retipy import configuration, retina, tortuosity_measures
+from pathlib import Path
+ 
 def create_macular_centred_B():
 
-    import argparse
-    import glob
-    # import numpy as np
-    import os
-    import h5py
-    import shutil
-    import pandas as pd
-    # import scipy.stats as stats
-    import automorph.config as gv
-    
-    from .retipy import configuration, retina, tortuosity_measures
-    
-     
-    
     if os.path.exists('{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton/.ipynb_checkpoints'.format(gv.results_dir)):
         shutil.rmtree('{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton/.ipynb_checkpoints'.format(gv.results_dir)) 
     if os.path.exists('{}M2/binary_vessel/macular_Zone_B_centred_vein_skeleton/.ipynb_checkpoints'.format(gv.results_dir)):
@@ -50,9 +48,8 @@ def create_macular_centred_B():
     #if os.path.exists('./DDR/av_seg/raw/.ipynb_checkpoints'):
     #    shutil.rmtree('./DDR/av_seg/raw/.ipynb_checkpoints') 
     
-    
-    
-    CONFIG = configuration.Configuration(gv.retipy_config)
+    cfg_path = Path(__file__).parent / "./resources/retipy.config" 
+    CONFIG = configuration.Configuration(cfg_path)  
     binary_FD_binary,binary_VD_binary,binary_Average_width,binary_t2_list,binary_t4_list,binary_t5_list = [],[],[],[],[],[]
     artery_FD_binary,artery_VD_binary,artery_Average_width,artery_t2_list,artery_t4_list,artery_t5_list = [],[],[],[],[],[]
     vein_FD_binary,vein_VD_binary,vein_Average_width,vein_t2_list,vein_t4_list,vein_t5_list = [],[],[],[],[],[]
