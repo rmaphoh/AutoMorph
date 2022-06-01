@@ -17,10 +17,8 @@ Transform: AWS::Serverless-2016-10-31
 
 Resources:
   # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-  LambdaAPI:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: !Ref Stage
+  SourceImageBucket:
+    Type: 'AWS::S3::Bucket'
   # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
   AutomorphFunction:
     Type: AWS::Serverless::Function
@@ -29,20 +27,16 @@ Resources:
       Architectures:
         - x86_64
       Events:
-        Predict:
-          Type: Api
+        BucketEvent1:
+          Type: S3
           Properties:
-            RestApiId: !Ref LambdaAPI
-            Path: /predict
-            Method: POST
+            Bucket:
+              Ref: SourceImageBucket
+            Events:
+              - 's3:ObjectCreated' 
       Policies:
-        - AmazonS3FullAccess
+        - AmazonS3FullAccess #will need to change this?
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./
       DockerTag: image_automorph-v1
-
-Outputs:
-  LambdaApi:
-    Description: "API Gateway endpoint URL for Dev stage for Predict Lambda function"
-    Value: !Sub "https://${LambdaAPI}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/predict"

@@ -1,19 +1,35 @@
-#Install Python
-FROM yukundocker/image_automorph
+# Define function directory
+#ARG FUNCTION_DIR="/function"
 
-#install boto3
-RUN pip install boto3
+# download image
+FROM public.ecr.aws/lambda/python:3.6
+#FROM arajesh17/automorph_lee:v1
 
-# copy required files
-COPY automorph/ ./automorph
-COPY setup.py ./
-COPY lambda_predict ./
+# Install aws-lambda-cpp build dependencies
+#RUN apt-get update && \
+#  apt-get install -y \
+#  g++ \
+#  make \
+#  cmake \
+#  unzip \
+#  libcurl4-openssl-dev \
+#  libgl1-mesa-dev
 
-RUN conda activate automorph
-RUN apt-get update && apt-get install -y libgl1-mesa-dev
+# Create function directory
+#RUN mkdir -p ${FUNCTION_DIR}
 
-# install automorph - make sure that I am installing correctly 
-RUN pip install -e .
+# Copy function code
+COPY app/lambda_predict.py ./
+COPY pyproject.toml poetry.lock ./
 
-# Set entry point
+# Can remove the ptvsd install
+RUN pip install --upgrade pip && pip install "poetry==1.1.11" && pip install ptvsd
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
+RUN pip install setup.py
+
+# Install the runtime interface client
+#RUN pip install awslambdaric
+
+#ENTRYPOINT [ "/opt/conda/envs/automorph/bin/python", "-m", "awslambdaric" ]
 CMD ["lambda_predict.lambda_handler"]
