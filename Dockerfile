@@ -3,6 +3,7 @@
 
 # download image
 FROM public.ecr.aws/lambda/python:3.6
+
 #FROM arajesh17/automorph_lee:v1
 
 # Install aws-lambda-cpp build dependencies
@@ -20,13 +21,16 @@ FROM public.ecr.aws/lambda/python:3.6
 
 # Copy function code
 COPY app/lambda_predict.py ./
-COPY pyproject.toml poetry.lock ./
+COPY requirements.txt ./
+COPY setup.py ./
 
 # Can remove the ptvsd install
-RUN pip install --upgrade pip && pip install "poetry==1.1.11" && pip install ptvsd
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
-RUN pip install setup.py
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+RUN pip install ptvsd
+
+COPY automorph/ ./automorph
+RUN pip install automorph/
 
 # Install the runtime interface client
 #RUN pip install awslambdaric

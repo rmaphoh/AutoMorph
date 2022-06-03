@@ -2,10 +2,12 @@ absl-py==0.13.0
 art==5.2
 cached-property==1.5.2
 cachetools==4.2.2
+certifi==2021.5.30
 charset-normalizer==2.0.4
 cycler==0.10.0
 dataclasses==0.8
 decorator==4.4.2
+efficientnet-pytorch==0.7.1
 future==0.18.2
 google-auth==1.35.0
 google-auth-oauthlib==0.4.5
@@ -21,6 +23,7 @@ matplotlib==3.3.4
 networkx==2.5.1
 numpy==1.19.5
 oauthlib==3.1.1
+olefile==0.46
 opencv-python==4.5.3.56
 pandas==1.1.5
 Pillow==8.3.1
@@ -45,9 +48,11 @@ tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.0
 threadpoolctl==2.2.0
 tifffile==2020.9.3
+torch==1.7.0
+torchaudio==0.7.0
+torchvision==0.8.0
 tqdm==4.62.1
 typing-extensions==3.10.0.0
 urllib3==1.26.6
 Werkzeug==2.0.1
 zipp==3.5.0
-

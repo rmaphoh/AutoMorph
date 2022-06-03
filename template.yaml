@@ -4,8 +4,8 @@ Description:
   "Test for automorph lambda function"
 Globals:
   Function:
-    Timeout: 50
-    MemorySize: 5000
+    Timeout: 240
+    MemorySize: 3008 
   Api:
     OpenApiVersion: 3.0.1
 Parameters:
@@ -19,6 +19,9 @@ Resources:
   # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
   SourceImageBucket:
     Type: 'AWS::S3::Bucket'
+#    DeletionPolicy: Retain
+#    Properties:
+#      BucketName: 'automorph-lambda-buckets'
   # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
   AutomorphFunction:
     Type: AWS::Serverless::Function
@@ -33,10 +36,43 @@ Resources:
             Bucket:
               Ref: SourceImageBucket
             Events:
-              - 's3:ObjectCreated' 
+              - 's3:ObjectCreated:*' 
       Policies:
-        - AmazonS3FullAccess #will need to change this?
+        AWSLambdaExecute
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./
       DockerTag: image_automorph-v1
+
+#  EventObjectUpload:
+#    Type: AWS::Events::Rule
+#    Properties:
+#      Description: "Approved transactions"
+#      EventPattern:
+#        source:
+#          - "custom.myATMapp"
+#        detail-type:
+#          - transaction
+#        detail:
+#          result:
+#            - "approved"
+#      State: "ENABLED"
+#      Targets:
+#        -
+#          Arn:
+#            Fn:GetAtt:
+#              - "AutomorphFunction"
+#              - "Arn"
+#          Id: "AutomorphImageUpld"
+#
+#  PermissionForEventsToInvokeLambda: 
+#    Type: AWS::Lambda::Permission
+#    Properties: 
+#      FunctionName: 
+#        Ref: "AutomorphImageUpld"
+#      Action: "lambda:InvokeFunction"
+#      Principal: "events.amazonaws.com"
+#      SourceArn: 
+#        Fn::GetAtt: 
+#          - "EventRuleCase1"
+#          - "Arn"

@@ -6,6 +6,7 @@ import logging
 import os
 import sys
 import csv
+from tabnanny import check
 import time
 import torch
 import numpy as np
@@ -202,11 +203,23 @@ def M1_image_quality():
     
     device = torch.device(gv.device)
     
-    #logging.info(f'Using device {device}')
+    logging.info(f'Using device {device}')
 
     test_dir = args.test_dir
     dataset=args.dataset
     img_size= (512,512)
+
+    checkpoint_path_1 = str(Path(__file__).parent / './{}/{}/{}/7_seed_28/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+    checkpoint_path_2 = str(Path(__file__).parent / './{}/{}/{}/6_seed_30/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+    checkpoint_path_3 = str(Path(__file__).parent / './{}/{}/{}/5_seed_32/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+    checkpoint_path_4 = str(Path(__file__).parent / './{}/{}/{}/4_seed_34/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+    checkpoint_path_5 = str(Path(__file__).parent / './{}/{}/{}/3_seed_36/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+    checkpoint_path_6 = str(Path(__file__).parent / './{}/{}/{}/2_seed_38/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+    checkpoint_path_7 = str(Path(__file__).parent / './{}/{}/{}/1_seed_40/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+    checkpoint_path_8 = str(Path(__file__).parent / './{}/{}/{}/0_seed_42/best_loss_checkpoint.pth'.format(args.task, args.load, args.model ))
+ 
+    logging.info("path {}".format(checkpoint_path_1))
+    logging.info("exists {}".format(os.path.exists(checkpoint_path_1)))
 
     if args.model=='inceptionv3':
         model_fl = InceptionV3_fl(pretrained=True)
@@ -224,28 +237,20 @@ def M1_image_quality():
         model_fl_7 = Resnext101_32x8d_fl(pretrained=True)
         model_fl_8 = Resnext101_32x8d_fl(pretrained=True)
     if args.model == 'efficientnet':   
-        model_fl_1 = Efficientnet_fl(pretrained=True)
-        model_fl_2 = Efficientnet_fl(pretrained=True)
-        model_fl_3 = Efficientnet_fl(pretrained=True)
-        model_fl_4 = Efficientnet_fl(pretrained=True)
-        model_fl_5 = Efficientnet_fl(pretrained=True)
-        model_fl_6 = Efficientnet_fl(pretrained=True)
-        model_fl_7 = Efficientnet_fl(pretrained=True)
-        model_fl_8 = Efficientnet_fl(pretrained=True)
+        model_fl_1 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_1)
+        model_fl_2 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_2)
+        model_fl_3 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_3)
+        model_fl_4 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_4)
+        model_fl_5 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_5)
+        model_fl_6 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_6)
+        model_fl_7 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_7)
+        model_fl_8 = Efficientnet_fl(pretrained=True, weights_path=checkpoint_path_8)
     if args.model == 'mobilenetv2':   
         model_fl = MobilenetV2_fl(pretrained=True)
     if args.model == 'vgg16bn':   
         model_fl = Vgg16_bn_fl(pretrained=True)
 
-    checkpoint_path_1 = Path(__file__).parent / './{}/{}/{}/7_seed_28/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_2 = Path(__file__).parent / './{}/{}/{}/6_seed_30/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_3 = Path(__file__).parent / './{}/{}/{}/5_seed_32/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_4 = Path(__file__).parent / './{}/{}/{}/4_seed_34/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_5 = Path(__file__).parent / './{}/{}/{}/3_seed_36/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_6 = Path(__file__).parent / './{}/{}/{}/2_seed_38/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_7 = Path(__file__).parent / './{}/{}/{}/1_seed_40/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    checkpoint_path_8 = Path(__file__).parent / './{}/{}/{}/0_seed_42/best_loss_checkpoint.pth'.format(args.task, args.load, args.model )
-    
+   
     model_fl_1.to(device=device)
     model_fl_2.to(device=device)
     model_fl_3.to(device=device)
@@ -254,33 +259,6 @@ def M1_image_quality():
     model_fl_6.to(device=device)
     model_fl_7.to(device=device)
     model_fl_8.to(device=device)
-
-    map_location = {'cuda:%d' % 0: 'cuda:%d' % args.local_rank}
-    if args.load:
-        model_fl_1.load_state_dict(
-            torch.load(checkpoint_path_1) # can add maplocation if I want here
-        )
-        model_fl_2.load_state_dict(
-            torch.load(checkpoint_path_2)
-        )
-        model_fl_3.load_state_dict(
-            torch.load(checkpoint_path_3)
-        )
-        model_fl_4.load_state_dict(
-            torch.load(checkpoint_path_4)
-        )
-        model_fl_5.load_state_dict(
-            torch.load(checkpoint_path_5)
-        )
-        model_fl_6.load_state_dict(
-            torch.load(checkpoint_path_6)
-        )
-        model_fl_7.load_state_dict(
-            torch.load(checkpoint_path_7)
-        )
-        model_fl_8.load_state_dict(
-            torch.load(checkpoint_path_8)
-        )
 
     # faster convolutions, but more memory
     # cudnn.benchmark = True
