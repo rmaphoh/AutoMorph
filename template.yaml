@@ -16,13 +16,8 @@ Parameters:
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
-  # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-  SourceImageBucket:
-    Type: 'AWS::S3::Bucket'
-#    DeletionPolicy: Retain
-#    Properties:
-#      BucketName: 'automorph-lambda-buckets'
-  # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  SourceBucket:
+    Type: AWS::S3::Bucket
   AutomorphFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -33,8 +28,7 @@ Resources:
         BucketEvent1:
           Type: S3
           Properties:
-            Bucket:
-              Ref: SourceImageBucket
+            SourceArn: 'arn:aws:s3:::automorph-lambda-buckets'
             Events:
               - 's3:ObjectCreated:*' 
       Policies:
@@ -43,36 +37,3 @@ Resources:
       Dockerfile: Dockerfile
       DockerContext: ./
       DockerTag: image_automorph-v1
-
-#  EventObjectUpload:
-#    Type: AWS::Events::Rule
-#    Properties:
-#      Description: "Approved transactions"
-#      EventPattern:
-#        source:
-#          - "custom.myATMapp"
-#        detail-type:
-#          - transaction
-#        detail:
-#          result:
-#            - "approved"
-#      State: "ENABLED"
-#      Targets:
-#        -
-#          Arn:
-#            Fn:GetAtt:
-#              - "AutomorphFunction"
-#              - "Arn"
-#          Id: "AutomorphImageUpld"
-#
-#  PermissionForEventsToInvokeLambda: 
-#    Type: AWS::Lambda::Permission
-#    Properties: 
-#      FunctionName: 
-#        Ref: "AutomorphImageUpld"
-#      Action: "lambda:InvokeFunction"
-#      Principal: "events.amazonaws.com"
-#      SourceArn: 
-#        Fn::GetAtt: 
-#          - "EventRuleCase1"
-#          - "Arn"

@@ -305,10 +305,10 @@ def M2_artery_vein():
     img_size = Define_image_size(args.uniform, args.dataset)
     dataset_name = args.dataset
     checkpoint_saved = dataset_name + '/' +args.jn + '/Discriminator_unet/'
-    csv_save = 'test_csv/' + args.jn
-
-    if not os.path.isdir(csv_save):
-        os.makedirs(csv_save)
+#    csv_save = 'test_csv/' + args.jn
+#
+#    if not os.path.isdir(csv_save):
+#        os.makedirs(csv_save)
 
     test_dir= '{}M1/Good_quality/'.format(gv.results_dir)
     test_label = "./data/{}/test/1st_manual/".format(dataset_name)
