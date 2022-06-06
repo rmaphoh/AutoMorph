@@ -1,0 +1,96 @@
+from curses import BUTTON1_CLICKED
+from io import BytesIO
+import boto3
+import logging
+from glob import glob
+from urllib.parse import unquote_plus
+import json
+import os
+
+import automorph.M0_Preprocess.EyeQ_process_main as M0_EQ
+import automorph.M1_Retinal_Image_quality_EyePACS.test_outside as M1_EP
+import automorph.M1_Retinal_Image_quality_EyePACS.merge_quality_assessment as M1_QA
+import automorph.M2_Vessel_seg.test_outside_integrated as M2_VS
+import automorph.M2_Artery_vein.test_outside as M2_AV
+import automorph.M2_lwnet_disc_cup.generate_av_results as M2_DC
+import automorph.M3_feature_whole_pic.retipy.create_datasets_macular_centred as CDMC
+import automorph.M3_feature_zone.retipy.create_datasets_disc_centred_B as CDDCB
+import automorph.M3_feature_zone.retipy.create_datasets_disc_centred_C as CDDCC
+import automorph.M3_feature_zone.retipy.create_datasets_macular_centred_B as CDMCB
+import automorph.M3_feature_zone.retipy.create_datasets_macular_centred_C as CDMCC
+import automorph.config as gv
+
+# Define logger class
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# enable debugger
+#ptvsd.enable_attach(address=("0.0.0.0", 5891), redirect_output=True)
+#ptvsd.wait_for_attach()
+
+
+# get s3 client
+s3 = boto3.client('s3', region_name='us-west-2')
+
+def lambda_handler(event,context):
+
+    record = event['Records'][0] # records [0]
+    bucket = record['s3']['bucket']['name']
+    key = unquote_plus(record['s3']['object']['key']) 
+    tmpkey = key.replace('/', '')
+    download_path = gv.image_dir
+    if not os.path.exists(download_path):
+        os.mkdir(download_path)
+    s3.download_file(bucket, key, download_path+tmpkey)
+    logger.info(".png download from s3")
+
+    # Pre-processing
+    logger.info('Pre-processing')
+#    M0_EQ.EyeQ_process()
+#
+##    # Eye Quality
+#    M1_EP.M1_image_quality()
+#    M1_QA.quality_assessment()
+#
+##    #M2 stages
+#    M2_VS.M2_vessel_seg()
+#    M2_AV.M2_artery_vein()
+#    M2_DC.M2_disc_cup()
+#
+##    cd ../M3_feature_zone/retipy/
+##    python create_datasets_disc_centred_B.py
+#    CDDCB.create_data_disc_centred_B()
+#
+##    python create_datasets_disc_centred_C.py
+#    CDDCC.create_data_disc_centred_C()
+#
+##    python create_datasets_macular_centred_B.py
+#    CDMCB.create_macular_centred_B()
+#
+##    python create_datasets_macular_centred_C.py
+#    CDMCC.create_macular_centred_C() 
+#
+##    python create_datasets_macular_centred.py
+#    CDMC.create_dataset_macular_centred()
+    logger.info("finished pipeline")
+
+    logger.info("copying files")
+    for root, dir, files in os.walk(gv.results_dir):
+       for f in files:
+            png = os.path.join(root, f)
+            id = os.path.join(root.split(gv.results_dir)[-1], f) # need to change for lee lab install
+            s3.upload_file(png, '{}-output'.format(bucket), id)
+
+    return {
+        'statusCode': 200,
+        'headers':{
+            'Content-type':'application/json'
+        },
+        'body': "finished"
+    }
+with open("/data/anand/AutoMorph_Lee/test_event.json", 'r') as f:
+    data = json.load(f)
+lambda_handler(data, 1)
+
+#if __name__ == "__main__":
+#    lambda_handler()
