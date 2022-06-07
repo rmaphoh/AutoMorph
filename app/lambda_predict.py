@@ -46,32 +46,29 @@ def lambda_handler(event,context):
 
     # Pre-processing
     logger.info('Pre-processing')
-#    M0_EQ.EyeQ_process()
-#
-##    # Eye Quality
-#    M1_EP.M1_image_quality()
-#    M1_QA.quality_assessment()
-#
-##    #M2 stages
-#    M2_VS.M2_vessel_seg()
-#    M2_AV.M2_artery_vein()
-#    M2_DC.M2_disc_cup()
-#
-##    cd ../M3_feature_zone/retipy/
-##    python create_datasets_disc_centred_B.py
-#    CDDCB.create_data_disc_centred_B()
-#
-##    python create_datasets_disc_centred_C.py
-#    CDDCC.create_data_disc_centred_C()
-#
-##    python create_datasets_macular_centred_B.py
-#    CDMCB.create_macular_centred_B()
-#
-##    python create_datasets_macular_centred_C.py
-#    CDMCC.create_macular_centred_C() 
-#
-##    python create_datasets_macular_centred.py
-#    CDMC.create_dataset_macular_centred()
+    M0_EQ.EyeQ_process()
+
+    # Eye Quality
+    M1_EP.M1_image_quality()
+    M1_QA.quality_assessment()
+
+    #M2 stages
+    logger.info("starting_vessel_seg")
+    M2_VS.M2_vessel_seg()
+    logger.info("starting AV seg")
+    M2_AV.M2_artery_vein()
+    logger.info("starting disc cup seg")
+    M2_DC.M2_disc_cup()
+
+    CDDCB.create_data_disc_centred_B()
+
+    CDDCC.create_data_disc_centred_C()
+
+    CDMCB.create_macular_centred_B()
+
+    CDMCC.create_macular_centred_C() 
+
+    CDMC.create_dataset_macular_centred()
     logger.info("finished pipeline")
 
     logger.info("copying files")

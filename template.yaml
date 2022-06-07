@@ -1,7 +1,7 @@
 
 AWSTemplateFormatVersion: "2010-09-09"
 Description: 
-  "Test for automorph lambda function"
+  "Cloud stack with a lambda function that runs AutoMorph images uploaded into an s3 bucket"
 Globals:
   Function:
     Timeout: 240
