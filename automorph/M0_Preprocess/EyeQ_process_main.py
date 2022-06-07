@@ -45,7 +45,7 @@ def process(image_list, save_path):
             
         try:
             if len(resolution_list['res'][resolution_list['fundus']==image_path].values) == 0:
-                resolution_ = 0
+                resolution_ = 1
             else:
                 resolution_ = resolution_list['res'][resolution_list['fundus']==image_path].values[0]
             list_resolution.append(resolution_)
