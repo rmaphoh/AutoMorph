@@ -16,21 +16,21 @@ Parameters:
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
-  SourceBucket:
-    Type: AWS::S3::Bucket
+#  SourceBucket:
+#    Type: AWS::S3::Bucket
   AutomorphFunction:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
       Architectures:
         - x86_64
-      Events:
-        BucketEvent1:
-          Type: S3
-          Properties:
-            SourceArn: 'arn:aws:s3:::automorph-lambda-buckets'
-            Events:
-              - 's3:ObjectCreated:*' 
+#      Events:
+#        BucketEvent1:
+#          Type: S3
+#          Properties:
+#            SourceArn: 'arn:aws:s3:::automorph-lambda-buckets'
+#            Events:
+#              - 's3:ObjectCreated:*' 
       Policies:
         AWSLambdaExecute
     Metadata:

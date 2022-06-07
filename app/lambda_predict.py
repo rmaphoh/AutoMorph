@@ -19,15 +19,11 @@ import automorph.M3_feature_zone.retipy.create_datasets_disc_centred_C as CDDCC
 import automorph.M3_feature_zone.retipy.create_datasets_macular_centred_B as CDMCB
 import automorph.M3_feature_zone.retipy.create_datasets_macular_centred_C as CDMCC
 import automorph.config as gv
+import imghdr
 
 # Define logger class
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-# enable debugger
-#ptvsd.enable_attach(address=("0.0.0.0", 5891), redirect_output=True)
-#ptvsd.wait_for_attach()
-
 
 # get s3 client
 s3 = boto3.client('s3', region_name='us-west-2')
@@ -37,12 +33,20 @@ def lambda_handler(event,context):
     record = event['Records'][0] # records [0]
     bucket = record['s3']['bucket']['name']
     key = unquote_plus(record['s3']['object']['key']) 
-    tmpkey = key.replace('/', '')
+    tmpkey = key.split('/')[-1]
     download_path = gv.image_dir
     if not os.path.exists(download_path):
         os.mkdir(download_path)
     s3.download_file(bucket, key, download_path+tmpkey)
-    logger.info(".png download from s3")
+    logger.info("object download from s3")
+
+    # quick png check
+    ftype = imghdr.what(download_path+tmpkey)
+    if ftype != 'png':
+        logger.info("{} is not a png file, aborting".format(key))
+        return {'statusCode': 200, 'headers':{'Content-type':'application/json'},
+        'body': "uploaded object {} was not a png filetype".format(key)
+    }
 
     # Pre-processing
     logger.info('Pre-processing')
@@ -52,31 +56,35 @@ def lambda_handler(event,context):
     M1_EP.M1_image_quality()
     M1_QA.quality_assessment()
 
-    #M2 stages
-    logger.info("starting_vessel_seg")
-    M2_VS.M2_vessel_seg()
-    logger.info("starting AV seg")
-    M2_AV.M2_artery_vein()
-    logger.info("starting disc cup seg")
-    M2_DC.M2_disc_cup()
-
-    CDDCB.create_data_disc_centred_B()
-
-    CDDCC.create_data_disc_centred_C()
-
-    CDMCB.create_macular_centred_B()
-
-    CDMCC.create_macular_centred_C() 
-
-    CDMC.create_dataset_macular_centred()
+#    #M2 stages
+#    logger.info("starting_vessel_seg")
+#    M2_VS.M2_vessel_seg()
+#    logger.info("starting AV seg")
+#    M2_AV.M2_artery_vein()
+#    logger.info("starting disc cup seg")
+#    M2_DC.M2_disc_cup()
+#
+#    CDDCB.create_data_disc_centred_B()
+#
+#    CDDCC.create_data_disc_centred_C()
+#
+#    CDMCB.create_macular_centred_B()
+#
+#    CDMCC.create_macular_centred_C() 
+#
+#    CDMC.create_dataset_macular_centred()
     logger.info("finished pipeline")
 
     logger.info("copying files")
+
+    output_bucket = "eyeact-automorph2"
+    sub_dir = tmpkey.split('.png')[0]
+
     for root, dir, files in os.walk(gv.results_dir):
        for f in files:
             png = os.path.join(root, f)
-            id = os.path.join(root.split(gv.results_dir)[-1], f) # need to change for lee lab install
-            s3.upload_file(png, '{}-output'.format(bucket), id)
+            id = os.path.join(sub_dir, root.split(gv.results_dir)[-1], f) # need to change for lee lab install
+            s3.upload_file(png, output_bucket, id)
 
     return {
         'statusCode': 200,
@@ -85,9 +93,7 @@ def lambda_handler(event,context):
         },
         'body': "finished"
     }
-with open("/data/anand/AutoMorph_Lee/test_event.json", 'r') as f:
-    data = json.load(f)
-lambda_handler(data, 1)
 
-#if __name__ == "__main__":
-#    lambda_handler()
+#with open("/data/anand/AutoMorph_Lee/test_event.json", 'r') as f:
+    #data = json.load(f)
+#lambda_handler(data, 1)
