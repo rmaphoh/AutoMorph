@@ -44,7 +44,10 @@ def process(image_list, save_path):
             continue
             
         try:
-            resolution_ = resolution_list['res'][resolution_list['fundus']==image_path].values[0]
+            if len(resolution_list['res'][resolution_list['fundus']==image_path].values) == 0:
+                resolution_ = 0
+            else:
+                resolution_ = resolution_list['res'][resolution_list['fundus']==image_path].values[0]
             list_resolution.append(resolution_)
 
             img = prep.imread(dst_image)
