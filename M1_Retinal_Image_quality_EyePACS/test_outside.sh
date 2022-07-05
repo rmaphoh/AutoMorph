@@ -4,7 +4,6 @@ CUDA_NUMBER=0
 export PYTHONPATH=.:$PYTHONPATH
 
 for model in 'efficientnet'
-#for model in 'densenet169'
 do
     for n_round in 0
     do

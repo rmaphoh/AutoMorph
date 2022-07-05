@@ -6,7 +6,6 @@ import argparse
 import logging
 import os
 import sys
-import csv
 import time
 import torch
 import numpy as np
@@ -21,7 +20,6 @@ from torch.utils.data import DataLoader
 from model import Resnet101_fl, InceptionV3_fl, Densenet161_fl, Resnext101_32x8d_fl, MobilenetV2_fl, Vgg16_bn_fl, Efficientnet_fl
 
 
-#torch.distributed.init_process_group(backend="nccl")
 font = {
         'weight' : 'normal',
         'size'   : 18}

@@ -1,10 +1,8 @@
-import os
 import numpy as np
 import torch
 from glob import glob
 from torch.utils.data import Dataset
 from PIL import Image
-from torchvision import transforms, utils
 import random
 import logging
 from scipy.ndimage import rotate
@@ -118,7 +116,6 @@ class BasicDataset_OUT(Dataset):
         mean_value=np.mean(img_array[img_array > 0])
         std_value=np.std(img_array[img_array > 0])
         img_array=(img_array-mean_value)/std_value
-        #print(np.unique(img_array))
         
         if len(img_array.shape) == 2:
             img_array = np.expand_dims(img_array, axis=2)
@@ -129,8 +126,7 @@ class BasicDataset_OUT(Dataset):
         return img_array
         
     def __getitem__(self, index):
-        'Generates one sample of data'
-        # Select sample
+        
         idx = self.ids[index]
         img_file = glob(self.image_dir + idx + '.*')
         image = Image.open(img_file[0])
