@@ -100,9 +100,6 @@ class SEDataset(Dataset):
             std_value=np.std(img_array[img_array[...,0] > pthrehold],axis=0)
             img_array=(img_array-mean_value)/std_value
         
-        #print('mean: ', mean_value)
-        #print('std: ', std_value)
-
         if len(img_array.shape) == 2:
             img_array = np.expand_dims(img_array, axis=2)
         if len(label_array.shape) == 2:

@@ -1,14 +1,9 @@
 import os, json, sys
 import os.path as osp
 import argparse
-import warnings
 from tqdm import tqdm
 import cv2
 import numpy as np
-from skimage.io import imsave
-from skimage.util import img_as_ubyte
-from skimage.transform import resize
-from skimage.color import label2rgb
 import shutil
 from PIL import Image
 from torchvision.utils import save_image
@@ -18,10 +13,9 @@ import torchvision
 from models.get_model import get_arch
 from utils.get_loaders import get_test_dataset
 from utils.model_saving_loading import load_model
-from skimage import filters, measure
-import skimage
+from skimage import measure
 import pandas as pd
-from skimage.morphology import skeletonize,remove_small_objects
+from skimage.morphology import remove_small_objects
 # argument parsing
 parser = argparse.ArgumentParser()
 required_named = parser.add_argument_group('required arguments')
@@ -605,7 +599,6 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
                     
                     img_r[prediction_decode[i,...]==1]=255
                     img_b[prediction_decode[i,...]==2]=255
-                    #img_g[prediction_decode[i,...]==3]=255
 
                     img_b = remove_small_objects(img_b>0, 50)
                     img_r = remove_small_objects(img_r>0, 100)
