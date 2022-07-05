@@ -1,7 +1,6 @@
 '''
-yukun 20210305
+yukun 20220705
 '''
-
 
 import torch.nn.functional as F
 import argparse
@@ -9,7 +8,6 @@ import logging
 import shutil
 import os
 import cv2
-import sys
 import torchvision
 import torch
 import numpy as np
@@ -19,11 +17,8 @@ from scripts.dataset import LearningAVSegData_OOD
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from PIL import Image
-from scipy.special import expit
-from scripts.eval import eval_net
-from skimage import filters
 import pandas as pd
-from skimage import io, color
+from skimage import io
 from scripts.utils import Define_image_size
 from FD_cal import fractal_dimension,vessel_density
 from skimage.morphology import skeletonize,remove_small_objects
@@ -77,11 +72,6 @@ def filter_frag(data_path):
         width_r = np.sum(img_r)/np.sum(skeleton_r)
         width_b = np.sum(img_b)/np.sum(skeleton_b)
         
-        
-        #if FD_boxcounting>1:
-        #    FD_cal.append(FD_boxcounting)
-        #    name_list.append(i)
-        #    VD_cal.append(VD)
         FD_cal_r.append(FD_boxcounting_r)
         name_list.append(i)
         VD_cal_r.append(VD_r)
@@ -119,8 +109,6 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G
     if not os.path.isdir(seg_uncertainty_raw_path):
         os.makedirs(seg_uncertainty_raw_path)
         
-        
-    
         
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for batch in loader:
@@ -225,9 +213,6 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G
                 
                 mask_pred_tensor_small_all = (mask_pred_tensor_small_all/8).to(device=device)
                 
-                #print(mask_pred_tensor_small_all.is_cuda)
-                #print(mask_pred_tensor_small_1.is_cuda)
-                
                 uncertainty_map = torch.sqrt((torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_1)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_2)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_3)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_4)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_5)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_6)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_7)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_8))/8)
             
                 _,prediction_decode = torch.max(mask_pred_tensor_small_all, 1)
@@ -314,146 +299,144 @@ if __name__ == '__main__':
 
 
 
-dataset = LearningAVSegData_OOD(test_dir, test_label, test_mask, img_size, dataset_name=dataset_name, train_or=False)
-test_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=False, num_workers=16, pin_memory=False, drop_last=False)
+    dataset = LearningAVSegData_OOD(test_dir, test_label, test_mask, img_size, dataset_name=dataset_name, train_or=False)
+    test_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=False, num_workers=16, pin_memory=False, drop_last=False)
 
 
-net_G_1 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_1 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_1 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_1 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_1 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_1 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
-net_G_2 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_2 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_2 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_2 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_2 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_2 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
-net_G_3 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_3 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_3 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_3 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_3 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_3 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
-net_G_4 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_4 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_4 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_4 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_4 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_4 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
-net_G_5 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_5 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_5 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_5 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_5 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_5 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
-net_G_6 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_6 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_6 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_6 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_6 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_6 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
-net_G_7 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_7 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_7 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_7 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_7 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_7 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
-net_G_8 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_A_8 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-net_G_V_8 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
-
-
-checkpoint_saved_1="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,28)
-checkpoint_saved_2="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,30)
-checkpoint_saved_3="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,32)
-checkpoint_saved_4="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,34)
-checkpoint_saved_5="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,36)
-checkpoint_saved_6="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,38)
-checkpoint_saved_7="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,40)
-checkpoint_saved_8="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,42)
+    net_G_8 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_A_8 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
+    net_G_V_8 = Generator_branch(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
 
 
+    checkpoint_saved_1="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,28)
+    checkpoint_saved_2="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,30)
+    checkpoint_saved_3="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,32)
+    checkpoint_saved_4="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,34)
+    checkpoint_saved_5="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,36)
+    checkpoint_saved_6="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,38)
+    checkpoint_saved_7="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,40)
+    checkpoint_saved_8="./ALL-AV/{}_{}/Discriminator_unet/".format( args.jn,42)
 
 
-for i in range(1):
-    net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 + 'CP_best_F1_all.pth'))
-    net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 + 'CP_best_F1_A.pth'))
-    net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 + 'CP_best_F1_V.pth'))
-    net_G_1.eval()
-    net_G_A_1.eval()
-    net_G_V_1.eval()
-    net_G_1.to(device=device)
-    net_G_A_1.to(device=device)
-    net_G_V_1.to(device=device)
+    for i in range(1):
+        net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 + 'CP_best_F1_all.pth'))
+        net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 + 'CP_best_F1_A.pth'))
+        net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 + 'CP_best_F1_V.pth'))
+        net_G_1.eval()
+        net_G_A_1.eval()
+        net_G_V_1.eval()
+        net_G_1.to(device=device)
+        net_G_A_1.to(device=device)
+        net_G_V_1.to(device=device)
 
-    net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 + 'CP_best_F1_all.pth'))
-    net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 + 'CP_best_F1_A.pth'))
-    net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 + 'CP_best_F1_V.pth'))
-    net_G_2.eval()
-    net_G_A_2.eval()
-    net_G_V_2.eval()
-    net_G_2.to(device=device)
-    net_G_A_2.to(device=device)
-    net_G_V_2.to(device=device)
-    
-    net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 + 'CP_best_F1_all.pth'))
-    net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 + 'CP_best_F1_A.pth'))
-    net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 + 'CP_best_F1_V.pth'))
-    net_G_3.eval()
-    net_G_A_3.eval()
-    net_G_V_3.eval()
-    net_G_3.to(device=device)
-    net_G_A_3.to(device=device)
-    net_G_V_3.to(device=device)
-    
-    net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 + 'CP_best_F1_all.pth'))
-    net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 + 'CP_best_F1_A.pth'))
-    net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 + 'CP_best_F1_V.pth'))
-    net_G_4.eval()
-    net_G_A_4.eval()
-    net_G_V_4.eval()
-    net_G_4.to(device=device)
-    net_G_A_4.to(device=device)
-    net_G_V_4.to(device=device)
-    
-    net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 + 'CP_best_F1_all.pth'))
-    net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 + 'CP_best_F1_A.pth'))
-    net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 + 'CP_best_F1_V.pth'))
-    net_G_5.eval()
-    net_G_A_5.eval()
-    net_G_V_5.eval()
-    net_G_5.to(device=device)
-    net_G_A_5.to(device=device)
-    net_G_V_5.to(device=device)
-    
-    net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 + 'CP_best_F1_all.pth'))
-    net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 + 'CP_best_F1_A.pth'))
-    net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 + 'CP_best_F1_V.pth'))
-    net_G_6.eval()
-    net_G_A_6.eval()
-    net_G_V_6.eval()
-    net_G_6.to(device=device)
-    net_G_A_6.to(device=device)
-    net_G_V_6.to(device=device)
-    
-    net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 + 'CP_best_F1_all.pth'))
-    net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 + 'CP_best_F1_A.pth'))
-    net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 + 'CP_best_F1_V.pth'))
-    net_G_7.eval()
-    net_G_A_7.eval()
-    net_G_V_7.eval()
-    net_G_7.to(device=device)
-    net_G_A_7.to(device=device)
-    net_G_V_7.to(device=device)
-    
-    net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 + 'CP_best_F1_all.pth'))
-    net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 + 'CP_best_F1_A.pth'))
-    net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 + 'CP_best_F1_V.pth'))
-    net_G_8.eval()
-    net_G_A_8.eval()
-    net_G_V_8.eval()
-    net_G_8.to(device=device)
-    net_G_A_8.to(device=device)
-    net_G_V_8.to(device=device)
-    
-    if mode != 'vessel':
-        test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G_3, net_G_A_3, net_G_V_3, net_G_4, net_G_A_4, net_G_V_4, net_G_5, net_G_A_5, net_G_V_5, net_G_6, net_G_A_6, net_G_V_6, net_G_7, net_G_A_7, net_G_V_7, net_G_8, net_G_A_8, net_G_V_8, loader=test_loader, device=device, mode=mode,dataset=dataset_name)
+        net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 + 'CP_best_F1_all.pth'))
+        net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 + 'CP_best_F1_A.pth'))
+        net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 + 'CP_best_F1_V.pth'))
+        net_G_2.eval()
+        net_G_A_2.eval()
+        net_G_V_2.eval()
+        net_G_2.to(device=device)
+        net_G_A_2.to(device=device)
+        net_G_V_2.to(device=device)
+        
+        net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 + 'CP_best_F1_all.pth'))
+        net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 + 'CP_best_F1_A.pth'))
+        net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 + 'CP_best_F1_V.pth'))
+        net_G_3.eval()
+        net_G_A_3.eval()
+        net_G_V_3.eval()
+        net_G_3.to(device=device)
+        net_G_A_3.to(device=device)
+        net_G_V_3.to(device=device)
+        
+        net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 + 'CP_best_F1_all.pth'))
+        net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 + 'CP_best_F1_A.pth'))
+        net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 + 'CP_best_F1_V.pth'))
+        net_G_4.eval()
+        net_G_A_4.eval()
+        net_G_V_4.eval()
+        net_G_4.to(device=device)
+        net_G_A_4.to(device=device)
+        net_G_V_4.to(device=device)
+        
+        net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 + 'CP_best_F1_all.pth'))
+        net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 + 'CP_best_F1_A.pth'))
+        net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 + 'CP_best_F1_V.pth'))
+        net_G_5.eval()
+        net_G_A_5.eval()
+        net_G_V_5.eval()
+        net_G_5.to(device=device)
+        net_G_A_5.to(device=device)
+        net_G_V_5.to(device=device)
+        
+        net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 + 'CP_best_F1_all.pth'))
+        net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 + 'CP_best_F1_A.pth'))
+        net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 + 'CP_best_F1_V.pth'))
+        net_G_6.eval()
+        net_G_A_6.eval()
+        net_G_V_6.eval()
+        net_G_6.to(device=device)
+        net_G_A_6.to(device=device)
+        net_G_V_6.to(device=device)
+        
+        net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 + 'CP_best_F1_all.pth'))
+        net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 + 'CP_best_F1_A.pth'))
+        net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 + 'CP_best_F1_V.pth'))
+        net_G_7.eval()
+        net_G_A_7.eval()
+        net_G_V_7.eval()
+        net_G_7.to(device=device)
+        net_G_A_7.to(device=device)
+        net_G_V_7.to(device=device)
+        
+        net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 + 'CP_best_F1_all.pth'))
+        net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 + 'CP_best_F1_A.pth'))
+        net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 + 'CP_best_F1_V.pth'))
+        net_G_8.eval()
+        net_G_A_8.eval()
+        net_G_V_8.eval()
+        net_G_8.to(device=device)
+        net_G_A_8.to(device=device)
+        net_G_V_8.to(device=device)
+        
+        if mode != 'vessel':
+            test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G_3, net_G_A_3, net_G_V_3, net_G_4, net_G_A_4, net_G_V_4, net_G_5, net_G_A_5, net_G_V_5, net_G_6, net_G_A_6, net_G_V_6, net_G_7, net_G_A_7, net_G_V_7, net_G_8, net_G_A_8, net_G_V_8, loader=test_loader, device=device, mode=mode,dataset=dataset_name)
 
 
-    FD_list_r,name_list,VD_list_r,FD_list_v,VD_list_b,width_cal_r,width_cal_b = filter_frag(data_path='../Results/M2/artery_vein/')
-    
-    
-    Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_artery':FD_list_r, 'Vessel_Density_artery':VD_list_r, 'Average_width_artery':width_cal_r})
-    Data4stage2.to_csv('../Results/M3/Artery_Features_Measurement.csv', index = None, encoding='utf8')
-    
-    Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_vein':FD_list_v, 'Vessel_Density_vein':VD_list_b, 'Average_width_vein':width_cal_b})
-    Data4stage2.to_csv('../Results/M3/Vein_Features_Measurement.csv', index = None, encoding='utf8')
+        FD_list_r,name_list,VD_list_r,FD_list_v,VD_list_b,width_cal_r,width_cal_b = filter_frag(data_path='../Results/M2/artery_vein/')
+        
+        
+        Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_artery':FD_list_r, 'Vessel_Density_artery':VD_list_r, 'Average_width_artery':width_cal_r})
+        Data4stage2.to_csv('../Results/M3/Artery_Features_Measurement.csv', index = None, encoding='utf8')
+        
+        Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_vein':FD_list_v, 'Vessel_Density_vein':VD_list_b, 'Average_width_vein':width_cal_b})
+        Data4stage2.to_csv('../Results/M3/Vein_Features_Measurement.csv', index = None, encoding='utf8')
 
