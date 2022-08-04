@@ -1,3 +1,4 @@
+from cv2 import threshold
 import numpy as np
 import os
 import cv2
@@ -10,10 +11,11 @@ def imread(file_path, c=None):
         im = cv2.imread(file_path, c)
 
     if im is None:
-        raise 'Can not read image'
+        print('Can not read image at filepath: {}'.format(file_path))
+        raise "error"
 
     if im.ndim == 3 and im.shape[2] == 3:
-        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB) #cv2 reads images in bgr format
     return im
 
 
@@ -39,7 +41,7 @@ def get_mask_BZ(img):
     #cv2.waitKey()
     #print(threhold)
     _, mask = cv2.threshold(gray_img, max(5,threhold), 1, cv2.THRESH_BINARY)
-    
+
     #cv2.imshow('bz_mask', mask*255)
     #cv2.waitKey()
     nn_mask = np.zeros((mask.shape[0]+2,mask.shape[1]+2),np.uint8)
@@ -73,8 +75,12 @@ def _get_radius_by_mask_center(mask,center):
     index=np.where(mask>0)
     d_int=np.sqrt((index[0]-center[0])**2+(index[1]-center[1])**2)
     b_count=np.bincount(np.ceil(d_int).astype(np.int))
-    radius=np.where(b_count>b_count.max()*0.995)[0].max()
-    return radius
+    if len(b_count) == 0: # if there are no unique values in the bin
+        radius = 0
+        return radius
+    else:
+        radius = np.where(b_count>b_count.max()*0.995)[0].max()
+        return radius
 
 
 def _get_circle_by_center_bbox(shape,center,bbox,radius):
@@ -111,6 +117,8 @@ def get_mask(img):
     #resize back
     #center = [center[0]*2,center[1]*2]
     #radius = int(radius*2)
+    if radius == 0: # if there is no radius then this cant work just return zeros
+        return tmp_mask, (0,0,0,0), [0,0], radius
     
     center = [center[0], center[1]]
     radius = int(radius)
@@ -162,6 +170,8 @@ def process_without_gb(img, label,radius_list,centre_list_w, centre_list_h):
     #   result_img: preprocessed image
     #   borders: remove border, supplement mask
     #   mask: mask for preprocessed image
+
+    #return null if image is all zeros
     borders = []
     mask, bbox, center, radius = get_mask(img)
     #print('center is: ',center)
@@ -180,5 +190,10 @@ def process_without_gb(img, label,radius_list,centre_list_w, centre_list_h):
     radius_list.append(radius)
     centre_list_w.append(int(center[0]))
     centre_list_h.append(int(center[1]))
+
+    # return input image in r_img is zero dimension
+    if len(r_img) == 0:
+        r_img = img
+
     return r_img,borders,(mask*255).astype(np.uint8),label, radius_list,centre_list_w, centre_list_h
 

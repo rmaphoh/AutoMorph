@@ -23,6 +23,9 @@ def create_resolution_information():
       f.writelines("{},1\n".format(x.split('/')[-1]) for x in images)  	
 
 def process(image_list, save_path):
+    """ Crops each image in the image list to create the smallest square that fits all retinal colored information and 
+    removes background retina pixels
+    """
     
     radius_list = []
     centre_list_w = []
@@ -51,8 +54,9 @@ def process(image_list, save_path):
             list_resolution.append(resolution_)
 
             img = prep.imread(dst_image)
-            r_img, borders, mask, r_img, radius_list,centre_list_w, centre_list_h = prep.process_without_gb(img,img,radius_list,centre_list_w, centre_list_h)
-            prep.imwrite(save_path + image_path.split('.')[0] + '.png', r_img)
+            r_img, borders, mask, label, radius_list,centre_list_w, centre_list_h = prep.process_without_gb(img,img,radius_list,centre_list_w, centre_list_h)
+            if not gv.sparse:
+                prep.imwrite(save_path + image_path.split('.')[0] + '.png', r_img)
             #prep.imwrite('../Results/M0/images/' + image_path.split('.')[0] + '.png', mask)
         except IndexError:
             print("\nThe file {} has not been added to the resolution_information.csv found at {}\n\

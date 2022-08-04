@@ -53,7 +53,7 @@ def test_net(model_fl_1,
     n_classes = args.n_class
     # create files
 
-    dataset = BasicDataset_OUT(test_dir, image_size, n_classes, train_or=False)
+    dataset = BasicDataset_OUT(test_dir, image_size, n_classes, train_or=False, crop_csv=gv.results_dir+'M0/crop_info.csv')
         
     n_test = len(dataset)
     val_loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=gv.worker, pin_memory=False, drop_last=False)
@@ -186,7 +186,7 @@ class M1_get_args():
     epochs = 1
     batchsize = gv.batch_size
     load = "EyePACS_quality" 
-    test_dir = '{}M0/images/'.format(gv.results_dir)
+    test_dir = (gv.image_dir)
     n_class = 3
     dataset = "customised_data"
     task = "Retinal_quality"

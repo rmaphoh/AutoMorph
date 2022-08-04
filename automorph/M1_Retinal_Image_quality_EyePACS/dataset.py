@@ -91,15 +91,18 @@ class BasicDataset(Dataset):
 
 class BasicDataset_OUT(Dataset):
     'Characterizes a dataset for PyTorch'
-    def __init__(self, image_dir, image_size, n_classes, train_or):
+    def __init__(self, image_dir, image_size, n_classes, train_or, crop_csv):
         'Initialization'
         self.image_size = image_size
         self.image_dir = image_dir
         self.n_classes = n_classes
         self.train_or = train_or
-        
+        self.crop_csv = crop_csv
         self.ids = [splitext(file)[0] for file in sorted(listdir(image_dir))
                     if not file.startswith('.')]
+
+        # create the dataset by accessing the crop info and loading the 
+
         logging.info(f'Creating dataset with {len(self.ids)} examples')
 
         
@@ -108,8 +111,23 @@ class BasicDataset_OUT(Dataset):
         return len(self.ids)
 
     @classmethod
-    def preprocess(self, pil_img, img_size, train_or,index):
+    def preprocess(self, pil_img, img_size, train_or, idx, crop_csv):
         #w, h = pil_img.size
+
+        # crop the image based on the pre-poc csv at M0
+        df = pd.read_csv(crop_csv)
+        print(idx)
+        row = df[df['Name'] == str(idx)+'.png']
+        
+        c_w = row['centre_w']
+        c_h = row['centre_h']
+        r = row['radius']
+        w_min, w_max = int(c_w-r), int(c_w+r) 
+        h_min, h_max = int(c_h-r), int(c_h+r)
+        
+        pil_img = pil_img.crop((h_min, w_min, h_max, w_max))
+        pil_img.save("/data/anand/test_cropped.png")
+
         newW, newH = img_size[0], img_size[1]
         assert newW > 0 and newH > 0, 'Scale is too small'
         pil_img = pil_img.resize((newW, newH))
@@ -127,14 +145,14 @@ class BasicDataset_OUT(Dataset):
         img_array = img_array.transpose((2, 0, 1))
         
         return img_array
-        
+
     def __getitem__(self, index):
         'Generates one sample of data'
         # Select sample
         idx = self.ids[index]
         img_file = glob(self.image_dir + idx + '.*')
         image = Image.open(img_file[0])
-        image_processed = self.preprocess(image, self.image_size, self.train_or, index)
+        image_processed = self.preprocess(image, self.image_size, self.train_or, idx, self.crop_csv)
  
         return {
             'img_file': img_file,
