@@ -108,73 +108,21 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
     if not os.path.exists(macular_binary_result_path):
         os.makedirs(macular_binary_result_path)
     
-    if not os.path.exists(B_optic_process_binary_vessel_path):
-        os.makedirs(B_optic_process_binary_vessel_path)
-    if not os.path.exists(B_optic_process_artery_path):
-        os.makedirs(B_optic_process_artery_path)
-    if not os.path.exists(B_optic_process_vein_path):
-        os.makedirs(B_optic_process_vein_path)
-    if not os.path.exists(B_optic_skeleton_binary_vessel_path):
-        os.makedirs(B_optic_skeleton_binary_vessel_path)
-    if not os.path.exists(B_optic_skeleton_artery_path):
-        os.makedirs(B_optic_skeleton_artery_path)
-    if not os.path.exists(B_optic_skeleton_vein_path):
-        os.makedirs(B_optic_skeleton_vein_path)
-
-    if not os.path.exists(C_optic_process_binary_vessel_path):
-        os.makedirs(C_optic_process_binary_vessel_path)
-    if not os.path.exists(C_optic_process_artery_path):
-        os.makedirs(C_optic_process_artery_path)
-    if not os.path.exists(C_optic_process_vein_path):
-        os.makedirs(C_optic_process_vein_path)
-    if not os.path.exists(C_optic_skeleton_binary_vessel_path):
-        os.makedirs(C_optic_skeleton_binary_vessel_path)
-    if not os.path.exists(C_optic_skeleton_artery_path):
-        os.makedirs(C_optic_skeleton_artery_path)
-    if not os.path.exists(C_optic_skeleton_vein_path):
-        os.makedirs(C_optic_skeleton_vein_path)
-        
-        
-    if not os.path.exists(macular_process_binary_vessel_path):
-        os.makedirs(macular_process_binary_vessel_path)
-    if not os.path.exists(macular_process_artery_path):
-        os.makedirs(macular_process_artery_path)
-    if not os.path.exists(macular_process_vein_path):
-        os.makedirs(macular_process_vein_path)
-    if not os.path.exists(macular_skeleton_binary_vessel_path):
-        os.makedirs(macular_skeleton_binary_vessel_path)
-    if not os.path.exists(macular_skeleton_artery_path):
-        os.makedirs(macular_skeleton_artery_path)
-    if not os.path.exists(macular_skeleton_vein_path):
-        os.makedirs(macular_skeleton_vein_path)
+    dirs = [B_optic_process_binary_vessel_path, B_optic_process_artery_path, B_optic_process_vein_path,
+            B_optic_skeleton_binary_vessel_path, B_optic_skeleton_artery_path, B_optic_skeleton_vein_path,
+            C_optic_process_binary_vessel_path, C_optic_process_artery_path, C_optic_process_vein_path, 
+            C_optic_skeleton_binary_vessel_path, C_optic_skeleton_artery_path, C_optic_skeleton_vein_path,
+            macular_process_binary_vessel_path, macular_process_artery_path, macular_process_vein_path, 
+            macular_skeleton_binary_vessel_path, macular_skeleton_artery_path, macular_skeleton_vein_path,
+            zone_b_macular_process_binary_vessel_path, zone_b_macular_process_artery_path, zone_b_macular_process_vein_path,
+            zone_b_macular_skeleton_artery_path, zone_b_macular_skeleton_vein_path,
+            zone_c_macular_process_binary_vessel_path, zone_c_macular_process_artery_path,zone_c_macular_process_vein_path,
+            zone_c_macular_skeleton_artery_path, zone_c_macular_skeleton_vein_path]
     
-
-    if not os.path.exists(zone_b_macular_process_binary_vessel_path):
-        os.makedirs(zone_b_macular_process_binary_vessel_path)
-    if not os.path.exists(zone_b_macular_process_artery_path):
-        os.makedirs(zone_b_macular_process_artery_path)
-    if not os.path.exists(zone_b_macular_process_vein_path):
-        os.makedirs(zone_b_macular_process_vein_path)
-    if not os.path.exists(zone_b_macular_skeleton_binary_vessel_path):
-        os.makedirs(zone_b_macular_skeleton_binary_vessel_path)
-    if not os.path.exists(zone_b_macular_skeleton_artery_path):
-        os.makedirs(zone_b_macular_skeleton_artery_path)
-    if not os.path.exists(zone_b_macular_skeleton_vein_path):
-        os.makedirs(zone_b_macular_skeleton_vein_path)
-        
-    if not os.path.exists(zone_c_macular_process_binary_vessel_path):
-        os.makedirs(zone_c_macular_process_binary_vessel_path)
-    if not os.path.exists(zone_c_macular_process_artery_path):
-        os.makedirs(zone_c_macular_process_artery_path)
-    if not os.path.exists(zone_c_macular_process_vein_path):
-        os.makedirs(zone_c_macular_process_vein_path)
-    if not os.path.exists(zone_c_macular_skeleton_binary_vessel_path):
-        os.makedirs(zone_c_macular_skeleton_binary_vessel_path)
-    if not os.path.exists(zone_c_macular_skeleton_artery_path):
-        os.makedirs(zone_c_macular_skeleton_artery_path)
-    if not os.path.exists(zone_c_macular_skeleton_vein_path):
-        os.makedirs(zone_c_macular_skeleton_vein_path)
-        
+    for d in dirs:
+        if not os.path.exists(d):
+            os.makedirs(d)
+       
     optic_vertical_CDR,optic_vertical_disc,optic_vertical_cup = [],[],[]
     optic_horizontal_CDR,optic_horizontal_disc,optic_horizontal_cup = [],[],[]
     
