@@ -24,8 +24,8 @@ if __name__ == "__main__":
 
     # M2 stages
 #    M2_VS.M2_vessel_seg()
-    M2_AV.M2_artery_vein()
-#    M2_DC.M2_disc_cup()
+#    M2_AV.M2_artery_vein()
+    M2_DC.M2_disc_cup()
 
     # M3 stages
 #    CDDCB.create_data_disc_centred_B()

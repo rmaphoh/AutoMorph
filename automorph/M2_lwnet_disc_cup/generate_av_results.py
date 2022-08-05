@@ -439,23 +439,22 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
 
     n_val = len(test_loader)
     
-    seg_results_small_path = '{}M2/optic_disc_cup/resized/'.format(gv.results_dir)
     seg_results_raw_path = '{}M2/optic_disc_cup/raw/'.format(gv.results_dir)
-    
-    if not os.path.isdir(seg_results_small_path):
-        os.makedirs(seg_results_small_path)
-
     if not os.path.isdir(seg_results_raw_path):
         os.makedirs(seg_results_raw_path)
 
-    seg_uncertainty_small_path = '{}M2/optic_disc_cup/resize_uncertainty/'.format(gv.results_dir)        
-    if not os.path.isdir(seg_uncertainty_small_path):
-        os.makedirs(seg_uncertainty_small_path)
+    if not gv.ukb:
+        seg_results_small_path = '{}M2/optic_disc_cup/resized/'.format(gv.results_dir)
+        if not os.path.isdir(seg_results_small_path):
+            os.makedirs(seg_results_small_path)
+
+        seg_uncertainty_small_path = '{}M2/optic_disc_cup/resize_uncertainty/'.format(gv.results_dir)        
+        if not os.path.isdir(seg_uncertainty_small_path):
+            os.makedirs(seg_uncertainty_small_path)
     
-    seg_uncertainty_raw_path = '{}M2/optic_disc_cup/raw_uncertainty/'.format(gv.results_dir)
-    
-    if not os.path.isdir(seg_uncertainty_raw_path):
-        os.makedirs(seg_uncertainty_raw_path)
+        seg_uncertainty_raw_path = '{}M2/optic_disc_cup/raw_uncertainty/'.format(gv.results_dir)
+        if not os.path.isdir(seg_uncertainty_raw_path):
+            os.makedirs(seg_uncertainty_raw_path)
         
     
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
@@ -536,14 +535,15 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
                 
                 for i in range(n_img):
                     
-                    save_image(uncertainty_map[i,...]*255, seg_uncertainty_small_path+img_name[i]+'.png')
-                    save_image(uncertainty_map[i,1,...]*255, seg_uncertainty_small_path+img_name[i]+'_disc.png')
-                    save_image(uncertainty_map[i,2,...]*255, seg_uncertainty_small_path+img_name[i]+'_cup.png')
+                    if not gv.ukb:
+                        save_image(uncertainty_map[i,...]*255, seg_uncertainty_small_path+img_name[i]+'.png')
+                        save_image(uncertainty_map[i,1,...]*255, seg_uncertainty_small_path+img_name[i]+'_disc.png')
+                        save_image(uncertainty_map[i,2,...]*255, seg_uncertainty_small_path+img_name[i]+'_cup.png')
                     
-                    uncertainty_img = Image.open(seg_uncertainty_small_path+img_name[i]+'.png')
-                    uncertainty_img = uncertainty_img.resize((int(ori_width[i]),int(ori_height[i])))
-                    uncertainty_tensor = torchvision.transforms.ToTensor()(uncertainty_img)
-                    save_image(uncertainty_tensor, seg_uncertainty_raw_path+img_name[i]+'.png')
+                        uncertainty_img = Image.open(seg_uncertainty_small_path+img_name[i]+'.png')
+                        uncertainty_img = uncertainty_img.resize((int(ori_width[i]),int(ori_height[i])))
+                        uncertainty_tensor = torchvision.transforms.ToTensor()(uncertainty_img)
+                        save_image(uncertainty_tensor, seg_uncertainty_raw_path+img_name[i]+'.png')
                     
                     img_r = np.zeros((prediction_decode[i,...].shape[0],prediction_decode[i,...].shape[1]))
                     img_g = np.zeros((prediction_decode[i,...].shape[0],prediction_decode[i,...].shape[1]))
@@ -559,12 +559,11 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
 
                     img_ = np.concatenate((img_b[...,np.newaxis], img_g[...,np.newaxis], img_r[...,np.newaxis]), axis=2)
                     
-                    cv2.imwrite(seg_results_small_path+ img_name[i]+ '.png', np.float32(img_)*255)
+                    if not gv.ukb:
+                        cv2.imwrite(seg_results_small_path+ img_name[i]+ '.png', np.float32(img_)*255)
                     
                     img_ww = cv2.resize(np.float32(img_)*255, (int(ori_width[i]),int(ori_height[i])), interpolation = cv2.INTER_NEAREST)
                     cv2.imwrite(seg_results_raw_path+ img_name[i]+ '.png', img_ww)
-                
-                
                 
                 pbar.update(imgs.shape[0])
                 
@@ -616,9 +615,9 @@ def M2_disc_cup():
         sys.exit('im_size should be a number or a tuple of two numbers')
 
     data_path = '{}M1/Good_quality/'.format(results_path)
+    crop_csv = '{}M1/Good_quality/image_list.csv'.format(results_path)
 
-    csv_path = 'test_all.csv'
-    test_loader = get_test_dataset(data_path, csv_path=csv_path, tg_size=tg_size, batch_size=args.batch_size, num_workers=args.num_workers)
+    test_loader = get_test_dataset(data_path, crop_csv, tg_size=tg_size, batch_size=args.batch_size, num_workers=args.num_workers)
     
     model_1 = get_arch(model_name, n_classes=3).to(device)
     model_2 = get_arch(model_name, n_classes=3).to(device)
@@ -665,9 +664,10 @@ def M2_disc_cup():
 
     prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader, device)
     
-    result_path = '{}M2/optic_disc_cup/resized/'.format(args.results_path)
-    binary_vessel_path = '{}M2/binary_vessel/'.format(args.results_path)
-    artery_vein_path = '{}M2/artery_vein/'.format(args.results_path)
-    
-    optic_disc_centre(result_path,binary_vessel_path, artery_vein_path)
+    if not gv.ukb:
+
+        result_path = '{}M2/optic_disc_cup/resized/'.format(args.results_path)
+        binary_vessel_path = '{}M2/binary_vessel/'.format(args.results_path)
+        artery_vein_path = '{}M2/artery_vein/'.format(args.results_path)
+        optic_disc_centre(result_path,binary_vessel_path, artery_vein_path)
     

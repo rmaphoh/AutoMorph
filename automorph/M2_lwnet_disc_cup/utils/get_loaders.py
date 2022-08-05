@@ -78,18 +78,14 @@ class TrainDataset(Dataset):
         return len(self.ids)
 
 class TestDataset(Dataset):
-    def __init__(self, csv_path, tg_size):
+    def __init__(self, crop_csv, csv_path, tg_size):
         
         self.im_list = csv_path
-        #self.gt_list = csv_path + '1st_manual/'
-        #self.mask_list = df.mask_paths
-        #self.transforms = transforms
-        #self.label_values = label_values  # for use in label_encoding
-        
-        self.ids = [splitext(file)[0] for file in listdir(self.im_list)
-                    if not file.startswith('.')]
-        logging.info(f'Creating dataset with {(self.ids)} ')
-        logging.info(f'Creating dataset with {len(self.ids)} examples')
+        self.crop_csv = crop_csv
+        fps = pd.read_csv(crop_csv, usecols=['Name']).values.ravel()
+        self.file_paths = fps
+        logging.info(f'Creating dataset with {(self.file_paths)} ')
+        logging.info(f'Creating dataset with {len(self.file_paths)} examples')
         
         #self.mask_list = df.mask_paths
         self.tg_size = tg_size
@@ -100,12 +96,38 @@ class TestDataset(Dataset):
         im_crop = Image.fromarray(np.array(img)[minr:maxr, minc:maxc])
         return im_crop, [minr, minc, maxr, maxc]
 
+    @classmethod
+    def crop_img(self, crop_csv, f_path, pil_img):
+        """ Code to crop the input image based on the crops stored in a csv. This is done to save space and having to store intermediate cropped
+        files.
+        Params:
+        crop_csv - csv containing the name with filepath stored at gv.image_dir, and crop info
+        f_path - str containing the filepath to the image
+        pil_img - PIL Image of the above f_path
+        Returns:
+        pil_img - PIL Image cropped by the data in the csv
+        """ 
+
+        df = pd.read_csv(crop_csv)
+        row = df[df['Name'] == f_path]
+        
+        c_w = row['centre_w']
+        c_h = row['centre_h']
+        r = row['radius']
+        w_min, w_max = int(c_w-r), int(c_w+r) 
+        h_min, h_max = int(c_h-r), int(c_h+r)
+        
+        pil_img = pil_img.crop((h_min, w_min, h_max, w_max))
+
+        return pil_img
+ 
+
     def __getitem__(self, index):
         # # load image and mask
-        idx = self.ids[index]
+        img_file = self.file_paths[index]
 
-        img_file = glob(self.im_list + idx + '.*')  
-        img = Image.open(img_file[0])
+        img = Image.open(img_file)
+        img = self.crop_img(self.crop_csv, img_file, img)
         
         #mask = Image.open(self.mask_list[index]).convert('L')
         #img, coords_crop = self.crop_to_fov(img, mask)
@@ -124,13 +146,13 @@ class TestDataset(Dataset):
         img = tr(img)  # only transform image
 
         return {
-            'name': idx,
+            'name': img_file.split('/')[-1].split('.')[0],
             'image': img,
             'original_sz': original_sz
         }
 
     def __len__(self):
-        return len(self.ids)
+        return len(self.file_paths)
 
     
 
@@ -215,11 +237,11 @@ def get_train_val_loaders(csv_path_train, csv_path_val, seed_num, batch_size=4, 
     val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, num_workers=num_workers, pin_memory=torch.cuda.is_available())
     return train_loader, val_loader
 
-def get_test_dataset(data_path, csv_path='test.csv', tg_size=(512, 512), batch_size=1, num_workers=1):
+def get_test_dataset(data_path, crop_csv, csv_path='test.csv', tg_size=(512, 512), batch_size=1, num_workers=1):
     # csv_path will only not be test.csv when we want to build training set predictions
     #path_test_csv = osp.join(data_path, csv_path)
     path_test_csv = data_path
-    test_dataset = TestDataset(csv_path=path_test_csv, tg_size=tg_size)
+    test_dataset = TestDataset(crop_csv, csv_path=path_test_csv, tg_size=tg_size)
     test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, num_workers=num_workers, pin_memory=False)
 
     return test_loader
