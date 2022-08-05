@@ -78,7 +78,7 @@ def test_net(model_fl_1,
         with tqdm(total=n_test, desc=f'Epoch {epoch + 1}/{epochs}', unit='img') as pbar:
             for batch in val_loader:
                 imgs = batch['image']
-                filename = batch['img_file'][0]
+                filename = batch['img_file']
                 mask_pred_tensor_small_all = 0
                 imgs = imgs.to(device=device, dtype=torch.float32)
                 ##################sigmoid or softmax

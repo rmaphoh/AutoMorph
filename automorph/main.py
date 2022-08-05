@@ -9,6 +9,7 @@ import M3_feature_zone.retipy.create_datasets_disc_centred_B as CDDCB
 import M3_feature_zone.retipy.create_datasets_disc_centred_C as CDDCC
 import M3_feature_zone.retipy.create_datasets_macular_centred_B as CDMCB
 import M3_feature_zone.retipy.create_datasets_macular_centred_C as CDMCC
+import cleanup
 
    
 if __name__ == "__main__":
@@ -22,13 +23,16 @@ if __name__ == "__main__":
     M1_QA.quality_assessment()
 
     # M2 stages
-    M2_VS.M2_vessel_seg()
-    M2_AV.M2_artery_vein()
-    M2_DC.M2_disc_cup()
+#    M2_VS.M2_vessel_seg()
+#    M2_AV.M2_artery_vein()
+#    M2_DC.M2_disc_cup()
 
     # M3 stages
-    CDDCB.create_data_disc_centred_B()
-    CDDCC.create_data_disc_centred_C()
-    CDMCB.create_macular_centred_B()
-    CDMCC.create_macular_centred_C() 
-    CDMC.create_dataset_macular_centred()
+#    CDDCB.create_data_disc_centred_B()
+#    CDDCC.create_data_disc_centred_C()
+#    CDMCB.create_macular_centred_B()
+#    CDMCC.create_macular_centred_C() 
+#    CDMC.create_dataset_macular_centred()
+
+    # cleanup just for azure-run
+#    cleanup.cleanup()

@@ -1,6 +1,9 @@
-image_dir = "/tmp/images/" #"/data/ukbiobank/blobs/fundus/data/"
-results_dir= "/tmp/results/" #"/data/anand/Automorph_data/biobank_results/"
+image_dir = "/data/anand/Automorph_data/test/images/" #"/data/ukbiobank/blobs/fundus/data/"
+results_dir= "/data/anand/Automorph_data/test/results/" #"/data/anand/Automorph_data/biobank_results/"
+#image_dir =  "/eyeact2/Prospective Data/Maestro_OCT2/"
+#results_dir = "/eyeact-automorph2/"
 worker = 0
-sample_num = 1 #Put False if you do not want to sample
-device = "cpu" #can specify cuda:0  or cuda or CPU
+sample_num = False #Put False if you do not want to sample
+device = "cuda" #can specify cuda:0  or cuda or CPU
 batch_size = 3
+sparse=True

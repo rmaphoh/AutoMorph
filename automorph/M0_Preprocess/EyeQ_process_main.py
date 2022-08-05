@@ -64,7 +64,7 @@ def process(image_list, save_path):
                        image_path, resolution_csv_path))
             exit(1)
 
-        name_list.append(image_path.split('.')[0] + '.png')
+        name_list.append(gv.image_dir+image_path)
         
 
     scale_list = [a*2/912 for a in radius_list]

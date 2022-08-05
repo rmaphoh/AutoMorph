@@ -56,23 +56,23 @@ def lambda_handler(event,context):
     M1_EP.M1_image_quality()
     M1_QA.quality_assessment()
 
-#    #M2 stages
-#    logger.info("starting_vessel_seg")
-#    M2_VS.M2_vessel_seg()
-#    logger.info("starting AV seg")
-#    M2_AV.M2_artery_vein()
-#    logger.info("starting disc cup seg")
-#    M2_DC.M2_disc_cup()
-#
-#    CDDCB.create_data_disc_centred_B()
-#
-#    CDDCC.create_data_disc_centred_C()
-#
-#    CDMCB.create_macular_centred_B()
-#
-#    CDMCC.create_macular_centred_C() 
-#
-#    CDMC.create_dataset_macular_centred()
+    #M2 stages
+    logger.info("starting_vessel_seg")
+    M2_VS.M2_vessel_seg()
+    logger.info("starting AV seg")
+    M2_AV.M2_artery_vein()
+    logger.info("starting disc cup seg")
+    M2_DC.M2_disc_cup()
+
+    CDDCB.create_data_disc_centred_B()
+
+    CDDCC.create_data_disc_centred_C()
+
+    CDMCB.create_macular_centred_B()
+
+    CDMCC.create_macular_centred_C() 
+
+    CDMC.create_dataset_macular_centred()
     logger.info("finished pipeline")
 
     logger.info("copying files")
@@ -81,9 +81,11 @@ def lambda_handler(event,context):
     sub_dir = tmpkey.split('.png')[0]
 
     for root, dir, files in os.walk(gv.results_dir):
+       logger.info("Root: {}, dir {}, files {}".format(root, dir, files))
        for f in files:
             png = os.path.join(root, f)
             id = os.path.join(sub_dir, root.split(gv.results_dir)[-1], f) # need to change for lee lab install
+            logger.info("printing at {}".format(id))
             s3.upload_file(png, output_bucket, id)
 
     return {

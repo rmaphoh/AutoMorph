@@ -4,7 +4,7 @@ Description:
   "Cloud stack with a lambda function that runs AutoMorph images uploaded into an s3 bucket"
 Globals:
   Function:
-    Timeout: 240
+    Timeout: 900
     MemorySize: 3008 
   Api:
     OpenApiVersion: 3.0.1
@@ -28,7 +28,8 @@ Resources:
 #        BucketEvent1:
 #          Type: S3
 #          Properties:
-#            SourceArn: 'arn:aws:s3:::automorph-lambda-buckets'
+#            Bucket:
+#              !Ref SourceBucket
 #            Events:
 #              - 's3:ObjectCreated:*' 
       Policies:
@@ -36,4 +37,4 @@ Resources:
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./
-      DockerTag: image_automorph-v1
+      DockerTag: image_automorph-v2

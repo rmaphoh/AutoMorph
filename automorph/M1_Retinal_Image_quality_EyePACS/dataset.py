@@ -98,26 +98,25 @@ class BasicDataset_OUT(Dataset):
         self.n_classes = n_classes
         self.train_or = train_or
         self.crop_csv = crop_csv
-        self.ids = [splitext(file)[0] for file in sorted(listdir(image_dir))
-                    if not file.startswith('.')]
+        fps = pd.read_csv(crop_csv, usecols=['Name']).values.flatten()
+        self.file_paths = fps
 
         # create the dataset by accessing the crop info and loading the 
 
-        logging.info(f'Creating dataset with {len(self.ids)} examples')
+        logging.info(f'Creating dataset with {len(self.file_paths)} examples')
 
         
     def __len__(self):
         'Denotes the total number of samples'
-        return len(self.ids)
+        return len(self.file_paths)
 
     @classmethod
-    def preprocess(self, pil_img, img_size, train_or, idx, crop_csv):
+    def preprocess(self, pil_img, img_size, train_or, img_path, crop_csv):
         #w, h = pil_img.size
 
         # crop the image based on the pre-poc csv at M0
         df = pd.read_csv(crop_csv)
-        print(idx)
-        row = df[df['Name'] == str(idx)+'.png']
+        row = df[df['Name'] == img_path]
         
         c_w = row['centre_w']
         c_h = row['centre_h']
@@ -126,7 +125,7 @@ class BasicDataset_OUT(Dataset):
         h_min, h_max = int(c_h-r), int(c_h+r)
         
         pil_img = pil_img.crop((h_min, w_min, h_max, w_max))
-        pil_img.save("/data/anand/test_cropped.png")
+        #pil_img.save("/data/anand/test_cropped.png") #TODO remove
 
         newW, newH = img_size[0], img_size[1]
         assert newW > 0 and newH > 0, 'Scale is too small'
@@ -136,7 +135,6 @@ class BasicDataset_OUT(Dataset):
         mean_value=np.mean(img_array[img_array > 0])
         std_value=np.std(img_array[img_array > 0])
         img_array=(img_array-mean_value)/std_value
-        #print(np.unique(img_array))
         
         if len(img_array.shape) == 2:
             img_array = np.expand_dims(img_array, axis=2)
@@ -149,10 +147,9 @@ class BasicDataset_OUT(Dataset):
     def __getitem__(self, index):
         'Generates one sample of data'
         # Select sample
-        idx = self.ids[index]
-        img_file = glob(self.image_dir + idx + '.*')
-        image = Image.open(img_file[0])
-        image_processed = self.preprocess(image, self.image_size, self.train_or, idx, self.crop_csv)
+        img_file = self.file_paths[index]
+        image = Image.open(img_file)
+        image_processed = self.preprocess(image, self.image_size, self.train_or, img_file, self.crop_csv)
  
         return {
             'img_file': img_file,
