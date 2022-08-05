@@ -7,3 +7,4 @@ sample_num = False #Put False if you do not want to sample
 device = "cuda" #can specify cuda:0  or cuda or CPU
 batch_size = 3
 sparse=True
+ukb=True # parameter to only run UKB data
