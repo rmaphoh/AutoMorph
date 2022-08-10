@@ -151,12 +151,13 @@ class LearningAVSegData(Dataset):
     
     
     
+import automorph.config as cfg
 
-    
-    
+   
     
 class LearningAVSegData_OOD(Dataset):
     def __init__(self, imgs_dir, label_dir,  mask_dir, img_size, dataset_name, crop_csv, train_or=True, mask_suffix=''):
+
         self.imgs_dir = imgs_dir
         self.label_dir = label_dir
         self.mask_dir = mask_dir
@@ -249,9 +250,8 @@ class LearningAVSegData_OOD(Dataset):
         f_path = self.file_paths[i] 
 
         img = Image.open(f_path)
-        ori_width, ori_height = img.size
         img = self.crop_img(self.crop_csv, f_path, img)
-
+        ori_width, ori_height = img.size
         img = img.resize(self.img_size)
 
         img= self.preprocess(img, self.dataset_name, self.img_size, self.train_or)
@@ -263,3 +263,7 @@ class LearningAVSegData_OOD(Dataset):
             'image': torch.from_numpy(img).type(torch.FloatTensor)
         }
 
+#ds = LearningAVSegData_OOD(cfg.image_dir, '', '', [512,512], 'poop', cfg.results_dir+"M1/Good_quality/image_list.csv")    
+#ds.__getitem__(0)
+
+ 

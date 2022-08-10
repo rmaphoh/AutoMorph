@@ -124,7 +124,6 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
             os.makedirs(seg_uncertainty_raw_path)
         
         
-    
         
     with tqdm(total=n_val, desc='Validation round', unit='batch', leave=False) as pbar:
         for batch in loader:
