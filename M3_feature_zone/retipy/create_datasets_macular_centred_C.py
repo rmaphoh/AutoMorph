@@ -34,15 +34,14 @@ import pandas as pd
 from retipy import configuration, retina, tortuosity_measures
 
 
-if os.path.exists('../../Results/M2/artery_vein/artery_binary_skeleton/.ipynb_checkpoints'):
-    shutil.rmtree('../../Results/M2/artery_vein/artery_binary_skeleton/.ipynb_checkpoints') 
-if os.path.exists('../../Results/M2/binary_vessel/binary_skeleton/.ipynb_checkpoints'):
-    shutil.rmtree('../../Results/M2/binary_vessel/binary_skeleton/.ipynb_checkpoints') 
-if os.path.exists('../../Results/M2/artery_vein/vein_binary_skeleton/.ipynb_checkpoints'):
-    shutil.rmtree('../../Results/M2/artery_vein/vein_binary_skeleton/.ipynb_checkpoints')
+if os.path.exists('../../Results/M2/artery_vein/macular_Zone_C_centred_artery_skeleton/.ipynb_checkpoints'):
+    shutil.rmtree('../../Results/M2/artery_vein/macular_Zone_C_centred_artery_skeleton/.ipynb_checkpoints') 
+if os.path.exists('../../Results/M2/binary_vessel/macular_Zone_C_centred_vein_skeleton/.ipynb_checkpoints'):
+    shutil.rmtree('../../Results/M2/binary_vessel/macular_Zone_C_centred_vein_skeleton/.ipynb_checkpoints') 
+if os.path.exists('../../Results/M2/artery_vein/macular_Zone_C_centred_binary_skeleton/.ipynb_checkpoints'):
+    shutil.rmtree('../../Results/M2/artery_vein/macular_Zone_C_centred_binary_skeleton/.ipynb_checkpoints')
 if not os.path.exists('../../Results/M3/Macular_centred/Width/'):
     os.makedirs('../../Results/M3/Macular_centred/Width/')
-
 #if os.path.exists('./DDR/av_seg/raw/.ipynb_checkpoints'):
 #    shutil.rmtree('./DDR/av_seg/raw/.ipynb_checkpoints') 
 

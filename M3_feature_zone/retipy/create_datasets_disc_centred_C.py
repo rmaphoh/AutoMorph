@@ -34,12 +34,12 @@ import pandas as pd
 from retipy import configuration, retina, tortuosity_measures
 
 
-if os.path.exists('../../Results/M2/artery_vein/Zone_B_disc_centred_artery_skeleton/.ipynb_checkpoints'):
-    shutil.rmtree('../../Results/M2/artery_vein/Zone_B_disc_centred_artery_skeleton/.ipynb_checkpoints') 
-if os.path.exists('../../Results/M2/binary_vessel/Zone_B_disc_centred_binary_skeleton/.ipynb_checkpoints'):
-    shutil.rmtree('../../Results/M2/binary_vessel/Zone_B_disc_centred_binary_skeleton/.ipynb_checkpoints') 
-if os.path.exists('../../Results/M2/artery_vein/Zone_B_disc_centred_vein_skeleton/.ipynb_checkpoints'):
-    shutil.rmtree('../../Results/M2/artery_vein/Zone_B_disc_centred_vein_skeleton/.ipynb_checkpoints')
+if os.path.exists('../../Results/M2/artery_vein/Zone_C_disc_centred_artery_skeleton/.ipynb_checkpoints'):
+    shutil.rmtree('../../Results/M2/artery_vein/Zone_C_disc_centred_artery_skeleton/.ipynb_checkpoints') 
+if os.path.exists('../../Results/M2/binary_vessel/Zone_C_disc_centred_binary_skeleton/.ipynb_checkpoints'):
+    shutil.rmtree('../../Results/M2/binary_vessel/Zone_C_disc_centred_binary_skeleton/.ipynb_checkpoints') 
+if os.path.exists('../../Results/M2/artery_vein/Zone_C_disc_centred_vein_skeleton/.ipynb_checkpoints'):
+    shutil.rmtree('../../Results/M2/artery_vein/Zone_C_disc_centred_vein_skeleton/.ipynb_checkpoints')
 if not os.path.exists('../../Results/M3/Disc_centred/Width/'):
     os.makedirs('../../Results/M3/Disc_centred/Width/')
 
@@ -69,19 +69,19 @@ CRVE_Knudtson_list = []
 AVR_Knudtson_list = []
 name_list = []
 
-Artery_PATH = '../../Results/M2/artery_vein/Zone_B_disc_centred_artery_skeleton'
-Vein_PATH = '../../Results/M2/artery_vein/Zone_B_disc_centred_vein_skeleton'
-Binary_PATH = '../../Results/M2/binary_vessel/Zone_B_disc_centred_binary_skeleton'
+Artery_PATH = '../../Results/M2/artery_vein/Zone_C_disc_centred_artery_skeleton'
+Vein_PATH = '../../Results/M2/artery_vein/Zone_C_disc_centred_vein_skeleton'
+Binary_PATH = '../../Results/M2/binary_vessel/Zone_C_disc_centred_binary_skeleton'
 
 for filename in sorted(glob.glob(os.path.join(Binary_PATH, '*.png'))):
-    segmentedImage = retina.Retina(None, filename, store_path='../../Results/M2/binary_vessel/Zone_B_disc_centred_binary_process')
+    segmentedImage = retina.Retina(None, filename, store_path='../../Results/M2/binary_vessel/Zone_C_disc_centred_binary_process')
     #segmentedImage.threshold_image()
     #segmentedImage.reshape_square()
     #window_sizes = segmentedImage.get_window_sizes()
     window_sizes = [912]
     window = retina.Window(
         segmentedImage, window_sizes[-1], min_pixels=CONFIG.pixels_per_window)
-    FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average, _, _,_,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='../../Results/M2/binary_vessel/Zone_B_disc_centred_binary_process/')
+    FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average, _, _,_,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='../../Results/M2/binary_vessel/Zone_C_disc_centred_binary_process/')
     #print(window.tags)
     binary_t2_list.append(t2)
     binary_t4_list.append(t4)
@@ -97,11 +97,11 @@ for filename in sorted(glob.glob(os.path.join(Binary_PATH, '*.png'))):
 
 for filename in sorted(glob.glob(os.path.join(Artery_PATH, '*.png'))):
 
-    segmentedImage = retina.Retina(None, filename,store_path='../../Results/M2/artery_vein/Zone_B_disc_centred_artery_process')
+    segmentedImage = retina.Retina(None, filename,store_path='../../Results/M2/artery_vein/Zone_C_disc_centred_artery_process')
     window_sizes = [912]
     window = retina.Window(
         segmentedImage, window_sizes[-1], min_pixels=CONFIG.pixels_per_window)
-    FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,CRAE_Hubbard, _,CRAE_Knudtson,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='../../Results/M2/artery_vein/Zone_B_disc_centred_artery_process/')
+    FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,CRAE_Hubbard, _,CRAE_Knudtson,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='../../Results/M2/artery_vein/Zone_C_disc_centred_artery_process/')
     #print(window.tags)
     artery_t2_list.append(t2)
     artery_t4_list.append(t4)
@@ -120,14 +120,14 @@ for filename in sorted(glob.glob(os.path.join(Artery_PATH, '*.png'))):
 
 for filename in sorted(glob.glob(os.path.join(Vein_PATH, '*.png'))):
 
-    segmentedImage = retina.Retina(None, filename,store_path='../../Results/M2/artery_vein/Zone_B_disc_centred_vein_process')
+    segmentedImage = retina.Retina(None, filename,store_path='../../Results/M2/artery_vein/Zone_C_disc_centred_vein_process')
     #segmentedImage.threshold_image()
     #segmentedImage.reshape_square()
     #window_sizes = segmentedImage.get_window_sizes()
     window_sizes = [912]
     window = retina.Window(
         segmentedImage, window_sizes[-1], min_pixels=CONFIG.pixels_per_window)
-    FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,_, CRVE_Hubbard,_,CRVE_Knudtson = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='../../Results/M2/artery_vein/Zone_B_disc_centred_vein_process/')
+    FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,_, CRVE_Hubbard,_,CRVE_Knudtson = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='../../Results/M2/artery_vein/Zone_C_disc_centred_vein_process/')
     #print(window.tags)
     vein_t2_list.append(t2)
     vein_t4_list.append(t4)
