@@ -18,17 +18,31 @@ def quality_assessment():
    
     # save the Good_quality
     gq = result_Eyepacs_[result_Eyepacs_['Prediction'] == 0]['Name'].values
-    usable = result_Eyepacs_[(result_Eyepacs_['Prediction'] == 1) &
-                 (result_Eyepacs_['softmax_bad'] < 0.25)]['Name'].values
+    if gv.quality_thresh == 'good':
+        usable = result_Eyepacs_[(result_Eyepacs_['Prediction'] == 1) &
+                     (result_Eyepacs_['softmax_bad'] < 0.25)]['Name'].values
+    if gv.quality_thresh == 'usable':
+        usable = result_Eyepacs_[(result_Eyepacs_['Prediction'] == 1)]['Name'].values
+    if gv.quality_thresh == 'all':
+        usable = result_Eyepacs_[result_Eyepacs_['Prediction'].isin([1,2])]['Name'].values
     gq = np.append(gq, usable)
     gq = list(gq)
 
     # find the bad quality images
     bq = result_Eyepacs_[~result_Eyepacs_['Name'].isin(gq)]['Name'].values
+     
+    # drop all images where radius and centre are 0 
+    def find_zeros(a):
+        if (a['centre_w'] == 0) & (a['centre_h'] == 0) & (a['radius'] == 0):
+            return False
+        else:
+            return True
 
     # merge the images with the crop data and save them as a csv
     crops = pd.read_csv(gv.results_dir+'M0/crop_info.csv', usecols=['Name', 'centre_h', 'centre_w', 'radius'])
+    crops = crops[crops.apply(find_zeros, axis=1)]
     gq_crops = crops[crops['Name'].isin(gq)]
+
     gq_crops.to_csv('{}/M1/Good_quality/image_list.csv'.format(gv.results_dir), index=False)
     bq_crops = crops[crops['Name'].isin(bq)]
     bq_crops.to_csv('{}/M1/Bad_quality/image_list.csv'.format(gv.results_dir), index=False)
@@ -40,28 +54,17 @@ def quality_assessment():
 
     # if not sparse, then copy and save all the images into a M1/Good_quality or M1/Bad_quality folder
     if not gv.sparse:
+        print('copying good and bad quality images from M0/images into subsequent directories')
     
-        Eyepacs_pre = result_Eyepacs_['Prediction']
-        Eyepacs_bad_mean = result_Eyepacs_['softmax_bad']
-        Eyepacs_usable_sd = result_Eyepacs_['usable_sd']
-        name_list = result_Eyepacs_['Name']
-         
-        Eye_good = 0
-        Eye_bad = 0
- 
-        for i in range(len(name_list)):
+        for id in gq:
+
+            f = id.split('/')[-1].split('.')[0]+'.png'
+            name = gv.results_dir+"M0/images/"+f
+            shutil.copy(name, '{}M1/Good_quality/{}'.format(gv.results_dir, f))
             
-            f = name_list[i].split('/')[-1]
-            name = gv.image_dir+"M0/images/"+f
-            
-            if Eyepacs_pre[i]==0:
-                Eye_good+=1
-                shutil.copy(name, '{}M1/Good_quality/'.format(gv.results_dir))
-            elif (Eyepacs_pre[i]==1) and (Eyepacs_bad_mean[i]<0.25):
-            #elif (Eyepacs_pre[i]==1) and (Eyepacs_bad_mean[i]<0.25) and (Eyepacs_usable_sd[i]<0.1):
-                Eye_good+=1
-                shutil.copy(name, '{}M1/Good_quality/'.format(gv.results_dir))        
-            else:
-                Eye_bad+=1        
-                shutil.copy(name, '{}M1/Bad_quality/'.format(gv.results_dir))
-    
+        for id in bq:
+
+            f = id.split('/')[-1].split('.')[0]+'.png'
+            name = gv.results_dir+"M0/images/"+f
+            shutil.copy(name, '{}M1/Bad_quality/{}'.format(gv.results_dir, f))
+               

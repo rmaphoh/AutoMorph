@@ -11,6 +11,7 @@ from automorph.M0_Preprocess import fundus_prep as prep
 from random import sample
 from pathlib import Path
 
+
 def create_resolution_information():
     # create resolution of 1 for all images if information not known.
 
@@ -45,24 +46,26 @@ def process(image_list, save_path):
         if os.path.exists('{}M0/images/'.format(save_path) + image_path):
             print('continue...')
             continue
-            
-        try:
+        try:         
             if len(resolution_list['res'][resolution_list['fundus']==image_path].values) == 0:
                 resolution_ = 1
             else:
                 resolution_ = resolution_list['res'][resolution_list['fundus']==image_path].values[0]
             list_resolution.append(resolution_)
-
+    
             img = prep.imread(dst_image)
             r_img, borders, mask, label, radius_list,centre_list_w, centre_list_h = prep.process_without_gb(img,img,radius_list,centre_list_w, centre_list_h)
+
             if not gv.sparse:
                 prep.imwrite(save_path + image_path.split('.')[0] + '.png', r_img)
-            #prep.imwrite('../Results/M0/images/' + image_path.split('.')[0] + '.png', mask)
+
         except IndexError:
             print("\nThe file {} has not been added to the resolution_information.csv found at {}\n\
                    Please update this file with the script found at /lee_lab_scripts/create_resolution.py and re-run the code".format( \
                        image_path, resolution_csv_path))
             exit(1)
+        except ValueError:
+            print('error with boundary for')
 
         name_list.append(gv.image_dir+image_path)
         
@@ -76,6 +79,7 @@ def process(image_list, save_path):
         
 
 def EyeQ_process():
+
 
     if gv.sample_num:
         print("Sampling {} images from {}".format(gv.sample_num, gv.image_dir))

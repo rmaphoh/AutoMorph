@@ -29,6 +29,7 @@ from .FD_cal import fractal_dimension,vessel_density
 from skimage.morphology import skeletonize,remove_small_objects
 import automorph.config as gv 
 from pathlib import Path
+import logging
 
 
 
@@ -133,6 +134,9 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
             img_name = batch['name']
             mask_pred_tensor_small_all = 0
             imgs = imgs.to(device=device, dtype=torch.float32)
+
+            print('running artery_vein on', img_name)
+            print('')
 
             with torch.no_grad():
 
@@ -246,6 +250,8 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
                 n_img = prediction_decode.shape[0]
                 
                 for i in range(n_img):
+
+                    print('predicting on ', img_name[i])
                     
                     if not gv.ukb:
                         save_image(uncertainty_map[i,...]*255, seg_uncertainty_small_path+img_name[i]+'.png')
@@ -275,7 +281,13 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
                     if not gv.ukb:
                         cv2.imwrite(seg_results_small_path+ img_name[i]+ '.png', np.float32(img_)*255)
                     
-                    img_ww = cv2.resize(np.float32(img_)*255, (int(ori_width[i]),int(ori_height[i])), interpolation = cv2.INTER_NEAREST)
+                    try:
+                        img_ww = cv2.resize(np.float32(img_)*255, (int(ori_width[i]),int(ori_height[i])), interpolation = cv2.INTER_NEAREST)
+
+                    except Exception as Argument:
+                        logging.exception("error with {}".format(img_name[i]))
+                        continue
+
                     cv2.imwrite(seg_results_raw_path+ img_name[i]+ '.png', img_ww)
                 
                 

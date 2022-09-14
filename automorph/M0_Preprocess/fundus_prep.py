@@ -2,6 +2,7 @@ from cv2 import threshold
 import numpy as np
 import os
 import cv2
+from scipy.ndimage import label
 
 
 def imread(file_path, c=None):
@@ -67,6 +68,9 @@ def _get_center_by_edge(mask):
 
 
 def _get_radius_by_mask_center(mask,center):
+    """ apply gradient (difference between erosion and dilation) to the mask to find the border, then calculate the radius from this border. Find the 
+    distance between each point in the mask and the centre then select the radius as the distance slightly larger than 99.5% of the largest distance
+    """
     mask=mask.astype(np.uint8)
     ksize=max(mask.shape[1]//400*2+1,3)
     kernel=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(ksize,ksize))
@@ -92,6 +96,29 @@ def _get_circle_by_center_bbox(shape,center,bbox,radius):
     # center_mask[bbox[0]:min(bbox[0]+bbox[2],center_mask.shape[0]),bbox[1]:min(bbox[1]+bbox[3],center_mask.shape[1])]=tmp_mask
     return center_mask
 
+def get_largest_element(mask):
+    """
+    Uses structuring element in scipy ndimage label to find all connected features in an array and only keep the 
+    feature with the most elements.
+
+    Params:
+    mask (np.array) binary mask
+    Returns:
+    largest_mask (np.array) binary mask only containing the largest connected element of the input mask
+    """
+
+    l_mask, n_labels = label(mask)
+
+    if n_labels > 0:
+        label_dict = {}
+        for l in range(1,n_labels+1): 
+            label_dict[l] = np.sum(l_mask == l)
+        sorted_label = sorted(label_dict.items(), key= lambda x: x[1], reverse=True)
+        largest_mask = l_mask == sorted_label[0][0]
+        return largest_mask 
+    else:
+        largest_mask = mask
+        return largest_mask
 
 def get_mask(img):
     if img.ndim ==3:
@@ -108,18 +135,33 @@ def get_mask(img):
     #g_img = cv2.resize(g_img,(0,0),fx = 0.5,fy = 0.5)
     tg_img=cv2.normalize(g_img, None, 0, 255, cv2.NORM_MINMAX)
     tmp_mask=get_mask_BZ(tg_img)
+    tmp_mask = get_largest_element(tmp_mask)
     center=_get_center_by_edge(tmp_mask)
+
     #bbox=_get_bbox_by_mask(tmp_mask)
     #print(center)
     #cv2.imshow('ImageWindow', tmp_mask*255)
     #cv2.waitKey()
     radius=_get_radius_by_mask_center(tmp_mask,center)
+
     #resize back
     #center = [center[0]*2,center[1]*2]
     #radius = int(radius*2)
     if radius == 0: # if there is no radius then this cant work just return zeros
         return tmp_mask, (0,0,0,0), [0,0], radius
     
+    # if the radius is greater than either the height or width of the image
+    if ((radius +center[0]) > h) or ((center[0] - radius) <= 0):
+        if center[0] < (h/2):
+            radius = center[0]
+        else:
+            radius = h-center[0]
+    elif ((radius +center[1]) > w) or ((center[1] - radius) <= 0):
+        if center[1]< (w/2):
+            radius = center[1]
+        else:
+            radius = w-center[1]
+
     center = [center[0], center[1]]
     radius = int(radius)
     s_h = max(0,int(center[0] - radius))
@@ -174,8 +216,6 @@ def process_without_gb(img, label,radius_list,centre_list_w, centre_list_h):
     #return null if image is all zeros
     borders = []
     mask, bbox, center, radius = get_mask(img)
-    #print('center is: ',center)
-    #print('radius is: ',radius)
     r_img = mask_image(img, mask)
     r_img, r_border = remove_back_area(r_img,bbox=bbox)
     mask, _ = remove_back_area(mask,border=r_border)
