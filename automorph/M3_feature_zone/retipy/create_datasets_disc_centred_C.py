@@ -36,7 +36,6 @@ import automorph.config as gv
 def create_data_disc_centred_C():
 
         
-    
     if os.path.exists('{}M2/artery_vein/Zone_B_disc_centred_artery_skeleton/.ipynb_checkpoints'.format(gv.results_dir)):
         shutil.rmtree('{}M2/artery_vein/Zone_B_disc_centred_artery_skeleton/.ipynb_checkpoints'.format(gv.results_dir)) 
     if os.path.exists('{}M2/binary_vessel/Zone_B_disc_centred_binary_skeleton/.ipynb_checkpoints'.format(gv.results_dir)):

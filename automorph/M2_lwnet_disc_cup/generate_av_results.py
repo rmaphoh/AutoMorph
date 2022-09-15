@@ -2,7 +2,6 @@ import os, json, sys
 import os.path as osp
 import argparse
 import warnings
-import automorph.config as gv
 from tqdm import tqdm
 import cv2
 import numpy as np
@@ -52,14 +51,14 @@ def intersection(mask,vessel_, it_x, it_y):
     
     
 
-def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
+def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path, cfg):
     if os.path.exists(result_path+'.ipynb_checkpoints'):
         shutil.rmtree(result_path+'.ipynb_checkpoints')
         
      
 
-    optic_binary_result_path = '{}M3/Disc_centred/'.format(gv.results_dir)
-    macular_binary_result_path = '{}M3/Macular_centred/'.format(gv.results_dir)
+    optic_binary_result_path = '{}M3/Disc_centred/'.format(cfg.results_dir)
+    macular_binary_result_path = '{}M3/Macular_centred/'.format(cfg.results_dir)
     
     B_optic_process_binary_vessel_path = binary_vessel_path + 'Zone_B_disc_centred_binary_process/'
     B_optic_process_artery_path = artery_vein_path + 'Zone_B_disc_centred_artery_process/'
@@ -433,26 +432,26 @@ def evaluate_disc(results_path, label_path):
         
     #return tot / n_val, sent / n_val, spet / n_val, pret / n_val, G_t / n_val, F1t / n_val, auc_roct / n_val, auc_prt / n_val, iout/n_val, mset/n_val
         
-def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader, device):
+def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader, device, cfg):
     
      
 
     n_val = len(test_loader)
     
-    seg_results_raw_path = '{}M2/optic_disc_cup/raw/'.format(gv.results_dir)
+    seg_results_raw_path = '{}M2/optic_disc_cup/raw/'.format(cfg.results_dir)
     if not os.path.isdir(seg_results_raw_path):
         os.makedirs(seg_results_raw_path)
 
-    if not gv.ukb:
-        seg_results_small_path = '{}M2/optic_disc_cup/resized/'.format(gv.results_dir)
+    if not cfg.ukb:
+        seg_results_small_path = '{}M2/optic_disc_cup/resized/'.format(cfg.results_dir)
         if not os.path.isdir(seg_results_small_path):
             os.makedirs(seg_results_small_path)
 
-        seg_uncertainty_small_path = '{}M2/optic_disc_cup/resize_uncertainty/'.format(gv.results_dir)        
+        seg_uncertainty_small_path = '{}M2/optic_disc_cup/resize_uncertainty/'.format(cfg.results_dir)        
         if not os.path.isdir(seg_uncertainty_small_path):
             os.makedirs(seg_uncertainty_small_path)
     
-        seg_uncertainty_raw_path = '{}M2/optic_disc_cup/raw_uncertainty/'.format(gv.results_dir)
+        seg_uncertainty_raw_path = '{}M2/optic_disc_cup/raw_uncertainty/'.format(cfg.results_dir)
         if not os.path.isdir(seg_uncertainty_raw_path):
             os.makedirs(seg_uncertainty_raw_path)
         
@@ -535,7 +534,7 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
                 
                 for i in range(n_img):
                     
-                    if not gv.ukb:
+                    if not cfg.ukb:
                         save_image(uncertainty_map[i,...]*255, seg_uncertainty_small_path+img_name[i]+'.png')
                         save_image(uncertainty_map[i,1,...]*255, seg_uncertainty_small_path+img_name[i]+'_disc.png')
                         save_image(uncertainty_map[i,2,...]*255, seg_uncertainty_small_path+img_name[i]+'_cup.png')
@@ -559,7 +558,7 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
 
                     img_ = np.concatenate((img_b[...,np.newaxis], img_g[...,np.newaxis], img_r[...,np.newaxis]), axis=2)
                     
-                    if not gv.ukb:
+                    if not cfg.ukb:
                         cv2.imwrite(seg_results_small_path+ img_name[i]+ '.png', np.float32(img_)*255)
                     
                     img_ww = cv2.resize(np.float32(img_)*255, (int(ori_width[i]),int(ori_height[i])), interpolation = cv2.INTER_NEAREST)
@@ -571,33 +570,33 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
 
 class M2_DC_args():
 
-     
+    def __init__(self, cfg):
 
-    experiment_path = ''
-    csv_train = False 
-    seed = 30
-    model_name = "wnet"
-    batch_size = gv.batch_size
-    grad_acc_steps: 0
-    min_lr = 1e-08
-    max_lr = 0.01
-    cycle_lens = "20/50"
-    metric = "auc"
-    im_size = "512"
-    in_c = 3
-    do_not_save = False
-    save_path = "wnet_ALL_three_1024_disc_cup"
-    csv_test = False
-    path_test_preds = False
-    check_point_folder = False
-    num_workers = gv.worker
-    device = gv.device
-    experiment_path = "experiments/wnet_All_three_1024_disc_cup/30"
-    results_path = gv.results_dir
+        self.experiment_path = ''
+        self.csv_train = False 
+        self.seed = 30
+        self.model_name = "wnet"
+        self.batch_size = cfg.batch_size
+        self.grad_acc_steps: 0
+        self.min_lr = 1e-08
+        self.max_lr = 0.01
+        self.cycle_lens = "20/50"
+        self.metric = "auc"
+        self.im_size = "512"
+        self.in_c = 3
+        self.do_not_save = False
+        self.save_path = "wnet_ALL_three_1024_disc_cup"
+        self.csv_test = False
+        self.path_test_preds = False
+        self.check_point_folder = False
+        self.num_workers = cfg.worker
+        self.device = cfg.device
+        self.experiment_path = "experiments/wnet_All_three_1024_disc_cup/30"
+        self.results_path = cfg.results_dir
 
-def M2_disc_cup():
+def M2_disc_cup(cfg):
 
-    args = M2_DC_args()
+    args = M2_DC_args(cfg)
     results_path = args.results_path
 
     device = torch.device(args.device)
@@ -662,12 +661,12 @@ def M2_disc_cup():
     model_8.eval()
 
 
-    prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader, device)
+    prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader, device, cfg)
     
-    if not gv.ukb:
+    if not cfg.ukb:
 
         result_path = '{}M2/optic_disc_cup/resized/'.format(args.results_path)
         binary_vessel_path = '{}M2/binary_vessel/'.format(args.results_path)
         artery_vein_path = '{}M2/artery_vein/'.format(args.results_path)
-        optic_disc_centre(result_path,binary_vessel_path, artery_vein_path)
+        optic_disc_centre(result_path, binary_vessel_path, artery_vein_path, cfg)
     

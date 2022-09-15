@@ -1,9 +1,9 @@
-image_dir = "/data/anand/Automorph_data/ukb/images/" 
-results_dir= "/data/anand/Automorph_data/ukb/results/"
+image_dir = "/data/anand/Automorph_data/test/images/" 
+results_dir= "/data/anand/Automorph_data/test/results/"
 worker = 0
 sample_num = False #Put False if you do not want to sample
 device = "cuda" #can specify cuda:0  or cuda or CPU
 batch_size = 2  
 sparse=False
-ukb=True # parameter to only run UKB data
-quality_thresh = 'all' # options are "good", "usable", "all" to use for thresholding the quality
+ukb=False
+quality_thresh = 'good' # options are "good", "usable", "all" to use for thresholding the quality

@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 from .dataset import BasicDataset_OUT
 from torch.utils.data import DataLoader
 from .model import Resnet101_fl, InceptionV3_fl, Densenet161_fl, Resnext101_32x8d_fl, MobilenetV2_fl, Vgg16_bn_fl, Efficientnet_fl
-import automorph.config as gv
 from pathlib import Path
 
 
@@ -41,6 +40,7 @@ def test_net(model_fl_1,
               test_dir,
               args,
               device,
+              cfg,
               epochs=5,
               batch_size=20,
               image_size=(512,512),
@@ -53,10 +53,10 @@ def test_net(model_fl_1,
     n_classes = args.n_class
     # create files
 
-    dataset = BasicDataset_OUT(test_dir, image_size, n_classes, train_or=False, crop_csv=gv.results_dir+'M0/crop_info.csv')
+    dataset = BasicDataset_OUT(test_dir, image_size, n_classes, train_or=False, crop_csv=cfg.results_dir+'M0/crop_info.csv')
         
     n_test = len(dataset)
-    val_loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=gv.worker, pin_memory=False, drop_last=False)
+    val_loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=cfg.worker, pin_memory=False, drop_last=False)
     
     prediction_decode_list = []
     filename_list = []
@@ -147,9 +147,9 @@ def test_net(model_fl_1,
                     pbar.update(imgs.shape[0])
         
     Data4stage2 = pd.DataFrame({'Name':filename_list, 'softmax_good':np.array(prediction_list_mean)[:,0],'softmax_usable':np.array(prediction_list_mean)[:,1],'softmax_bad':np.array(prediction_list_mean)[:,2], 'good_sd':np.array(prediction_list_std)[:,0],'usable_sd':np.array(prediction_list_std)[:,1],'bad_sd':np.array(prediction_list_std)[:,2], 'Prediction': prediction_decode_list})
-    if not os.path.exists('{}M1'.format(gv.results_dir)):
-        os.makedirs('{}M1'.format(gv.results_dir))
-    Data4stage2.to_csv('{}M1/results_ensemble.csv'.format(gv.results_dir), index = None, encoding='utf8')
+    if not os.path.exists('{}M1'.format(cfg.results_dir)):
+        os.makedirs('{}M1'.format(cfg.results_dir))
+    Data4stage2.to_csv('{}M1/results_ensemble.csv'.format(cfg.results_dir), index = None, encoding='utf8')
 
 
 
@@ -183,25 +183,27 @@ def get_args():
 
 class M1_get_args():
     
-    epochs = 1
-    batchsize = gv.batch_size
-    load = "EyePACS_quality" 
-    test_dir = (gv.image_dir)
-    n_class = 3
-    dataset = "customised_data"
-    task = "Retinal_quality"
-    round = 0
-    model = "efficientnet"
-    seed = 42
-    local_rank = 0
+    def __init__(self, cfg):
+    
+        self.epochs = 1
+        self.batchsize = cfg.batch_size
+        self.load = "EyePACS_quality" 
+        self.test_dir = cfg.image_dir
+        self.n_class = 3
+        self.dataset = "customised_data"
+        self.task = "Retinal_quality"
+        self.round = 0
+        self.model = "efficientnet"
+        self.seed = 42
+        self.local_rank = 0
 
 
-def M1_image_quality():
+def M1_image_quality(cfg):
     
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-    args = M1_get_args()
+    args = M1_get_args(cfg)
     
-    device = torch.device(gv.device)
+    device = torch.device(cfg.device)
     
     logging.info(f'Using device {device}')
 
@@ -300,7 +302,8 @@ def M1_image_quality():
                  model_fl_8,
                   test_dir,
                   args,
-                  device=device,
+                  device,
+                  cfg,
                   epochs=args.epochs,
                   batch_size=args.batchsize,
                   image_size=img_size)

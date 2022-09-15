@@ -21,7 +21,6 @@ from skimage.morphology import skeletonize,remove_small_objects
 from skimage import io
 from .FD_cal import fractal_dimension,vessel_density
 import shutil
-import automorph.config as gv
 from pathlib import Path
 
 
@@ -167,19 +166,21 @@ def segment_fundus(data_path, net_1, net_2, net_3, net_4, net_5, net_6, net_7, n
 
             pbar.update(imgs.shape[0])
 
-def test_net(data_path, batch_size, num_workers, device, dataset_train, dataset_test, image_size, job_name, threshold, checkpoint_mode, mask_or=True, train_or=False, results_dir=''):
+def test_net(results_dir, batch_size, num_workers, device, dataset_train, dataset_test, image_size, job_name, threshold, checkpoint_mode, mask_or=True, train_or=False, crop_csv=''):
 
      
 
-    #test_dir = "./data/{}/test/images/".format(dataset_test)
-    test_dir = '{}M1/Good_quality/'.format(results_dir)
+
+    data_path = results_dir+ "M2/binary_vessel/"
+    test_dir = results_dir+ "M1/Good_quality/"
+    
     mask_dir = "./data/{}/test/mask/".format(dataset_test)
     test_label = "./data/{}/test/1st_manual/".format(dataset_test)
     FD_list = []
     Name_list = []
     VD_list = []
     
-    dataset_data = SEDataset_out(test_dir, test_label, mask_dir, image_size, dataset_test, threshold, uniform='True', train_or=False)
+    dataset_data = SEDataset_out(test_dir, test_label, mask_dir, image_size, dataset_test, threshold, uniform='True', crop_csv=crop_csv, train_or=False)
     test_loader = DataLoader(dataset_data, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False, drop_last=False)
     
     dir_checkpoint_1= Path(__file__).parent / "./Saved_model/train_on_{}/{}_savebest_randomseed_{}/G_best_F1_epoch.pth".format(dataset_train,job_name,24)
@@ -250,40 +251,42 @@ def test_net(data_path, batch_size, num_workers, device, dataset_train, dataset_
         
 class M2_VS_args():
 
-     
+    def __init__(self, cfg): 
 
-    epochs = 1
-    batchsize = gv.batch_size
-    lr = 2e-4
-    load = False
-    dis = "unet"
-    jn = "20210630_uniform_thres40_ALL-SIX"
-    worker = gv.worker
-    save = "best"
-    ttmode = "trainandtest"
-    pthreshold = 40.0
-    dataset = "ALL-SIX"    
-    seed = 42
-    dataset_test = "ALL-SIX" 
-    val = 10.0
-    uniform = "True" 
-    data_path = "{}M2/binary_vessel/".format(gv.results_dir) 
-    alpha = 0.08
-    beta = 1.1
-    gamma = 0.5       
-    results = gv.results_dir
+        self.epochs = 1
+        self.batchsize = cfg.batch_size
+        self.lr = 2e-4
+        self.load = False
+        self.dis = "unet"
+        self.jn = "20210630_uniform_thres40_ALL-SIX"
+        self.worker = cfg.worker
+        self.save = "best"
+        self.ttmode = "trainandtest"
+        self.pthreshold = 40.0
+        self.dataset = "ALL-SIX"    
+        self.seed = 42
+        self.dataset_test = "ALL-SIX" 
+        self.val = 10.0
+        self.uniform = "True" 
+        self.data_path = "{}M2/binary_vessel/".format(cfg.results_dir) 
+        self.alpha = 0.08
+        self.beta = 1.1
+        self.gamma = 0.5       
+        self.results = cfg.results_dir
 
 
-def M2_vessel_seg():
+def M2_vessel_seg(cfg):
 
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-    args = M2_VS_args()
+    args = M2_VS_args(cfg)
 
-    device = torch.device(gv.device)
+    device = torch.device(cfg.device)
     logging.info(f'Using device {device}')
 
     image_size = Define_image_size(args.uniform, args.dataset)
     lr = args.lr
+
+    test_csv= '{}M1/Good_quality/image_list.csv'.format(cfg.results_dir)
 
     net_G = Segmenter(input_channels=3, n_filters = 32, n_classes=1, bilinear=False)
     net_D = Discriminator(input_channels=4, n_filters = 32, n_classes=1, bilinear=False)
@@ -302,7 +305,7 @@ def M2_vessel_seg():
     net_G.to(device=device)
     net_D.to(device=device)
     
-    test_net(data_path=args.data_path,
+    test_net(results_dir=cfg.results_dir,
              batch_size=args.batchsize,
              num_workers=args.worker,
              device=device,
@@ -314,5 +317,5 @@ def M2_vessel_seg():
              checkpoint_mode=args.save,
              mask_or=True, 
              train_or=False,
-             results_dir=args.results)
+             crop_csv=test_csv)
  

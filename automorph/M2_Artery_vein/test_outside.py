@@ -27,7 +27,6 @@ from skimage import io, color
 from .scripts.utils import Define_image_size
 from .FD_cal import fractal_dimension,vessel_density
 from skimage.morphology import skeletonize,remove_small_objects
-import automorph.config as gv 
 from pathlib import Path
 import logging
 
@@ -101,26 +100,26 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
                 net_G_3, net_G_A_3, net_G_V_3, net_G_4, net_G_A_4, net_G_V_4, 
                 net_G_5, net_G_A_5, net_G_V_5, net_G_6, net_G_A_6, net_G_V_6, 
                 net_G_7, net_G_A_7, net_G_V_7, net_G_8, net_G_A_8, net_G_V_8, 
-                loader, device, mode, dataset):
+                cfg, loader, device, mode, dataset ):
 
     n_val = len(loader) 
 
     num = 0
     
-    seg_results_raw_path = '{}M2/artery_vein/raw/'.format(gv.results_dir)
+    seg_results_raw_path = '{}M2/artery_vein/raw/'.format(cfg.results_dir)
     if not os.path.isdir(seg_results_raw_path):
         os.makedirs(seg_results_raw_path)
 
-    if not gv.ukb:
-        seg_results_small_path = '{}M2/artery_vein/resized/'.format(gv.results_dir)
+    if not cfg.ukb:
+        seg_results_small_path = '{}M2/artery_vein/resized/'.format(cfg.results_dir)
         if not os.path.isdir(seg_results_small_path):
             os.makedirs(seg_results_small_path)
 
-        seg_uncertainty_small_path = '{}M2/artery_vein/resize_uncertainty/'.format(gv.results_dir)
+        seg_uncertainty_small_path = '{}M2/artery_vein/resize_uncertainty/'.format(cfg.results_dir)
         if not os.path.isdir(seg_uncertainty_small_path):
             os.makedirs(seg_uncertainty_small_path)
     
-        seg_uncertainty_raw_path = '{}M2/artery_vein/raw_uncertainty/'.format(gv.results_dir)
+        seg_uncertainty_raw_path = '{}M2/artery_vein/raw_uncertainty/'.format(cfg.results_dir)
         if not os.path.isdir(seg_uncertainty_raw_path):
             os.makedirs(seg_uncertainty_raw_path)
         
@@ -253,7 +252,7 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
 
                     print('predicting on ', img_name[i])
                     
-                    if not gv.ukb:
+                    if not cfg.ukb:
                         save_image(uncertainty_map[i,...]*255, seg_uncertainty_small_path+img_name[i]+'.png')
                         save_image(uncertainty_map[i,1,...]*255, seg_uncertainty_small_path+img_name[i]+'_artery.png')
                         save_image(uncertainty_map[i,2,...]*255, seg_uncertainty_small_path+img_name[i]+'_vein.png')
@@ -278,7 +277,7 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
 
                     img_ = np.concatenate((img_b[...,np.newaxis], img_g[...,np.newaxis], img_r[...,np.newaxis]), axis=2)
                     
-                    if not gv.ukb:
+                    if not cfg.ukb:
                         cv2.imwrite(seg_results_small_path+ img_name[i]+ '.png', np.float32(img_)*255)
                     
                     try:
@@ -297,19 +296,21 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2,
 
 class M2_AV_args():
 
-    batchsize = gv.batch_size
-    jn = "20210724_ALL-AV"
-    dataset = "ALL-AV"
-    CS = 1401
-    uniform = "True"
-    worker = gv.worker
+    def __init__(self, cfg):
 
-def M2_artery_vein():
+        self.batchsize = cfg.batch_size
+        self.jn = "20210724_ALL-AV"
+        self.dataset = "ALL-AV"
+        self.CS = 1401
+        self.uniform = "True"
+        self.worker = cfg.worker
+
+def M2_artery_vein(cfg):
 
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-    args = M2_AV_args()
+    args = M2_AV_args(cfg)
 
-    device = torch.device(gv.device)
+    device = torch.device(cfg.device)
     logging.info(f'Using device {device}')
 
     img_size = Define_image_size(args.uniform, args.dataset)
@@ -320,15 +321,15 @@ def M2_artery_vein():
 #    if not os.path.isdir(csv_save):
 #        os.makedirs(csv_save)
 
-    test_dir= '{}M1/Good_quality/'.format(gv.results_dir)
-    crop_csv = '{}M1/Good_quality/image_list.csv'.format(gv.results_dir)
+    test_dir= '{}M1/Good_quality/'.format(cfg.results_dir)
+    crop_csv = '{}M1/Good_quality/image_list.csv'.format(cfg.results_dir)
     test_label = "./data/{}/test/1st_manual/".format(dataset_name)
     test_mask =  "./data/{}/test/mask/".format(dataset_name)
 
     mode = 'whole'
 
     dataset = LearningAVSegData_OOD(test_dir, test_label, test_mask, img_size, dataset_name=dataset_name, crop_csv = crop_csv, train_or=False)
-    test_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=False, num_workers=gv.worker, pin_memory=False, drop_last=False)
+    test_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=False, num_workers=cfg.worker, pin_memory=False, drop_last=False)
     
     
     net_G_1 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
@@ -458,15 +459,19 @@ def M2_artery_vein():
         net_G_V_8.to(device=device)
         
         if mode != 'vessel':
-            test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G_3, net_G_A_3, net_G_V_3, net_G_4, net_G_A_4, net_G_V_4, net_G_5, net_G_A_5, net_G_V_5, net_G_6, net_G_A_6, net_G_V_6, net_G_7, net_G_A_7, net_G_V_7, net_G_8, net_G_A_8, net_G_V_8, loader=test_loader, device=device, mode=mode,dataset=dataset_name)
+            test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, 
+                     net_G_3, net_G_A_3, net_G_V_3, net_G_4, net_G_A_4, net_G_V_4, 
+                     net_G_5, net_G_A_5, net_G_V_5, net_G_6, net_G_A_6, net_G_V_6,
+                     net_G_7, net_G_A_7, net_G_V_7, net_G_8, net_G_A_8, net_G_V_8,
+                     cfg, loader=test_loader, device=device, mode=mode, dataset=dataset_name)
     
     
-        if not gv.ukb:
-            FD_list_r,name_list,VD_list_r,FD_list_v,VD_list_b,width_cal_r,width_cal_b = filter_frag(data_path='{}M2/artery_vein/'.format(gv.results_dir))
+        if not cfg.ukb:
+            FD_list_r,name_list,VD_list_r,FD_list_v,VD_list_b,width_cal_r,width_cal_b = filter_frag(data_path='{}M2/artery_vein/'.format(cfg.results_dir))
         
             Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_artery':FD_list_r, 'Vessel_Density_artery':VD_list_r, 'Average_width_artery':width_cal_r})
-            Data4stage2.to_csv('{}M3/Artery_Features_Measurement.csv'.format(gv.results_dir), index = None, encoding='utf8')
+            Data4stage2.to_csv('{}M3/Artery_Features_Measurement.csv'.format(cfg.results_dir), index = None, encoding='utf8')
         
             Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_vein':FD_list_v, 'Vessel_Density_vein':VD_list_b, 'Average_width_vein':width_cal_b})
-            Data4stage2.to_csv('{}M3/Vein_Features_Measurement.csv'.format(gv.results_dir), index = None, encoding='utf8')
+            Data4stage2.to_csv('{}M3/Vein_Features_Measurement.csv'.format(cfg.results_dir), index = None, encoding='utf8')
 

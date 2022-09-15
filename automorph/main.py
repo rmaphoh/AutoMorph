@@ -9,27 +9,26 @@ import M2_lwnet_disc_cup.generate_av_results as M2_DC
 #import M3_feature_zone.retipy.create_datasets_disc_centred_C as CDDCC
 #import M3_feature_zone.retipy.create_datasets_macular_centred_B as CDMCB
 #import M3_feature_zone.retipy.create_datasets_macular_centred_C as CDMCC
+import config
 
    
 if __name__ == "__main__":
 
     print("Running EyeQ process")
-    M0_EQ.EyeQ_process()
+#    M0_EQ.EyeQ_process(config)
 
     # Eye Quality
-    print("Running Image quality assesment")
-    M1_EP.M1_image_quality()
-    M1_QA.quality_assessment()
-
-    # M2 stages
-#    M2_VS.M2_vessel_seg()
-#    M2_AV.M2_artery_vein()
-#    M2_DC.M2_disc_cup()
-
-    # select data
-#    select_data()
-
-    # M3 stages
+#    print("Running Image quality assesment")
+#    M1_EP.M1_image_quality(config)
+#    M1_QA.quality_assessment(config)
+#
+#    # M2 stages
+    #M2_VS.M2_vessel_seg(config)
+    #M2_AV.M2_artery_vein(config)
+    M2_DC.M2_disc_cup(config)
+#
+#
+#    # M3 stages
 #    CDDCB.create_data_disc_centred_B()
 #    CDDCC.create_data_disc_centred_C()
 #    CDMCB.create_macular_centred_B()

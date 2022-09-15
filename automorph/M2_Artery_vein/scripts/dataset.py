@@ -149,12 +149,6 @@ class LearningAVSegData(Dataset):
 
     
     
-    
-    
-import automorph.config as cfg
-
-   
-    
 class LearningAVSegData_OOD(Dataset):
     def __init__(self, imgs_dir, label_dir,  mask_dir, img_size, dataset_name, crop_csv, train_or=True, mask_suffix=''):
 

@@ -11,7 +11,7 @@ import random
 from torchvision.utils import save_image
 from scipy.ndimage import rotate
 from PIL import Image, ImageEnhance
-import cv2
+import pandas as pd
 
 
 class SEDataset(Dataset):
@@ -188,7 +188,8 @@ class SEDataset(Dataset):
     
     
 class SEDataset_out(Dataset):
-    def __init__(self, imgs_dir, label_dir, mask_dir, img_size, dataset_name, pthrehold, uniform, train_or=True):
+
+    def __init__(self, imgs_dir, label_dir, mask_dir, img_size, dataset_name, pthrehold, uniform, crop_csv, train_or=True):
         self.imgs_dir = imgs_dir
         self.label_dir = label_dir
         self.mask_dir = mask_dir
@@ -197,16 +198,16 @@ class SEDataset_out(Dataset):
         self.pthrehold = pthrehold
         self.uniform = uniform
         self.train_or = train_or
+        self.crop_csv = crop_csv
 
+        fps = pd.read_csv(crop_csv, usecols=['Name']).values.ravel()
+        self.file_paths = fps
+        print(fps)
         
-        i = 0
-        self.ids = [splitext(file)[0] for file in listdir(imgs_dir)
-                    if not file.startswith('.')]
-        #logging.info(f'Creating dataset with {(self.ids)} ')
-        logging.info(f'Creating dataset with {len(self.ids)} examples')
+        logging.info(f'Creating dataset with {len(self.file_paths)} examples')
 
     def __len__(self):
-        return len(self.ids)
+        return len(self.file_paths)
 
     @classmethod
     def pad_imgs(self, imgs, img_size):
@@ -230,6 +231,33 @@ class SEDataset_out(Dataset):
         return imgs 
 
     @classmethod
+    def crop_img(self, crop_csv, f_path, pil_img):
+        """ Code to crop the input image based on the crops stored in a csv. This is done to save space and having to store intermediate cropped
+        files.
+        Params:
+        crop_csv - csv containing the name with filepath stored at gv.image_dir, and crop info
+        f_path - str containing the filepath to the image
+        pil_img - PIL Image of the above f_path
+        Returns:
+        pil_img - PIL Image cropped by the data in the csv
+        """ 
+
+        
+        df = pd.read_csv(crop_csv)
+        row = df[df['Name'] == f_path]
+        
+        c_w = row['centre_w']
+        c_h = row['centre_h']
+        r = row['radius']
+        w_min, w_max = int(c_w-r), int(c_w+r) 
+        h_min, h_max = int(c_h-r), int(c_h+r)
+        
+        pil_img = pil_img.crop((h_min, w_min, h_max, w_max))
+
+        return pil_img
+ 
+
+    @classmethod
     def preprocess(self, img, dataset_name, img_size, train_or, pthrehold):
 
         img_array = np.array(img)
@@ -248,24 +276,17 @@ class SEDataset_out(Dataset):
         if len(img_array.shape) == 2:
             img_array = np.expand_dims(img_array, axis=2)
             
-
-        
         img_array = img_array.transpose((2, 0, 1))
-
-
-
 
         return img_array
 
 
     def __getitem__(self, i):
-        idx = self.ids[i]
-        img_file = glob(self.imgs_dir + idx + '.*')
 
-        assert len(img_file) == 1, \
-            f'Either no image or multiple images found for the ID {idx}: {img_file}'
+        f_path = self.file_paths[i]
 
-        img = Image.open(img_file[0])
+        img = Image.open(f_path)
+        img = self.crop_img(self.crop_csv, f_path, img)
         ori_width, ori_height = img.size
         img = img.resize(self.img_size)
         img = self.preprocess(img, self.dataset_name, self.img_size, self.train_or, self.pthrehold)
@@ -273,7 +294,7 @@ class SEDataset_out(Dataset):
         i += 1
         
         return {
-            'name': idx,
+            'name': f_path.split('/')[-1].split('.')[0],
             'width': ori_width,
             'height': ori_height,
             'image': torch.from_numpy(img).type(torch.FloatTensor)
