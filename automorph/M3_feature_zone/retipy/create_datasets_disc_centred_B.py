@@ -31,7 +31,6 @@ def create_data_disc_centred_B(cfg):
     import h5py
     import shutil
     import pandas as pd
-    import automorph.config as cfg
     # import scipy.stats as stats
     
     #import retipy.configuration as configuration

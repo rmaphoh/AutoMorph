@@ -29,21 +29,20 @@ import h5py
 import shutil
 import pandas as pd
 # import scipy.stats as stats
-import automorph.config as gv
 
 from .retipy import configuration, retina, tortuosity_measures
 from pathlib import Path
  
-def create_macular_centred_B():
+def create_macular_centred_B(cfg):
 
-    if os.path.exists('{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton/.ipynb_checkpoints'.format(gv.results_dir)):
-        shutil.rmtree('{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton/.ipynb_checkpoints'.format(gv.results_dir)) 
-    if os.path.exists('{}M2/binary_vessel/macular_Zone_B_centred_vein_skeleton/.ipynb_checkpoints'.format(gv.results_dir)):
-        shutil.rmtree('{}M2/binary_vessel/macular_Zone_B_centred_vein_skeleton/.ipynb_checkpoints'.format(gv.results_dir)) 
-    if os.path.exists('{}M2/artery_vein/macular_Zone_B_centred_binary_skeleton/.ipynb_checkpoints'.format(gv.results_dir)):
-        shutil.rmtree('{}M2/artery_vein/macular_Zone_B_centred_binary_skeleton/.ipynb_checkpoints'.format(gv.results_dir))
-    if not os.path.exists('{}M3/Macular_centred/Width/'.format(gv.results_dir)):
-        os.makedirs('{}M3/Macular_centred/Width/'.format(gv.results_dir))
+    if os.path.exists('{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton/.ipynb_checkpoints'.format(cfg.results_dir)):
+        shutil.rmtree('{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton/.ipynb_checkpoints'.format(cfg.results_dir)) 
+    if os.path.exists('{}M2/binary_vessel/macular_Zone_B_centred_vein_skeleton/.ipynb_checkpoints'.format(cfg.results_dir)):
+        shutil.rmtree('{}M2/binary_vessel/macular_Zone_B_centred_vein_skeleton/.ipynb_checkpoints'.format(cfg.results_dir)) 
+    if os.path.exists('{}M2/artery_vein/macular_Zone_B_centred_binary_skeleton/.ipynb_checkpoints'.format(cfg.results_dir)):
+        shutil.rmtree('{}M2/artery_vein/macular_Zone_B_centred_binary_skeleton/.ipynb_checkpoints'.format(cfg.results_dir))
+    if not os.path.exists('{}M3/Macular_centred/Width/'.format(cfg.results_dir)):
+        os.makedirs('{}M3/Macular_centred/Width/'.format(cfg.results_dir))
     
     #if os.path.exists('./DDR/av_seg/raw/.ipynb_checkpoints'):
     #    shutil.rmtree('./DDR/av_seg/raw/.ipynb_checkpoints') 
@@ -61,20 +60,20 @@ def create_macular_centred_B():
     AVR_Knudtson_list = []
     name_list = []
     
-    Artery_PATH = '{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton'.format(gv.results_dir)
-    Vein_PATH = '{}M2/artery_vein/macular_Zone_B_centred_vein_skeleton'.format(gv.results_dir)
-    Binary_PATH = '{}M2/binary_vessel/macular_Zone_B_centred_binary_skeleton'.format(gv.results_dir)
+    Artery_PATH = '{}M2/artery_vein/macular_Zone_B_centred_artery_skeleton'.format(cfg.results_dir)
+    Vein_PATH = '{}M2/artery_vein/macular_Zone_B_centred_vein_skeleton'.format(cfg.results_dir)
+    Binary_PATH = '{}M2/binary_vessel/macular_Zone_B_centred_binary_skeleton'.format(cfg.results_dir)
     
     for filename in sorted(glob.glob(os.path.join(Binary_PATH, '*.png'))):
     
-        segmentedImage = retina.Retina(None, filename, store_path='{}M2/binary_vessel/macular_Zone_B_centred_binary_process'.format(gv.results_dir))
+        segmentedImage = retina.Retina(None, filename, store_path='{}M2/binary_vessel/macular_Zone_B_centred_binary_process'.format(cfg.results_dir))
         #segmentedImage.threshold_image()
         #segmentedImage.reshape_square()
         #window_sizes = segmentedImage.get_window_sizes()
         window_sizes = [912]
         window = retina.Window(
             segmentedImage, window_sizes[-1], min_pixels=CONFIG.pixels_per_window)
-        FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average, _, _,_,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='{}M2/binary_vessel/macular_Zone_B_centred_binary_process/'.format(gv.results_dir))
+        FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average, _, _,_,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='{}M2/binary_vessel/macular_Zone_B_centred_binary_process/'.format(cfg.results_dir))
         #print(window.tags)
         binary_t2_list.append(t2)
         binary_t4_list.append(t4)
@@ -90,11 +89,11 @@ def create_macular_centred_B():
     
     for filename in sorted(glob.glob(os.path.join(Artery_PATH, '*.png'))):
     
-        segmentedImage = retina.Retina(None, filename,store_path='{}M2/artery_vein/macular_Zone_B_centred_artery_process'.format(gv.results_dir))
+        segmentedImage = retina.Retina(None, filename,store_path='{}M2/artery_vein/macular_Zone_B_centred_artery_process'.format(cfg.results_dir))
         window_sizes = [912]
         window = retina.Window(
             segmentedImage, window_sizes[-1], min_pixels=CONFIG.pixels_per_window)
-        FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,CRAE_Hubbard, _,CRAE_Knudtson,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='{}M2/artery_vein/macular_Zone_B_centred_artery_process/'.format(gv.results_dir))
+        FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,CRAE_Hubbard, _,CRAE_Knudtson,_ = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='{}M2/artery_vein/macular_Zone_B_centred_artery_process/'.format(cfg.results_dir))
         #print(window.tags)
         artery_t2_list.append(t2)
         artery_t4_list.append(t4)
@@ -113,14 +112,14 @@ def create_macular_centred_B():
     
     for filename in sorted(glob.glob(os.path.join(Vein_PATH, '*.png'))):
     
-        segmentedImage = retina.Retina(None, filename,store_path='{}M2/artery_vein/macular_Zone_B_centred_vein_process'.format(gv.results_dir))
+        segmentedImage = retina.Retina(None, filename,store_path='{}M2/artery_vein/macular_Zone_B_centred_vein_process'.format(cfg.results_dir))
         #segmentedImage.threshold_image()
         #segmentedImage.reshape_square()
         #window_sizes = segmentedImage.get_window_sizes()
         window_sizes = [912]
         window = retina.Window(
             segmentedImage, window_sizes[-1], min_pixels=CONFIG.pixels_per_window)
-        FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,_, CRVE_Hubbard,_,CRVE_Knudtson = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='{}M2/artery_vein/macular_Zone_B_centred_vein_process/'.format(gv.results_dir))
+        FD_binary,VD_binary,Average_width,t2, t4, td, vessel_count_list, w1_list, w1_list_average,_, CRVE_Hubbard,_,CRVE_Knudtson = tortuosity_measures.evaluate_window(window, CONFIG.pixels_per_window, CONFIG.sampling_size, CONFIG.r_2_threshold,store_path='{}M2/artery_vein/macular_Zone_B_centred_vein_process/'.format(cfg.results_dir))
         #print(window.tags)
         vein_t2_list.append(t2)
         vein_t4_list.append(t4)
@@ -136,9 +135,9 @@ def create_macular_centred_B():
     AVR_Knudtson_list = [a / b for a,b in zip(CRAE_Knudtson_list, CRVE_Knudtson_list)]
     AVR_Hubbard_list = [a / b for a,b in zip(CRAE_Hubbard_list, CRVE_Hubbard_list)]
     
-    Disc_file = pd.read_csv('{}M3/Macular_centred/Disc_cup_results.csv'.format(gv.results_dir))
+    Disc_file = pd.read_csv('{}M3/Macular_centred/Disc_cup_results.csv'.format(cfg.results_dir))
     
     Data4stage2 = pd.DataFrame({'Fractal_dimension':binary_FD_binary, 'Vessel_density':binary_VD_binary, 'Average_width':binary_Average_width,'Distance_tortuosity':binary_t2_list, 'Squared_curvature_tortuosity':binary_t4_list, 'Tortuosity_density':binary_t5_list, 'Artery_Fractal_dimension':artery_FD_binary, 'Artery_Vessel_density':artery_VD_binary, 'Artery_Average_width':artery_Average_width,'Artery_Distance_tortuosity':artery_t2_list, 'Artery_Squared_curvature_tortuosity':artery_t4_list, 'Artery_Tortuosity_density':artery_t5_list, 'Vein_Fractal_dimension':vein_FD_binary, 'Vein_Vessel_density':vein_VD_binary, 'Vein_Average_width':vein_Average_width,'Vein_Distance_tortuosity':vein_t2_list, 'Vein_Squared_curvature_tortuosity':vein_t4_list, 'Vein_Tortuosity_density':vein_t5_list, 'CRAE_Hubbard':CRAE_Hubbard_list, 'CRVE_Hubbard':CRVE_Hubbard_list, 'AVR_Hubbard':AVR_Hubbard_list, 'CRAE_Knudtson':CRAE_Knudtson_list, 'CRVE_Knudtson':CRVE_Knudtson_list, 'AVR_Knudtson':AVR_Knudtson_list})
     #Data4stage2 = pd.concat([Disc_file[Disc_file['Name'].isin(name_list)].reset_index().drop(columns=['index', 'Name']), Data4stage2] ,axis=1)
     Data4stage2 = pd.concat([Disc_file[Disc_file['Name'].isin(name_list)].reset_index(), Data4stage2] ,axis=1)
-    Data4stage2.to_csv('{}M3/Macular_centred/Macular_Zone_B_Measurement.csv'.format(gv.results_dir), index = None, encoding='utf8')
+    Data4stage2.to_csv('{}M3/Macular_centred/Macular_Zone_B_Measurement.csv'.format(cfg.results_dir), index = None, encoding='utf8')

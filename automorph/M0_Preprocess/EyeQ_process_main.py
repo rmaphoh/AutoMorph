@@ -1,3 +1,4 @@
+from genericpath import isfile
 from glob import glob
 import pandas as pd
 import os

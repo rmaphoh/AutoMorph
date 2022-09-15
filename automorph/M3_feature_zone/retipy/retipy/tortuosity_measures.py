@@ -19,7 +19,7 @@
 import math
 import numpy as np
 from ..function_ import fractal_dimension, smoothing
-import automorph.M3_feature_zone.retipy.retipy.math as m
+from .math import derivative1_centered_h1, derivative2_centered_h1 
 from .retina import Retina, Window, detect_vessel_border
 from scipy.interpolate import CubicSpline
 from PIL import Image
@@ -324,10 +324,10 @@ def squared_curvature_tortuosity(x, y):
     curvatures = []
     x_values = range(1, len(x)-1)
     for i in x_values:
-        x_1 = m.derivative1_centered_h1(i, x)
-        x_2 = m.derivative2_centered_h1(i, x)
-        y_1 = m.derivative1_centered_h1(i, y)
-        y_2 = m.derivative2_centered_h1(i, y)
+        x_1 = derivative1_centered_h1(i, x)
+        x_2 = derivative2_centered_h1(i, x)
+        y_1 = derivative1_centered_h1(i, y)
+        y_2 = derivative2_centered_h1(i, y)
         curvatures.append((x_1*y_2 - x_2*y_1)/(y_1**2 + x_1**2)**1.5)
     return abs(np.trapz(curvatures, x_values))
 

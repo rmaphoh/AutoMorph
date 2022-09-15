@@ -81,8 +81,9 @@ class Retina(object):
             img_name = image_path
         
         resolution_list = pd.read_csv(store_path.split('M2')[0]+'M0/crop_info.csv')
+        resolution_list['f'] = resolution_list["Name"].apply(lambda x: x.split('/')[-1])
         
-        self.resolution = resolution_list['Scale_resolution'][resolution_list['Name']==img_name].values[0]
+        self.resolution = resolution_list['Scale_resolution'][resolution_list['f']==img_name].values[0]
         
         # average value
         #self.resolution = 0.83

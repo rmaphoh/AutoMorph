@@ -114,9 +114,9 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path, cfg):
             macular_process_binary_vessel_path, macular_process_artery_path, macular_process_vein_path, 
             macular_skeleton_binary_vessel_path, macular_skeleton_artery_path, macular_skeleton_vein_path,
             zone_b_macular_process_binary_vessel_path, zone_b_macular_process_artery_path, zone_b_macular_process_vein_path,
-            zone_b_macular_skeleton_artery_path, zone_b_macular_skeleton_vein_path,
+            zone_b_macular_skeleton_binary_vessel_path, zone_b_macular_skeleton_artery_path, zone_b_macular_skeleton_vein_path,
             zone_c_macular_process_binary_vessel_path, zone_c_macular_process_artery_path,zone_c_macular_process_vein_path,
-            zone_c_macular_skeleton_artery_path, zone_c_macular_skeleton_vein_path]
+            zone_c_macular_skeleton_binary_vessel_path, zone_c_macular_skeleton_artery_path, zone_c_macular_skeleton_vein_path]
     
     for d in dirs:
         if not os.path.exists(d):
