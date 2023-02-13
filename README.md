@@ -39,7 +39,7 @@ Before starting, we summarise the features for three running ways:
 
 The units for vessel average width, disc/cup height and width, and calibre metrics are defined as microns. For it, we need to organise a [resolution_information.csv](https://github.com/rmaphoh/AutoMorph/blob/main/resolution_information.csv) which includes the pixel resolution information, which can be queried in FDA and Dicom files. Alternatively, some people use approximate value for every images, e.g., 0.008 for Topcon 3D-OCT.
 
-**If you don't use these features or care their units**, you can just run after putting all images in the folder of ./images
+**If you don't use these features or care their units**, you can just run following command after putting all images in the folder of ./images
 
 ```bash
 python generate_resolution.py
