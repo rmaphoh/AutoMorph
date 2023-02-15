@@ -8,6 +8,8 @@ Project website: https://rmaphoh.github.io/projects/automorph.html
 
 Talks on NIHR Moorfields BRC: https://www.moorfieldsbrc.nihr.ac.uk/news/automorph-tool-to-analyse-retinal-photographs
 
+Please contact 	**ykzhoua@gmail.com** or **yukun.zhou.19@ucl.ac.uk** if you have questions.
+
 Before starting, we summarise the features for three running ways:
 
 * Google Colab (no commands/code, free gpu for 12 hours)
