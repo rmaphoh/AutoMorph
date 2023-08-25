@@ -32,22 +32,23 @@ python generate_resolution.py
 &nbsp;
 
 
-## Running with Colab
+## Running AutoMorph
+### Running with Colab
 
 Use the Google Colab and a free Tesla T4 gpu
 
 [Colab link click](https://colab.research.google.com/drive/13Qh9umwRM1OMRiNLyILbpq3k9h55FjNZ?usp=sharing)
 
 
-## Running on local/virtual machine
+### Running on local/virtual machine
 
 Install and use on your own machines [LOCAL.md](LOCAL.md)
 
 
-## Running with Docker
+### Running with Docker
 
 Zero experience in Docker? No worries [DOCKER.md](DOCKER.md).
-
+&nbsp;
 
 ## Common questions
 
@@ -65,7 +66,7 @@ We use Tesla T4 (16Gb) and 32vCPUs (120Gb). When you meet memory/ram issue in ru
 In csv files, invalid values (e.g., optic disc segmentation failure) are indicated with -1.  
 
 
-## Components
+### Components
 
 1. Vessel segmentation [BF-Net](https://github.com/rmaphoh/Learning-AVSegmentation.git)
 
@@ -75,6 +76,7 @@ In csv files, invalid values (e.g., optic disc segmentation failure) are indicat
 
 4. Feature measurement [retipy](https://github.com/alevalv/retipy.git)
 
+&nbsp;
 
 ## Citation
 
