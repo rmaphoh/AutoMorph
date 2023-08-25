@@ -1,6 +1,6 @@
 #!/bin/bash  
-# RUN FILE FOR DEEP RETINAL IMAGE ANALYSIS SYSTEM
-# YUKUN ZHOU 25/09/2021
+# RUN FILE FOR AUTOMORPH
+# YUKUN ZHOU 2023-08-24
 
 date
 rm -rf ./Results/*
@@ -42,11 +42,9 @@ python create_datasets_macular_centred_C.py
 
 cd ../../M3_feature_whole_pic/retipy/
 python create_datasets_macular_centred.py
+python create_datasets_disc_centred.py
 
 echo "### Done ###"
 
-
-# STEP 5 CORRELATION ANALYSIS
-#
 
 date

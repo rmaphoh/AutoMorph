@@ -61,6 +61,16 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
     optic_binary_result_path = '../Results/M3/Disc_centred/'
     macular_binary_result_path = '../Results/M3/Macular_centred/'
     
+    #2023/08/24
+    disc_process_binary_vessel_path = binary_vessel_path + 'disc_centred_binary_process/'
+    disc_process_artery_path = artery_vein_path + 'disc_centred_artery_process/'
+    disc_process_vein_path = artery_vein_path + 'disc_centred_vein_process/'
+    
+    disc_skeleton_binary_vessel_path = binary_vessel_path + 'disc_centred_binary_skeleton/'
+    disc_skeleton_artery_path = artery_vein_path + 'disc_centred_artery_skeleton/'
+    disc_skeleton_vein_path = artery_vein_path + 'disc_centred_vein_skeleton/'
+    
+    
     B_optic_process_binary_vessel_path = binary_vessel_path + 'Zone_B_disc_centred_binary_process/'
     B_optic_process_artery_path = artery_vein_path + 'Zone_B_disc_centred_artery_process/'
     B_optic_process_vein_path = artery_vein_path + 'Zone_B_disc_centred_vein_process/'
@@ -108,6 +118,22 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
     if not os.path.exists(macular_binary_result_path):
         os.makedirs(macular_binary_result_path)
     
+    
+    #2023/08/24
+    if not os.path.exists(disc_process_binary_vessel_path):
+        os.makedirs(disc_process_binary_vessel_path)
+    if not os.path.exists(disc_process_artery_path):
+        os.makedirs(disc_process_artery_path)
+    if not os.path.exists(disc_process_vein_path):
+        os.makedirs(disc_process_vein_path)
+    if not os.path.exists(disc_skeleton_binary_vessel_path):
+        os.makedirs(disc_skeleton_binary_vessel_path)
+    if not os.path.exists(disc_skeleton_artery_path):
+        os.makedirs(disc_skeleton_artery_path)
+    if not os.path.exists(disc_skeleton_vein_path):
+        os.makedirs(disc_skeleton_vein_path)
+        
+        
     if not os.path.exists(B_optic_process_binary_vessel_path):
         os.makedirs(B_optic_process_binary_vessel_path)
     if not os.path.exists(B_optic_process_artery_path):
@@ -325,7 +351,15 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
                     cv2.imwrite(C_optic_process_vein_path+i,vein_process_C)
                     cv2.imwrite(C_optic_skeleton_binary_vessel_path+i,binary_skeleton_C)
                     cv2.imwrite(C_optic_skeleton_artery_path+i,artery_skeleton_C)
-                    cv2.imwrite(C_optic_skeleton_vein_path+i,vein_skeleton_C)            
+                    cv2.imwrite(C_optic_skeleton_vein_path+i,vein_skeleton_C)   
+                    
+                    #2023/08/24
+                    shutil.copy(binary_vessel_path+'binary_process/'+i,disc_process_binary_vessel_path+i)
+                    shutil.copy(artery_vein_path+'artery_binary_process/'+i,disc_process_artery_path+i)
+                    shutil.copy(artery_vein_path+'vein_binary_process/'+i,disc_process_vein_path+i)
+                    shutil.copy(binary_vessel_path+'binary_skeleton/'+i,disc_skeleton_binary_vessel_path+i)
+                    shutil.copy(artery_vein_path+'artery_binary_skeleton/'+i,disc_skeleton_artery_path+i)
+                    shutil.copy(artery_vein_path+'vein_binary_skeleton/'+i,disc_skeleton_vein_path+i)
 
 
                     optic_vertical_disc.append(disc_vertical_height)
@@ -437,50 +471,6 @@ def misc_measures(true_vessel_arr, pred_vessel_arr):
         return 0,0,0,0,0,0,0,0
     
     
-def evaluate_disc(results_path, label_path):
-    if os.path.exists(results_path+'.ipynb_checkpoints'):
-        shutil.rmtree(results_path+'.ipynb_checkpoints')
-    if not os.path.exists(results_path):
-        os.makedirs(results_path)
-        
-    seg_list = os.listdir(results_path)
-
-    tot=[]
-    sent=[]
-    spet=[]
-    pret=[]
-    G_t=[]
-    F1t=[]
-    mset=[]
-    iout=[]
-    
-    n_val = len(seg_list)
-    
-    for i in seg_list:
-        label_name = i.split('.')[0] + '_OD.png'
-        label_ = cv2.imread(label_path+label_name)/255
-        label_=label_[...,0]
-        seg_ = cv2.imread(results_path + i)
-        seg_ = (seg_<255).astype('float')[...,0]
-        
-        acc, sensitivity, specificity, precision, G, F1_score, mse, iou = misc_measures(label_.flatten(), seg_.flatten())
-        
-        tot.append(acc) 
-        sent.append(sensitivity)
-        spet.append(specificity)
-        pret.append(precision)
-        G_t.append(G)
-        F1t.append(F1_score)
-        mset.append(mse)
-        iout.append(iou)
-        
-    
-    Data4stage2 = pd.DataFrame({'ACC':tot, 'Sensitivity':sent, 'Specificity':spet, 'Precision': pret, 'G_value': G_t, \
-                                    'F1-score': F1t, 'MSE': mset, 'IOU': iout})
-    Data4stage2.to_csv('./results/IDRID_optic/performance.csv', index = None, encoding='utf8')
-        
-        
-    #return tot / n_val, sent / n_val, spet / n_val, pret / n_val, G_t / n_val, F1t / n_val, auc_roct / n_val, auc_prt / n_val, iout/n_val, mset/n_val
         
 def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader):
     
