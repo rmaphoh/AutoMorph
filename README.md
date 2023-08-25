@@ -35,19 +35,18 @@ python generate_resolution.py
 ## Running AutoMorph
 ### Running with Colab
 
-Use the Google Colab and a free Tesla T4 gpu
-
-[Colab link click](https://colab.research.google.com/drive/13Qh9umwRM1OMRiNLyILbpq3k9h55FjNZ?usp=sharing)
+Use the Google Colab and a free Tesla T4 gpu [Colab link click](https://colab.research.google.com/drive/13Qh9umwRM1OMRiNLyILbpq3k9h55FjNZ?usp=sharing).
 
 
 ### Running on local/virtual machine
 
-Install and use on your own machines [LOCAL.md](LOCAL.md)
+Install and use on your own machines [LOCAL.md](LOCAL.md).
 
 
 ### Running with Docker
 
 Zero experience in Docker? No worries [DOCKER.md](DOCKER.md).
+
 &nbsp;
 
 ## Common questions
