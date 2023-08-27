@@ -434,9 +434,9 @@ if __name__ == '__main__':
         FD_list_r,name_list,VD_list_r,FD_list_v,VD_list_b,width_cal_r,width_cal_b = filter_frag(data_path='../Results/M2/artery_vein/')
         
         
-        Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_artery':FD_list_r, 'Vessel_Density_artery':VD_list_r})
-        Data4stage2.to_csv('../Results/M3/Artery_Features_Measurement.csv', index = None, encoding='utf8')
+        #Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_artery':FD_list_r, 'Vessel_Density_artery':VD_list_r})
+        #Data4stage2.to_csv('../Results/M3/Artery_Features_Measurement.csv', index = None, encoding='utf8')
         
-        Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_vein':FD_list_v, 'Vessel_Density_vein':VD_list_b})
-        Data4stage2.to_csv('../Results/M3/Vein_Features_Measurement.csv', index = None, encoding='utf8')
+        #Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_vein':FD_list_v, 'Vessel_Density_vein':VD_list_b})
+        #Data4stage2.to_csv('../Results/M3/Vein_Features_Measurement.csv', index = None, encoding='utf8')
 

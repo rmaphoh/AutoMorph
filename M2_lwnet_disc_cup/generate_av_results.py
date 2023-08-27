@@ -212,11 +212,16 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
     
     disc_cup_list = sorted(os.listdir(result_path))
     
+    resolution_list = pd.read_csv(result_path.split('M2')[0]+'M0/crop_info.csv')
+        
+    
+    
     for i in disc_cup_list:
         path_ = result_path+i
         disc_cup_ = cv2.imread(path_)
         disc_cup_912 = cv2.resize(disc_cup_,(912,912),interpolation = cv2.INTER_NEAREST)
         
+        resolution_scale = resolution_list['Scale_resolution'][resolution_list['Name']==i].values[0]
         #image_ = cv2.imread('../Results/M1/Good_quality/'+i)
         #IMAGE_912 = cv2.resize(image_,(912,912),interpolation = cv2.INTER_AREA)
         #disc_cup_912 = disc_cup_
@@ -362,11 +367,11 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
                     shutil.copy(artery_vein_path+'vein_binary_skeleton/'+i,disc_skeleton_vein_path+i)
 
 
-                    optic_vertical_disc.append(disc_vertical_height)
-                    optic_horizontal_disc.append(disc_horizontal_width)
+                    optic_vertical_disc.append(disc_vertical_height*resolution_scale)
+                    optic_horizontal_disc.append(disc_horizontal_width*resolution_scale)
 
-                    optic_vertical_cup.append(cup_vertical_height)
-                    optic_horizontal_cup.append(cup_horizontal_width)
+                    optic_vertical_cup.append(cup_vertical_height*resolution_scale)
+                    optic_horizontal_cup.append(cup_horizontal_width*resolution_scale)
 
                     optic_vertical_CDR.append(cup_vertical_height/disc_vertical_height)
                     optic_horizontal_CDR.append(cup_horizontal_width/disc_horizontal_width)
@@ -396,11 +401,11 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
                     shutil.copy(artery_vein_path+'artery_binary_skeleton/'+i,macular_skeleton_artery_path+i)
                     shutil.copy(artery_vein_path+'vein_binary_skeleton/'+i,macular_skeleton_vein_path+i)
 
-                    macular_vertical_disc.append(disc_vertical_height)
-                    macular_horizontal_disc.append(disc_horizontal_width)
+                    macular_vertical_disc.append(disc_vertical_height*resolution_scale)
+                    macular_horizontal_disc.append(disc_horizontal_width*resolution_scale)
 
-                    macular_vertical_cup.append(cup_vertical_height)
-                    macular_horizontal_cup.append(cup_horizontal_width)
+                    macular_vertical_cup.append(cup_vertical_height*resolution_scale)
+                    macular_horizontal_cup.append(cup_horizontal_width*resolution_scale)
 
                     macular_vertical_CDR.append(cup_vertical_height/disc_vertical_height)
                     macular_horizontal_CDR.append(cup_horizontal_width/disc_horizontal_width)
@@ -556,8 +561,6 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
                 
                 mask_pred_tensor_small_all = (mask_pred_tensor_small_all/8).to(device=device)
                 
-                #print(mask_pred_tensor_small_all.is_cuda)
-                #print(mask_pred_tensor_small_1.is_cuda)
                 
                 uncertainty_map = torch.sqrt((torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_1)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_2)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_3)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_4)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_5)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_6)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_7)+torch.square(mask_pred_tensor_small_all-mask_pred_tensor_small_8))/8)
             

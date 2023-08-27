@@ -44,6 +44,9 @@ cd ../../M3_feature_whole_pic/retipy/
 python create_datasets_macular_centred.py
 python create_datasets_disc_centred.py
 
+cd ../../
+python csv_merge.py
+
 echo "### Done ###"
 
 

@@ -12,7 +12,7 @@ res_list = []
 
 for i in image_list:
     img_list.append(i)
-    res_list.append(1)
+    res_list.append(0.008)
     
 Data4stage2 = pd.DataFrame({'fundus':img_list, 'res':res_list})
 Data4stage2.to_csv('resolution_information.csv', index = None, encoding='utf8')

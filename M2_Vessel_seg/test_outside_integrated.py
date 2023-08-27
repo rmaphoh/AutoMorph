@@ -241,10 +241,8 @@ def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_s
     if not os.path.exists('../Results/M3/'):
         os.makedirs('../Results/M3/')
                             
-    Data4stage2 = pd.DataFrame({'Image_id':Name_list, 'FD_boxC':FD_list, 'Vessel_Density':VD_list})
-    Data4stage2.to_csv('../Results/M3/Binary_Features_Measurement.csv', index = None, encoding='utf8')
-    
-    #Optic_disk_loc(data_path)
+    #Data4stage2 = pd.DataFrame({'Image_id':Name_list, 'FD_boxC':FD_list, 'Vessel_Density':VD_list})
+    #Data4stage2.to_csv('../Results/M3/Binary_Features_Measurement.csv', index = None, encoding='utf8')
         
         
 
@@ -292,23 +290,6 @@ if __name__ == '__main__':
 
     image_size = Define_image_size(args.uniform, args.dataset)
     lr = args.lr
-
-    net_G = Segmenter(input_channels=3, n_filters = 32, n_classes=1, bilinear=False)
-    net_D = Discriminator(input_channels=4, n_filters = 32, n_classes=1, bilinear=False)
-
-
-    if args.load:
-        net_G.load_state_dict(
-            torch.load(args.load, map_location=device)
-        )
-
-        net_D.load_state_dict(
-            torch.load(args.load, map_location=device)
-        )
-
-
-    net_G.to(device=device)
-    net_D.to(device=device)
     
     test_net(data_path=args.data_path,
              batch_size=args.batchsize,
