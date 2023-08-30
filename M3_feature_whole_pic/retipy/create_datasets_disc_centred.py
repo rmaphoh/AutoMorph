@@ -123,9 +123,7 @@ for filename in sorted(glob.glob(os.path.join(Artery_PATH, '*.png'))):
         artery_t5_list.append(-1)
         artery_FD_binary.append(-1)
         artery_VD_binary.append(-1)
-        artery_Average_width.append(-1)
-        CRAE_Hubbard_list.append(-1)
-        CRAE_Knudtson_list.append(-1)    
+        artery_Average_width.append(-1)  
         name_artery_list.append(filename.split('/')[-1])  
 
 
@@ -154,8 +152,6 @@ for filename in sorted(glob.glob(os.path.join(Vein_PATH, '*.png'))):
         vein_FD_binary.append(-1)
         vein_VD_binary.append(-1)
         vein_Average_width.append(-1)
-        CRVE_Hubbard_list.append(-1)
-        CRVE_Knudtson_list.append(-1)
         name_vein_list.append(filename.split('/')[-1])
 
 
