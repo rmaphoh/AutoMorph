@@ -155,13 +155,43 @@ for filename in sorted(glob.glob(os.path.join(Vein_PATH, '*.png'))):
         name_vein_list.append(filename.split('/')[-1])
 
 
-Disc_file = pd.read_csv('../../Results/M3/Disc_centred/Disc_cup_results.csv')
+Disc_file = pd.read_csv("../../Results/M3/Disc_centred/Disc_cup_results.csv").astype({"Name": "object"})
 
-Data4stage2_binary = pd.DataFrame({'Name':name_binary_list, 'Fractal_dimension':binary_FD_binary, 'Vessel_density':binary_VD_binary, 'Average_width':binary_Average_width,'Distance_tortuosity':binary_t2_list, 'Squared_curvature_tortuosity':binary_t4_list, 'Tortuosity_density':binary_t5_list})
+Data4stage2_binary = pd.DataFrame(
+    {
+        "Name": name_binary_list,
+        "Fractal_dimension": binary_FD_binary,
+        "Vessel_density": binary_VD_binary,
+        "Average_width": binary_Average_width,
+        "Distance_tortuosity": binary_t2_list,
+        "Squared_curvature_tortuosity": binary_t4_list,
+        "Tortuosity_density": binary_t5_list,
+    }
+).astype({"Name": "object"})
 
-Data4stage2_artery = pd.DataFrame({'Name':name_artery_list, 'Artery_Fractal_dimension':artery_FD_binary, 'Artery_Vessel_density':artery_VD_binary, 'Artery_Average_width':artery_Average_width,'Artery_Distance_tortuosity':artery_t2_list, 'Artery_Squared_curvature_tortuosity':artery_t4_list, 'Artery_Tortuosity_density':artery_t5_list})
+Data4stage2_artery = pd.DataFrame(
+    {
+        "Name": name_artery_list,
+        "Artery_Fractal_dimension": artery_FD_binary,
+        "Artery_Vessel_density": artery_VD_binary,
+        "Artery_Average_width": artery_Average_width,
+        "Artery_Distance_tortuosity": artery_t2_list,
+        "Artery_Squared_curvature_tortuosity": artery_t4_list,
+        "Artery_Tortuosity_density": artery_t5_list,
+    }
+).astype({"Name": "object"})
 
-Data4stage2_vein = pd.DataFrame({'Name':name_vein_list, 'Vein_Fractal_dimension':vein_FD_binary, 'Vein_Vessel_density':vein_VD_binary, 'Vein_Average_width':vein_Average_width,'Vein_Distance_tortuosity':vein_t2_list, 'Vein_Squared_curvature_tortuosity':vein_t4_list, 'Vein_Tortuosity_density':vein_t5_list})
+Data4stage2_vein = pd.DataFrame(
+    {
+        "Name": name_vein_list,
+        "Vein_Fractal_dimension": vein_FD_binary,
+        "Vein_Vessel_density": vein_VD_binary,
+        "Vein_Average_width": vein_Average_width,
+        "Vein_Distance_tortuosity": vein_t2_list,
+        "Vein_Squared_curvature_tortuosity": vein_t4_list,
+        "Vein_Tortuosity_density": vein_t5_list,
+    }
+).astype({"Name": "object"})
 
 
 Disc_file_binary = pd.merge(Disc_file, Data4stage2_binary, how="outer", on=["Name"])
