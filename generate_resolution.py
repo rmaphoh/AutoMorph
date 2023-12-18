@@ -2,10 +2,12 @@ import pandas as pd
 import os
 import shutil
 
-if os.path.exists('./images/.ipynb_checkpoints'):
-    shutil.rmtree('./images/.ipynb_checkpoints')
+raw_img_dir = '/NVME/decrypted/ukbb/fundus/raw/CLRIS/'
 
-image_list = sorted(os.listdir('./images/'))
+if os.path.exists(raw_img_dir+'.ipynb_checkpoints'):
+    shutil.rmtree(raw_img_dir+'.ipynb_checkpoints')
+
+image_list = sorted(os.listdir(raw_img_dir))
 img_list = []
 # import image resolution here
 res_list = []
