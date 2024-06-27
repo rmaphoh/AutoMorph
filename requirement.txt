@@ -3,3 +3,8 @@ numpy>=2.0.0
 opencv-python>=4.10.0
 pandas>=2.2.0
 Pillow==10.3.0
+# for M1_Retinal_Image_quality_EyePACS
+tqdm>=4.66.4
+scipy>=1.14.0
+efficientnet_pytorch>=0.7.1
+torchvision>=0.18.1
