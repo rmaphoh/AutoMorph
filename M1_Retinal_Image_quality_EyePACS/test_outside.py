@@ -190,21 +190,16 @@ if __name__ == '__main__':
 
     # Check if CUDA is available
     if torch.cuda.is_available():
-        print("CUDA is available. Using CUDA...")
+        logging.info("CUDA is available. Using CUDA...")
         device = torch.device("cuda",args.local_rank)
-        map_location = "cuda:%d" % args.local_rank
     elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
-        print("MPS is available. Using MPS...")
+        logging.info("MPS is available. Using MPS...")
         device = torch.device("mps")
-        map_location = "mps"
     else:
-        print("Neither CUDA nor MPS is available. Using CPU...")
+        logging.info("Neither CUDA nor MPS is available. Using CPU...")
         device = torch.device("cpu")
-        map_location = "cpu"
 
-    print(f"Using device: {device}")
-    
-    #logging.info(f'Using device {device}')
+    logging.info(f'Using device {device}')
 
     test_dir = args.test_dir
     dataset=args.dataset
@@ -260,28 +255,28 @@ if __name__ == '__main__':
     #map_location = {'cuda:%d' % 0: 'cuda:%d' % args.local_rank}
     if args.load:
         model_fl_1.load_state_dict(
-            torch.load(checkpoint_path_1, map_location=map_location)
+            torch.load(checkpoint_path_1, map_location=device)
         )
         model_fl_2.load_state_dict(
-            torch.load(checkpoint_path_2, map_location=map_location)
+            torch.load(checkpoint_path_2, map_location=device)
         )
         model_fl_3.load_state_dict(
-            torch.load(checkpoint_path_3, map_location=map_location)
+            torch.load(checkpoint_path_3, map_location=device)
         )
         model_fl_4.load_state_dict(
-            torch.load(checkpoint_path_4, map_location=map_location)
+            torch.load(checkpoint_path_4, map_location=device)
         )
         model_fl_5.load_state_dict(
-            torch.load(checkpoint_path_5, map_location=map_location)
+            torch.load(checkpoint_path_5, map_location=device)
         )
         model_fl_6.load_state_dict(
-            torch.load(checkpoint_path_6, map_location=map_location)
+            torch.load(checkpoint_path_6, map_location=device)
         )
         model_fl_7.load_state_dict(
-            torch.load(checkpoint_path_7, map_location=map_location)
+            torch.load(checkpoint_path_7, map_location=device)
         )
         model_fl_8.load_state_dict(
-            torch.load(checkpoint_path_8, map_location=map_location)
+            torch.load(checkpoint_path_8, map_location=device)
         )
 
     # faster convolutions, but more memory
