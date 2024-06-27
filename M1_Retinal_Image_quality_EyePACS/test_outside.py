@@ -12,19 +12,19 @@ import numpy as np
 import pandas as pd
 import torch.nn as nn
 from tqdm import tqdm
-from pycm import *
-import matplotlib
-import matplotlib.pyplot as plt
+#from pycm import *
+# import matplotlib
+# import matplotlib.pyplot as plt
 from dataset import BasicDataset_OUT
 from torch.utils.data import DataLoader
 from model import Resnet101_fl, InceptionV3_fl, Densenet161_fl, Resnext101_32x8d_fl, MobilenetV2_fl, Vgg16_bn_fl, Efficientnet_fl
 
 
-font = {
-        'weight' : 'normal',
-        'size'   : 18}
-plt.rc('font',family='Times New Roman') 
-matplotlib.rc('font', **font)
+# font = {
+#         'weight' : 'normal',
+#         'size'   : 18}
+# plt.rc('font',family='Times New Roman') 
+# matplotlib.rc('font', **font)
 
 def test_net(model_fl_1,
             model_fl_2,
@@ -187,8 +187,22 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
     
-    torch.cuda.set_device(args.local_rank)
-    device = torch.device("cuda", args.local_rank)
+
+    # Check if CUDA is available
+    if torch.cuda.is_available():
+        print("CUDA is available. Using CUDA...")
+        device = torch.device("cuda",args.local_rank)
+        map_location = "cuda:%d" % args.local_rank
+    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
+        print("MPS is available. Using MPS...")
+        device = torch.device("mps")
+        map_location = "mps"
+    else:
+        print("Neither CUDA nor MPS is available. Using CPU...")
+        device = torch.device("cpu")
+        map_location = "cpu"
+
+    print(f"Using device: {device}")
     
     #logging.info(f'Using device {device}')
 
@@ -243,31 +257,31 @@ if __name__ == '__main__':
     model_fl_7.to(device=device)
     model_fl_8.to(device=device)
 
-    map_location = {'cuda:%d' % 0: 'cuda:%d' % args.local_rank}
+    #map_location = {'cuda:%d' % 0: 'cuda:%d' % args.local_rank}
     if args.load:
         model_fl_1.load_state_dict(
-            torch.load(checkpoint_path_1, map_location="cuda:0")
+            torch.load(checkpoint_path_1, map_location=map_location)
         )
         model_fl_2.load_state_dict(
-            torch.load(checkpoint_path_2, map_location="cuda:0")
+            torch.load(checkpoint_path_2, map_location=map_location)
         )
         model_fl_3.load_state_dict(
-            torch.load(checkpoint_path_3, map_location="cuda:0")
+            torch.load(checkpoint_path_3, map_location=map_location)
         )
         model_fl_4.load_state_dict(
-            torch.load(checkpoint_path_4, map_location="cuda:0")
+            torch.load(checkpoint_path_4, map_location=map_location)
         )
         model_fl_5.load_state_dict(
-            torch.load(checkpoint_path_5, map_location="cuda:0")
+            torch.load(checkpoint_path_5, map_location=map_location)
         )
         model_fl_6.load_state_dict(
-            torch.load(checkpoint_path_6, map_location="cuda:0")
+            torch.load(checkpoint_path_6, map_location=map_location)
         )
         model_fl_7.load_state_dict(
-            torch.load(checkpoint_path_7, map_location="cuda:0")
+            torch.load(checkpoint_path_7, map_location=map_location)
         )
         model_fl_8.load_state_dict(
-            torch.load(checkpoint_path_8, map_location="cuda:0")
+            torch.load(checkpoint_path_8, map_location=map_location)
         )
 
     # faster convolutions, but more memory
