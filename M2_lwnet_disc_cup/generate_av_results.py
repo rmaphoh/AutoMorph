@@ -16,6 +16,9 @@ from utils.model_saving_loading import load_model
 from skimage import measure
 import pandas as pd
 from skimage.morphology import remove_small_objects
+import logging
+
+
 # argument parsing
 parser = argparse.ArgumentParser()
 required_named = parser.add_argument_group('required arguments')
@@ -611,18 +614,22 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
 
 
 if __name__ == '__main__':
-
+    
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = parser.parse_args()
     results_path = args.results_path
-    if args.device.startswith("cuda"):
-        # In case one has multiple devices, we must first set the one
-        # we would like to use so pytorch can find it.
-        os.environ['CUDA_VISIBLE_DEVICES'] = args.device.split(":", 1)[1]
-        if not torch.cuda.is_available():
-            raise RuntimeError("cuda is not currently available!")
-        device = torch.device("cuda")
-    else:  # cpu
-        device = torch.device(args.device)
+    # Check if CUDA is available
+    if torch.cuda.is_available():
+        logging.info("CUDA is available. Using CUDA...")
+        device = torch.device("cuda:0")
+    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
+        logging.info("MPS is available. Using MPS...")
+        device = torch.device("mps")
+    else:
+        logging.info("Neither CUDA nor MPS is available. Using CPU...")
+        device = torch.device("cpu")
+
+    logging.info(f'Using device {device}')
 
 
     # parse config file if provided
