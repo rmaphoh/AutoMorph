@@ -280,8 +280,18 @@ if __name__ == '__main__':
     
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    #logging.info(f'Using device {device}')
+    # Check if CUDA is available
+    if torch.cuda.is_available():
+        logging.info("CUDA is available. Using CUDA...")
+        device = torch.device("cuda:0")
+    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
+        logging.info("MPS is available. Using MPS...")
+        device = torch.device("mps")
+    else:
+        logging.info("Neither CUDA nor MPS is available. Using CPU...")
+        device = torch.device("cpu")
+
+    logging.info(f'Using device {device}')
 
     img_size = Define_image_size(args.uniform, args.dataset)
     dataset_name = args.dataset
@@ -347,9 +357,9 @@ if __name__ == '__main__':
 
 
     for i in range(1):
-        net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 + 'CP_best_F1_all.pth'))
-        net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 + 'CP_best_F1_A.pth'))
-        net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 + 'CP_best_F1_V.pth'))
+        net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 + 'CP_best_F1_V.pth',map_location=device))
         net_G_1.eval()
         net_G_A_1.eval()
         net_G_V_1.eval()
@@ -357,9 +367,9 @@ if __name__ == '__main__':
         net_G_A_1.to(device=device)
         net_G_V_1.to(device=device)
 
-        net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 + 'CP_best_F1_all.pth'))
-        net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 + 'CP_best_F1_A.pth'))
-        net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 + 'CP_best_F1_V.pth'))
+        net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 + 'CP_best_F1_V.pth',map_location=device))
         net_G_2.eval()
         net_G_A_2.eval()
         net_G_V_2.eval()
@@ -367,9 +377,9 @@ if __name__ == '__main__':
         net_G_A_2.to(device=device)
         net_G_V_2.to(device=device)
         
-        net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 + 'CP_best_F1_all.pth'))
-        net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 + 'CP_best_F1_A.pth'))
-        net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 + 'CP_best_F1_V.pth'))
+        net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 + 'CP_best_F1_V.pth',map_location=device))
         net_G_3.eval()
         net_G_A_3.eval()
         net_G_V_3.eval()
@@ -377,9 +387,9 @@ if __name__ == '__main__':
         net_G_A_3.to(device=device)
         net_G_V_3.to(device=device)
         
-        net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 + 'CP_best_F1_all.pth'))
-        net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 + 'CP_best_F1_A.pth'))
-        net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 + 'CP_best_F1_V.pth'))
+        net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 + 'CP_best_F1_V.pth',map_location=device))
         net_G_4.eval()
         net_G_A_4.eval()
         net_G_V_4.eval()
@@ -387,9 +397,9 @@ if __name__ == '__main__':
         net_G_A_4.to(device=device)
         net_G_V_4.to(device=device)
         
-        net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 + 'CP_best_F1_all.pth'))
-        net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 + 'CP_best_F1_A.pth'))
-        net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 + 'CP_best_F1_V.pth'))
+        net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 + 'CP_best_F1_V.pth',map_location=device))
         net_G_5.eval()
         net_G_A_5.eval()
         net_G_V_5.eval()
@@ -397,9 +407,9 @@ if __name__ == '__main__':
         net_G_A_5.to(device=device)
         net_G_V_5.to(device=device)
         
-        net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 + 'CP_best_F1_all.pth'))
-        net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 + 'CP_best_F1_A.pth'))
-        net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 + 'CP_best_F1_V.pth'))
+        net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 + 'CP_best_F1_V.pth',map_location=device))
         net_G_6.eval()
         net_G_A_6.eval()
         net_G_V_6.eval()
@@ -407,9 +417,9 @@ if __name__ == '__main__':
         net_G_A_6.to(device=device)
         net_G_V_6.to(device=device)
         
-        net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 + 'CP_best_F1_all.pth'))
-        net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 + 'CP_best_F1_A.pth'))
-        net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 + 'CP_best_F1_V.pth'))
+        net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 + 'CP_best_F1_V.pth',map_location=device))
         net_G_7.eval()
         net_G_A_7.eval()
         net_G_V_7.eval()
@@ -417,9 +427,9 @@ if __name__ == '__main__':
         net_G_A_7.to(device=device)
         net_G_V_7.to(device=device)
         
-        net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 + 'CP_best_F1_all.pth'))
-        net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 + 'CP_best_F1_A.pth'))
-        net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 + 'CP_best_F1_V.pth'))
+        net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 + 'CP_best_F1_V.pth',map_location=device))
         net_G_8.eval()
         net_G_A_8.eval()
         net_G_V_8.eval()

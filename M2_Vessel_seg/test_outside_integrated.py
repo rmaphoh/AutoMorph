@@ -203,34 +203,34 @@ def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_s
     net_10 = Segmenter(input_channels=3, n_filters = 32, n_classes=1, bilinear=False)
     
 
-    net_1.load_state_dict(torch.load(dir_checkpoint_1 + 'G_best_F1_epoch.pth'))
+    net_1.load_state_dict(torch.load(dir_checkpoint_1 + 'G_best_F1_epoch.pth',map_location=device))
     net_1.eval()
     net_1.to(device=device)
-    net_2.load_state_dict(torch.load(dir_checkpoint_2 + 'G_best_F1_epoch.pth'))
+    net_2.load_state_dict(torch.load(dir_checkpoint_2 + 'G_best_F1_epoch.pth',map_location=device))
     net_2.eval()
     net_2.to(device=device)
-    net_3.load_state_dict(torch.load(dir_checkpoint_3 + 'G_best_F1_epoch.pth'))
+    net_3.load_state_dict(torch.load(dir_checkpoint_3 + 'G_best_F1_epoch.pth',map_location=device))
     net_3.eval()
     net_3.to(device=device)
-    net_4.load_state_dict(torch.load(dir_checkpoint_4 + 'G_best_F1_epoch.pth'))
+    net_4.load_state_dict(torch.load(dir_checkpoint_4 + 'G_best_F1_epoch.pth',map_location=device))
     net_4.eval()
     net_4.to(device=device)
-    net_5.load_state_dict(torch.load(dir_checkpoint_5 + 'G_best_F1_epoch.pth'))
+    net_5.load_state_dict(torch.load(dir_checkpoint_5 + 'G_best_F1_epoch.pth',map_location=device))
     net_5.eval()
     net_5.to(device=device)
-    net_6.load_state_dict(torch.load(dir_checkpoint_6 + 'G_best_F1_epoch.pth'))
+    net_6.load_state_dict(torch.load(dir_checkpoint_6 + 'G_best_F1_epoch.pth',map_location=device))
     net_6.eval()
     net_6.to(device=device)
-    net_7.load_state_dict(torch.load(dir_checkpoint_7 + 'G_best_F1_epoch.pth'))
+    net_7.load_state_dict(torch.load(dir_checkpoint_7 + 'G_best_F1_epoch.pth',map_location=device))
     net_7.eval()
     net_7.to(device=device)
-    net_8.load_state_dict(torch.load(dir_checkpoint_8 + 'G_best_F1_epoch.pth'))
+    net_8.load_state_dict(torch.load(dir_checkpoint_8 + 'G_best_F1_epoch.pth',map_location=device))
     net_8.eval()
     net_8.to(device=device)
-    net_9.load_state_dict(torch.load(dir_checkpoint_9 + 'G_best_F1_epoch.pth'))
+    net_9.load_state_dict(torch.load(dir_checkpoint_9 + 'G_best_F1_epoch.pth',map_location=device))
     net_9.eval()
     net_9.to(device=device)
-    net_10.load_state_dict(torch.load(dir_checkpoint_10 + 'G_best_F1_epoch.pth'))
+    net_10.load_state_dict(torch.load(dir_checkpoint_10 + 'G_best_F1_epoch.pth',map_location=device))
     net_10.eval()
     net_10.to(device=device)
         
@@ -285,8 +285,19 @@ if __name__ == '__main__':
     
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # Check if CUDA is available
+    if torch.cuda.is_available():
+        logging.info("CUDA is available. Using CUDA...")
+        device = torch.device("cuda:0")
+    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
+        logging.info("MPS is available. Using MPS...")
+        device = torch.device("mps")
+    else:
+        logging.info("Neither CUDA nor MPS is available. Using CPU...")
+        device = torch.device("cpu")
+
     logging.info(f'Using device {device}')
+
 
     image_size = Define_image_size(args.uniform, args.dataset)
     lr = args.lr
