@@ -144,7 +144,7 @@ def _detect_inflection_points(x, y):
 
 def _curve_to_image(x, y):
     # get the maximum and minimum x and y values
-    mm_values = np.empty([2, 2], dtype=np.int)
+    mm_values = np.empty([2, 2], dtype=np.int32)
     mm_values[0, :] = 99999999999999
     mm_values[1, :] = -99999999999999
     for i in range(0, len(x)):
