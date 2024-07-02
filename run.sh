@@ -5,7 +5,7 @@
 date
 # STEP 0 - prepare AUTOMORH_DATA directory and clean up results
 if [ -z "${AUTOMORPH_DATA}" ]; then
-  export AUTOMORPH_DATA="$(dirname "$(realpath "$0")")"
+  export AUTOMORPH_DATA=.
   echo "AUTOMORPH_DATA not set, using default: ${AUTOMORPH_DATA}"
 fi
 
