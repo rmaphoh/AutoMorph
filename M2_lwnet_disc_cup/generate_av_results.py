@@ -18,6 +18,7 @@ import pandas as pd
 from skimage.morphology import remove_small_objects
 import logging
 
+AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
 
 # argument parsing
 parser = argparse.ArgumentParser()
@@ -61,8 +62,8 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
     if os.path.exists(result_path+'.ipynb_checkpoints'):
         shutil.rmtree(result_path+'.ipynb_checkpoints')
         
-    optic_binary_result_path = '../Results/M3/Disc_centred/'
-    macular_binary_result_path = '../Results/M3/Macular_centred/'
+    optic_binary_result_path = f'{AUTOMORPH_DATA}/Results/M3/Disc_centred/'
+    macular_binary_result_path = f'{AUTOMORPH_DATA}/Results/M3/Macular_centred/'
     
     #2023/08/24
     disc_process_binary_vessel_path = binary_vessel_path + 'disc_centred_binary_process/'
@@ -484,8 +485,8 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
     
     n_val = len(test_loader)
     
-    seg_results_small_path = '../Results/M2/optic_disc_cup/resized/'
-    seg_results_raw_path = '../Results/M2/optic_disc_cup/raw/'
+    seg_results_small_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/resized/'
+    seg_results_raw_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/raw/'
     
     if not os.path.isdir(seg_results_small_path):
         os.makedirs(seg_results_small_path)
@@ -493,11 +494,11 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
     if not os.path.isdir(seg_results_raw_path):
         os.makedirs(seg_results_raw_path)
 
-    seg_uncertainty_small_path = '../Results/M2/optic_disc_cup/resize_uncertainty/'        
+    seg_uncertainty_small_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/resize_uncertainty/'        
     if not os.path.isdir(seg_uncertainty_small_path):
         os.makedirs(seg_uncertainty_small_path)
     
-    seg_uncertainty_raw_path = '../Results/M2/optic_disc_cup/raw_uncertainty/'
+    seg_uncertainty_raw_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/raw_uncertainty/'
     
     if not os.path.isdir(seg_uncertainty_raw_path):
         os.makedirs(seg_uncertainty_raw_path)
@@ -651,7 +652,7 @@ if __name__ == '__main__':
     else:
         sys.exit('im_size should be a number or a tuple of two numbers')
 
-    data_path = '../Results/M1/Good_quality/'
+    data_path = f'{AUTOMORPH_DATA}/Results/M1/Good_quality/'
 
     csv_path = 'test_all.csv'
     test_loader = get_test_dataset(data_path, csv_path=csv_path, tg_size=tg_size)
@@ -702,9 +703,9 @@ if __name__ == '__main__':
 
     prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader)
     
-    result_path = '../Results/M2/optic_disc_cup/resized/'
-    binary_vessel_path = '../Results/M2/binary_vessel/'
-    artery_vein_path = '../Results/M2/artery_vein/'
+    result_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/resized/'
+    binary_vessel_path = f'{AUTOMORPH_DATA}/Results/M2/binary_vessel/'
+    artery_vein_path = f'{AUTOMORPH_DATA}/Results/M2/artery_vein/'
     
     optic_disc_centre(result_path,binary_vessel_path, artery_vein_path)
     

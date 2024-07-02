@@ -22,6 +22,7 @@ from skimage import io
 from FD_cal import fractal_dimension,vessel_density
 import shutil
 
+AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
 
 def filter_frag(data_path):
     if os.path.isdir(data_path + 'resize_binary/.ipynb_checkpoints'):
@@ -169,7 +170,7 @@ def segment_fundus(data_path, net_1, net_2, net_3, net_4, net_5, net_6, net_7, n
 def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_size, job_name, threshold, checkpoint_mode, mask_or=True, train_or=False):
 
     #test_dir = "./data/{}/test/images/".format(dataset_test)
-    test_dir = '../Results/M1/Good_quality/'
+    test_dir = f'{AUTOMORPH_DATA}/Results/M1/Good_quality/'
     mask_dir = "./data/{}/test/mask/".format(dataset_test)
     test_label = "./data/{}/test/1st_manual/".format(dataset_test)
     FD_list = []
@@ -238,8 +239,8 @@ def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_s
     
     FD_list, Name_list, VD_list, width_cal = filter_frag(data_path)
     
-    if not os.path.exists('../Results/M3/'):
-        os.makedirs('../Results/M3/')
+    if not os.path.exists(f'{AUTOMORPH_DATA}/Results/M3/'):
+        os.makedirs(f'{AUTOMORPH_DATA}/Results/M3/')
                             
     #Data4stage2 = pd.DataFrame({'Image_id':Name_list, 'FD_boxC':FD_list, 'Vessel_Density':VD_list})
     #Data4stage2.to_csv('../Results/M3/Binary_Features_Measurement.csv', index = None, encoding='utf8')
