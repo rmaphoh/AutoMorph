@@ -4,14 +4,15 @@
 
 date
 # STEP 0 - prepare AUTOMORH_DATA directory and clean up results
-if [ -z "${AUTOMORPH_DATA}" ]; then
-  export AUTOMORPH_DATA=.
-  echo "AUTOMORPH_DATA not set, using default: ${AUTOMORPH_DATA}"
-fi
-
 python automorph_data.py
 
-rm -rf ${AUTOMORPH_DATA}/Results/*
+if [ -z "${AUTOMORPH_DATA}" ]; then
+  rm -rf ./Results/*
+  echo "AUTOMORPH_DATA not set, using default directory"
+else
+  rm -rf ${AUTOMORPH_DATA}/Results/*
+  echo "AUTOMORPH_DATA set to ${AUTOMORPH_DATA}
+fi
 
 # STEP 1 IMAGE PREPROCESSING (EXTRA BACKGROUND REMOVE, SQUARE)
 
