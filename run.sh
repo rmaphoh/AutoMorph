@@ -3,7 +3,10 @@
 # YUKUN ZHOU 2023-08-24
 
 date
-rm -rf ./Results/*
+# STEP 0 - prepare AUTOMORH_DATA directory and clean up results
+
+python automorph_data.py
+
 # STEP 1 IMAGE PREPROCESSING (EXTRA BACKGROUND REMOVE, SQUARE)
 
 echo "### Preprocess Start ###"
