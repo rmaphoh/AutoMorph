@@ -14,12 +14,7 @@ if os.getenv('AUTOMORPH_DATA'):
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     if not os.path.exists(os.path.join(data_path, 'images')):
-        os.makedirs(os.path.join(data_path, 'images'))
-    if not os.path.exists(os.path.join(data_path, 'M1_Retinal_Image_quality_EyePACS/test_outside')):
-        os.makedirs(os.path.join(data_path, 'M1_Retinal_Image_quality_EyePACS/test_outside'))    
+        os.makedirs(os.path.join(data_path, 'images'))   
     if not os.path.exists(os.path.join(data_path, 'Results')):
         os.makedirs(os.path.join(data_path, 'Results'))
-    shutil.rmtree(os.path.join(data_path, 'Results/*'), ignore_errors=True)
-else:
-    shutil.rmtree("./Results/*", ignore_errors=True)
 
