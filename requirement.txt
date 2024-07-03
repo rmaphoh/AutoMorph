@@ -1,12 +1,12 @@
 # for M0_Preprocess
-numpy==2.0.0
+numpy>=1.23.5
 opencv-python-headless==4.10.0.84
 pandas==2.2.0
 Pillow==10.3.0
 
 # for M1_Retinal_Image_quality_EyePACS
-torch==2.3.1
-torchvision==0.18.1
+# torch==2.3.1				# installed by conda
+# torchvision==0.18.1			# installed by conda
 efficientnet_pytorch==0.7.1
 tqdm==4.66.4
 scipy==1.14.0
