@@ -24,7 +24,7 @@ class TrainDataset(Dataset):
         
         self.ids = [splitext(file)[0] for file in listdir(self.im_list)
                     if not file.startswith('.')]
-        logging.info(f'Creating dataset with {(self.ids)} ')
+        #logging.info(f'Creating dataset with {(self.ids)} ')
         logging.info(f'Creating dataset with {len(self.ids)} examples')
         
 
@@ -220,7 +220,7 @@ def get_test_dataset(data_path, csv_path='test.csv', tg_size=(512, 512)):
     #path_test_csv = osp.join(data_path, csv_path)
     path_test_csv = data_path
     test_dataset = TestDataset(csv_path=path_test_csv, tg_size=tg_size)
-    test_loader = DataLoader(dataset=test_dataset, batch_size=16, num_workers=16, pin_memory=False)
+    test_loader = DataLoader(dataset=test_dataset, batch_size=16, num_workers=8, pin_memory=False)
 
     return test_loader
 

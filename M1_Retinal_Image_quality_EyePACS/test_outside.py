@@ -1,7 +1,4 @@
 
-'''
-Code of testing
-'''
 import argparse
 import logging
 import os
@@ -12,20 +9,11 @@ import numpy as np
 import pandas as pd
 import torch.nn as nn
 from tqdm import tqdm
-#from pycm import *
-# import matplotlib
-# import matplotlib.pyplot as plt
 from dataset import BasicDataset_OUT
 from torch.utils.data import DataLoader
 from model import Resnet101_fl, InceptionV3_fl, Densenet161_fl, Resnext101_32x8d_fl, MobilenetV2_fl, Vgg16_bn_fl, Efficientnet_fl
 
 AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
-
-# font = {
-#         'weight' : 'normal',
-#         'size'   : 18}
-# plt.rc('font',family='Times New Roman') 
-# matplotlib.rc('font', **font)
 
 def test_net(model_fl_1,
             model_fl_2,
@@ -40,13 +28,9 @@ def test_net(model_fl_1,
               epochs=5,
               batch_size=20,
               image_size=(512,512),
-              save_cp=True,
               ):
 
-    since = time.time()
     storage_path ="Ensemble_exp_{}/{}/train_on_{}/test_on_{}/".format(args.task, args.load, args.model, args.dataset)
-    #dir_mask = "./data/{}/training/1st_manual/".format(args.dataset)
-    dataset_name = args.dataset
     n_classes = args.n_class
     # create files
 
@@ -56,7 +40,7 @@ def test_net(model_fl_1,
     dataset = BasicDataset_OUT(test_dir, image_size, n_classes, train_or=False)
         
     n_test = len(dataset)
-    val_loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=16, pin_memory=False, drop_last=False)
+    val_loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=8, pin_memory=False, drop_last=False)
     
     prediction_decode_list = []
     filename_list = []
@@ -147,7 +131,7 @@ def test_net(model_fl_1,
                     pbar.update(imgs.shape[0])
         
     Data4stage2 = pd.DataFrame({'Name':filename_list, 'softmax_good':np.array(prediction_list_mean)[:,0],'softmax_usable':np.array(prediction_list_mean)[:,1],'softmax_bad':np.array(prediction_list_mean)[:,2], 'good_sd':np.array(prediction_list_std)[:,0],'usable_sd':np.array(prediction_list_std)[:,1],'bad_sd':np.array(prediction_list_std)[:,2], 'Prediction': prediction_decode_list})
-    #Data4stage2.to_csv('./test_outside/results_ensemble.csv', index = None, encoding='utf8')
+
     if not os.path.exists(f'{AUTOMORPH_DATA}/Results/M1'):
         os.makedirs(f'{AUTOMORPH_DATA}/Results/M1')
     Data4stage2.to_csv(f'{AUTOMORPH_DATA}/Results/M1/results_ensemble.csv', index = None, encoding='utf8')
@@ -279,9 +263,6 @@ if __name__ == '__main__':
         model_fl_8.load_state_dict(
             torch.load(checkpoint_path_8, map_location=device)
         )
-
-    # faster convolutions, but more memory
-    # cudnn.benchmark = True
 
     try:
         test_net(model_fl_1,
