@@ -21,7 +21,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "cwd": "${fileDirname}"
+            "cwd": "${fileDirname}",
+            "env": 
+                {"AUTOMORPH_DATA": "/tmp/AutoMorph"}
+               
         }
-    ]
+        ]
 }

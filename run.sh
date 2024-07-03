@@ -3,7 +3,17 @@
 # YUKUN ZHOU 2023-08-24
 
 date
-rm -rf ./Results/*
+# STEP 0 - prepare AUTOMORH_DATA directory and clean up results
+python automorph_data.py
+
+if [ -z "${AUTOMORPH_DATA}" ]; then
+  rm -rf ./Results/*
+  echo "AUTOMORPH_DATA not set, using default directory"
+else
+  rm -rf ${AUTOMORPH_DATA}/Results/*
+  echo "AUTOMORPH_DATA set to ${AUTOMORPH_DATA}"
+fi
+
 # STEP 1 IMAGE PREPROCESSING (EXTRA BACKGROUND REMOVE, SQUARE)
 
 echo "### Preprocess Start ###"
