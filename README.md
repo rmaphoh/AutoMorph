@@ -13,9 +13,9 @@ Talks on NIHR Moorfields BRC: https://moorfieldsbrc.nihr.ac.uk/case-study/resear
 
 
 ## News 👀
-2024-06-27 update: pytorch 2.3 & python 3.11 supported; Mac M2 GPU supported
+2024-06-27 update: pytorch 2.3 & python 3.11 supported; Mac M2 GPU supported; CPU supported (thanks to [staskh](https://github.com/staskh))
 
-2023-08-24 update: Added feature measurement for disc-centred images; removed unused files in M3 folders.
+2023-08-24 update: Added feature measurement for disc-centred images; removed unused files.
 &nbsp;
 
 
@@ -23,9 +23,9 @@ Talks on NIHR Moorfields BRC: https://moorfieldsbrc.nihr.ac.uk/case-study/resear
 
 ## Pixel resolution
 
-The units for vessel average width, disc/cup height and width, and calibre metrics are defined as microns. For it, we need to organise a [resolution_information.csv](https://github.com/rmaphoh/AutoMorph/blob/main/resolution_information.csv) which includes the pixel resolution information, which can be queried in FDA or Dicom files. Alternatively, some people use approximate value for every images, e.g., 0.008 for Topcon 3D-OCT.
+The units for vessel average width, disc/cup height and width, and calibre metrics are defined as microns. For it, we need to organise a [resolution_information.csv](https://github.com/rmaphoh/AutoMorph/blob/main/resolution_information.csv) which includes the pixel resolution information, which can be queried in FDA or Dicom files. Alternatively, approximate value can be used, e.g., 0.008 for Topcon 3D-OCT.
 
-**If you don't use these features or care their units**, you can just run following command after putting all images in the folder of ./images
+**If you don't use these features or care their units**, you can put all images in the folder ./images and run
 
 ```bash
 python generate_resolution.py
