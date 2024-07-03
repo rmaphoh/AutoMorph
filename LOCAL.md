@@ -24,8 +24,10 @@ cd AutoMorph
 ```
 
 Step 3: install pytorch 2.3
+check CUDA version with ```nvcc --version```.
+For CUDA cuda_12.1.r12.1/compiler.32688072_0 run install 
 ```bash
-conda install pytorch==2.3.1 -c pytorch -y
+conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y
 ```
 
 Step 4: install other packages:
