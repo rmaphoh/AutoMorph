@@ -1,5 +1,8 @@
 #This is sh file for SEGAN
 
+if [ -z "${AUTOMORPH_DATA}" ]; then
+  AUTOMORPH_DATA=".."
+fi
 
 # define your job name
 
@@ -29,7 +32,7 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python test_outside_integrated.py --epochs=1 \
                                                 --train_test_mode='test' \
                                                 --pre_threshold=40.0 \
                                                 --seed_num=${seed_number} \
-                                                --out_test='../Results/M2/binary_vessel/'
+                                                --out_test="${AUTOMORPH_DATA}/Results/M2/binary_vessel/"
                                                 
                                         
 

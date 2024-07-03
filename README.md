@@ -13,6 +13,7 @@ Talks on NIHR Moorfields BRC: https://moorfieldsbrc.nihr.ac.uk/case-study/resear
 
 
 ## News 👀
+2024-06-27 update: pytorch 2.3 & python 3.11 supported; Mac M2 GPU supported
 
 2023-08-24 update: Added feature measurement for disc-centred images; removed unused files in M3 folders.
 &nbsp;

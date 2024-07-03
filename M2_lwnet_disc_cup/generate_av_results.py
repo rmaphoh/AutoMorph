@@ -16,6 +16,10 @@ from utils.model_saving_loading import load_model
 from skimage import measure
 import pandas as pd
 from skimage.morphology import remove_small_objects
+import logging
+
+AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
+
 # argument parsing
 parser = argparse.ArgumentParser()
 required_named = parser.add_argument_group('required arguments')
@@ -58,8 +62,8 @@ def optic_disc_centre(result_path, binary_vessel_path, artery_vein_path):
     if os.path.exists(result_path+'.ipynb_checkpoints'):
         shutil.rmtree(result_path+'.ipynb_checkpoints')
         
-    optic_binary_result_path = '../Results/M3/Disc_centred/'
-    macular_binary_result_path = '../Results/M3/Macular_centred/'
+    optic_binary_result_path = f'{AUTOMORPH_DATA}/Results/M3/Disc_centred/'
+    macular_binary_result_path = f'{AUTOMORPH_DATA}/Results/M3/Macular_centred/'
     
     #2023/08/24
     disc_process_binary_vessel_path = binary_vessel_path + 'disc_centred_binary_process/'
@@ -481,8 +485,8 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
     
     n_val = len(test_loader)
     
-    seg_results_small_path = '../Results/M2/optic_disc_cup/resized/'
-    seg_results_raw_path = '../Results/M2/optic_disc_cup/raw/'
+    seg_results_small_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/resized/'
+    seg_results_raw_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/raw/'
     
     if not os.path.isdir(seg_results_small_path):
         os.makedirs(seg_results_small_path)
@@ -490,11 +494,11 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
     if not os.path.isdir(seg_results_raw_path):
         os.makedirs(seg_results_raw_path)
 
-    seg_uncertainty_small_path = '../Results/M2/optic_disc_cup/resize_uncertainty/'        
+    seg_uncertainty_small_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/resize_uncertainty/'        
     if not os.path.isdir(seg_uncertainty_small_path):
         os.makedirs(seg_uncertainty_small_path)
     
-    seg_uncertainty_raw_path = '../Results/M2/optic_disc_cup/raw_uncertainty/'
+    seg_uncertainty_raw_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/raw_uncertainty/'
     
     if not os.path.isdir(seg_uncertainty_raw_path):
         os.makedirs(seg_uncertainty_raw_path)
@@ -611,18 +615,22 @@ def prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,mode
 
 
 if __name__ == '__main__':
-
+    
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = parser.parse_args()
     results_path = args.results_path
-    if args.device.startswith("cuda"):
-        # In case one has multiple devices, we must first set the one
-        # we would like to use so pytorch can find it.
-        os.environ['CUDA_VISIBLE_DEVICES'] = args.device.split(":", 1)[1]
-        if not torch.cuda.is_available():
-            raise RuntimeError("cuda is not currently available!")
-        device = torch.device("cuda")
-    else:  # cpu
-        device = torch.device(args.device)
+    # Check if CUDA is available
+    if torch.cuda.is_available():
+        logging.info("CUDA is available. Using CUDA...")
+        device = torch.device("cuda:0")
+    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
+        logging.info("MPS is available. Using MPS...")
+        device = torch.device("mps")
+    else:
+        logging.info("Neither CUDA nor MPS is available. Using CPU...")
+        device = torch.device("cpu")
+
+    logging.info(f'Using device {device}')
 
 
     # parse config file if provided
@@ -644,7 +652,7 @@ if __name__ == '__main__':
     else:
         sys.exit('im_size should be a number or a tuple of two numbers')
 
-    data_path = '../Results/M1/Good_quality/'
+    data_path = f'{AUTOMORPH_DATA}/Results/M1/Good_quality/'
 
     csv_path = 'test_all.csv'
     test_loader = get_test_dataset(data_path, csv_path=csv_path, tg_size=tg_size)
@@ -695,9 +703,9 @@ if __name__ == '__main__':
 
     prediction_eval(model_1,model_2,model_3,model_4,model_5,model_6,model_7,model_8, test_loader)
     
-    result_path = '../Results/M2/optic_disc_cup/resized/'
-    binary_vessel_path = '../Results/M2/binary_vessel/'
-    artery_vein_path = '../Results/M2/artery_vein/'
+    result_path = f'{AUTOMORPH_DATA}/Results/M2/optic_disc_cup/resized/'
+    binary_vessel_path = f'{AUTOMORPH_DATA}/Results/M2/binary_vessel/'
+    artery_vein_path = f'{AUTOMORPH_DATA}/Results/M2/artery_vein/'
     
     optic_disc_centre(result_path,binary_vessel_path, artery_vein_path)
     

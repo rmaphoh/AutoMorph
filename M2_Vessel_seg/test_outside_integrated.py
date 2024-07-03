@@ -22,6 +22,7 @@ from skimage import io
 from FD_cal import fractal_dimension,vessel_density
 import shutil
 
+AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
 
 def filter_frag(data_path):
     if os.path.isdir(data_path + 'resize_binary/.ipynb_checkpoints'):
@@ -169,7 +170,7 @@ def segment_fundus(data_path, net_1, net_2, net_3, net_4, net_5, net_6, net_7, n
 def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_size, job_name, threshold, checkpoint_mode, mask_or=True, train_or=False):
 
     #test_dir = "./data/{}/test/images/".format(dataset_test)
-    test_dir = '../Results/M1/Good_quality/'
+    test_dir = f'{AUTOMORPH_DATA}/Results/M1/Good_quality/'
     mask_dir = "./data/{}/test/mask/".format(dataset_test)
     test_label = "./data/{}/test/1st_manual/".format(dataset_test)
     FD_list = []
@@ -203,34 +204,34 @@ def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_s
     net_10 = Segmenter(input_channels=3, n_filters = 32, n_classes=1, bilinear=False)
     
 
-    net_1.load_state_dict(torch.load(dir_checkpoint_1 + 'G_best_F1_epoch.pth'))
+    net_1.load_state_dict(torch.load(dir_checkpoint_1 + 'G_best_F1_epoch.pth',map_location=device))
     net_1.eval()
     net_1.to(device=device)
-    net_2.load_state_dict(torch.load(dir_checkpoint_2 + 'G_best_F1_epoch.pth'))
+    net_2.load_state_dict(torch.load(dir_checkpoint_2 + 'G_best_F1_epoch.pth',map_location=device))
     net_2.eval()
     net_2.to(device=device)
-    net_3.load_state_dict(torch.load(dir_checkpoint_3 + 'G_best_F1_epoch.pth'))
+    net_3.load_state_dict(torch.load(dir_checkpoint_3 + 'G_best_F1_epoch.pth',map_location=device))
     net_3.eval()
     net_3.to(device=device)
-    net_4.load_state_dict(torch.load(dir_checkpoint_4 + 'G_best_F1_epoch.pth'))
+    net_4.load_state_dict(torch.load(dir_checkpoint_4 + 'G_best_F1_epoch.pth',map_location=device))
     net_4.eval()
     net_4.to(device=device)
-    net_5.load_state_dict(torch.load(dir_checkpoint_5 + 'G_best_F1_epoch.pth'))
+    net_5.load_state_dict(torch.load(dir_checkpoint_5 + 'G_best_F1_epoch.pth',map_location=device))
     net_5.eval()
     net_5.to(device=device)
-    net_6.load_state_dict(torch.load(dir_checkpoint_6 + 'G_best_F1_epoch.pth'))
+    net_6.load_state_dict(torch.load(dir_checkpoint_6 + 'G_best_F1_epoch.pth',map_location=device))
     net_6.eval()
     net_6.to(device=device)
-    net_7.load_state_dict(torch.load(dir_checkpoint_7 + 'G_best_F1_epoch.pth'))
+    net_7.load_state_dict(torch.load(dir_checkpoint_7 + 'G_best_F1_epoch.pth',map_location=device))
     net_7.eval()
     net_7.to(device=device)
-    net_8.load_state_dict(torch.load(dir_checkpoint_8 + 'G_best_F1_epoch.pth'))
+    net_8.load_state_dict(torch.load(dir_checkpoint_8 + 'G_best_F1_epoch.pth',map_location=device))
     net_8.eval()
     net_8.to(device=device)
-    net_9.load_state_dict(torch.load(dir_checkpoint_9 + 'G_best_F1_epoch.pth'))
+    net_9.load_state_dict(torch.load(dir_checkpoint_9 + 'G_best_F1_epoch.pth',map_location=device))
     net_9.eval()
     net_9.to(device=device)
-    net_10.load_state_dict(torch.load(dir_checkpoint_10 + 'G_best_F1_epoch.pth'))
+    net_10.load_state_dict(torch.load(dir_checkpoint_10 + 'G_best_F1_epoch.pth',map_location=device))
     net_10.eval()
     net_10.to(device=device)
         
@@ -238,8 +239,8 @@ def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_s
     
     FD_list, Name_list, VD_list, width_cal = filter_frag(data_path)
     
-    if not os.path.exists('../Results/M3/'):
-        os.makedirs('../Results/M3/')
+    if not os.path.exists(f'{AUTOMORPH_DATA}/Results/M3/'):
+        os.makedirs(f'{AUTOMORPH_DATA}/Results/M3/')
                             
     #Data4stage2 = pd.DataFrame({'Image_id':Name_list, 'FD_boxC':FD_list, 'Vessel_Density':VD_list})
     #Data4stage2.to_csv('../Results/M3/Binary_Features_Measurement.csv', index = None, encoding='utf8')
@@ -285,8 +286,19 @@ if __name__ == '__main__':
     
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # Check if CUDA is available
+    if torch.cuda.is_available():
+        logging.info("CUDA is available. Using CUDA...")
+        device = torch.device("cuda:0")
+    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
+        logging.info("MPS is available. Using MPS...")
+        device = torch.device("mps")
+    else:
+        logging.info("Neither CUDA nor MPS is available. Using CPU...")
+        device = torch.device("cpu")
+
     logging.info(f'Using device {device}')
+
 
     image_size = Define_image_size(args.uniform, args.dataset)
     lr = args.lr

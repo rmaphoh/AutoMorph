@@ -419,7 +419,7 @@ class Window(Retina):
         if method == "separated":
             windows = np.empty(
                 [(img_dimension // dimension) ** 2, image.depth, dimension, dimension])
-            windows_position = np.empty([(img_dimension // dimension) ** 2, 2, 2], dtype=np.int)
+            windows_position = np.empty([(img_dimension // dimension) ** 2, 2, 2], dtype=np.int32)
             for x in range(0, image.shape[0], dimension):
                 for y in range(0, image.shape[1], dimension):
                     cw = windows_position[window_id]
@@ -435,7 +435,7 @@ class Window(Retina):
             new_dimension = dimension // 2
             windows = np.empty(
                 [(img_dimension // new_dimension) ** 2, image.depth, dimension, dimension])
-            windows_position = np.empty([(img_dimension // new_dimension) ** 2, 2, 2], dtype=np.int)
+            windows_position = np.empty([(img_dimension // new_dimension) ** 2, 2, 2], dtype=np.int32)
             if image.shape[0] % new_dimension != 0:
                 raise ValueError(
                     "Dimension value '{}' is not valid, choose a value that its half value can split the image evenly"

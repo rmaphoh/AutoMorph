@@ -23,7 +23,7 @@ from scripts.utils import Define_image_size
 from FD_cal import fractal_dimension,vessel_density
 from skimage.morphology import skeletonize,remove_small_objects
 
-
+AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
 
 def filter_frag(data_path):
     if os.path.isdir(data_path + 'raw/.ipynb_checkpoints'):
@@ -91,8 +91,8 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G
 
     num = 0
     
-    seg_results_small_path = '../Results/M2/artery_vein/resized/'
-    seg_results_raw_path = '../Results/M2/artery_vein/raw/'
+    seg_results_small_path = f'{AUTOMORPH_DATA}/Results/M2/artery_vein/resized/'
+    seg_results_raw_path = f'{AUTOMORPH_DATA}/Results/M2/artery_vein/raw/'
     
     if not os.path.isdir(seg_results_small_path):
         os.makedirs(seg_results_small_path)
@@ -100,11 +100,11 @@ def test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G
     if not os.path.isdir(seg_results_raw_path):
         os.makedirs(seg_results_raw_path)
 
-    seg_uncertainty_small_path = '../Results/M2/artery_vein/resize_uncertainty/'        
+    seg_uncertainty_small_path = f'{AUTOMORPH_DATA}/Results/M2/artery_vein/resize_uncertainty/'        
     if not os.path.isdir(seg_uncertainty_small_path):
         os.makedirs(seg_uncertainty_small_path)
     
-    seg_uncertainty_raw_path = '../Results/M2/artery_vein/raw_uncertainty/'
+    seg_uncertainty_raw_path = f'{AUTOMORPH_DATA}/Results/M2/artery_vein/raw_uncertainty/'
     
     if not os.path.isdir(seg_uncertainty_raw_path):
         os.makedirs(seg_uncertainty_raw_path)
@@ -280,8 +280,18 @@ if __name__ == '__main__':
     
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    #logging.info(f'Using device {device}')
+    # Check if CUDA is available
+    if torch.cuda.is_available():
+        logging.info("CUDA is available. Using CUDA...")
+        device = torch.device("cuda:0")
+    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
+        logging.info("MPS is available. Using MPS...")
+        device = torch.device("mps")
+    else:
+        logging.info("Neither CUDA nor MPS is available. Using CPU...")
+        device = torch.device("cpu")
+
+    logging.info(f'Using device {device}')
 
     img_size = Define_image_size(args.uniform, args.dataset)
     dataset_name = args.dataset
@@ -291,7 +301,7 @@ if __name__ == '__main__':
     if not os.path.isdir(csv_save):
         os.makedirs(csv_save)
 
-    test_dir= '../Results/M1/Good_quality/'
+    test_dir= f'{AUTOMORPH_DATA}/Results/M1/Good_quality/'
     test_label = "./data/{}/test/1st_manual/".format(dataset_name)
     test_mask =  "./data/{}/test/mask/".format(dataset_name)
 
@@ -347,9 +357,9 @@ if __name__ == '__main__':
 
 
     for i in range(1):
-        net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 + 'CP_best_F1_all.pth'))
-        net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 + 'CP_best_F1_A.pth'))
-        net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 + 'CP_best_F1_V.pth'))
+        net_G_1.load_state_dict(torch.load(  checkpoint_saved_1 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_1.load_state_dict(torch.load( checkpoint_saved_1 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_1.load_state_dict(torch.load(checkpoint_saved_1 + 'CP_best_F1_V.pth',map_location=device))
         net_G_1.eval()
         net_G_A_1.eval()
         net_G_V_1.eval()
@@ -357,9 +367,9 @@ if __name__ == '__main__':
         net_G_A_1.to(device=device)
         net_G_V_1.to(device=device)
 
-        net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 + 'CP_best_F1_all.pth'))
-        net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 + 'CP_best_F1_A.pth'))
-        net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 + 'CP_best_F1_V.pth'))
+        net_G_2.load_state_dict(torch.load(  checkpoint_saved_2 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_2.load_state_dict(torch.load( checkpoint_saved_2 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_2.load_state_dict(torch.load(checkpoint_saved_2 + 'CP_best_F1_V.pth',map_location=device))
         net_G_2.eval()
         net_G_A_2.eval()
         net_G_V_2.eval()
@@ -367,9 +377,9 @@ if __name__ == '__main__':
         net_G_A_2.to(device=device)
         net_G_V_2.to(device=device)
         
-        net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 + 'CP_best_F1_all.pth'))
-        net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 + 'CP_best_F1_A.pth'))
-        net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 + 'CP_best_F1_V.pth'))
+        net_G_3.load_state_dict(torch.load(  checkpoint_saved_3 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_3.load_state_dict(torch.load( checkpoint_saved_3 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_3.load_state_dict(torch.load(checkpoint_saved_3 + 'CP_best_F1_V.pth',map_location=device))
         net_G_3.eval()
         net_G_A_3.eval()
         net_G_V_3.eval()
@@ -377,9 +387,9 @@ if __name__ == '__main__':
         net_G_A_3.to(device=device)
         net_G_V_3.to(device=device)
         
-        net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 + 'CP_best_F1_all.pth'))
-        net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 + 'CP_best_F1_A.pth'))
-        net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 + 'CP_best_F1_V.pth'))
+        net_G_4.load_state_dict(torch.load(  checkpoint_saved_4 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_4.load_state_dict(torch.load( checkpoint_saved_4 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_4.load_state_dict(torch.load(checkpoint_saved_4 + 'CP_best_F1_V.pth',map_location=device))
         net_G_4.eval()
         net_G_A_4.eval()
         net_G_V_4.eval()
@@ -387,9 +397,9 @@ if __name__ == '__main__':
         net_G_A_4.to(device=device)
         net_G_V_4.to(device=device)
         
-        net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 + 'CP_best_F1_all.pth'))
-        net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 + 'CP_best_F1_A.pth'))
-        net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 + 'CP_best_F1_V.pth'))
+        net_G_5.load_state_dict(torch.load(  checkpoint_saved_5 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_5.load_state_dict(torch.load( checkpoint_saved_5 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_5.load_state_dict(torch.load(checkpoint_saved_5 + 'CP_best_F1_V.pth',map_location=device))
         net_G_5.eval()
         net_G_A_5.eval()
         net_G_V_5.eval()
@@ -397,9 +407,9 @@ if __name__ == '__main__':
         net_G_A_5.to(device=device)
         net_G_V_5.to(device=device)
         
-        net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 + 'CP_best_F1_all.pth'))
-        net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 + 'CP_best_F1_A.pth'))
-        net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 + 'CP_best_F1_V.pth'))
+        net_G_6.load_state_dict(torch.load(  checkpoint_saved_6 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_6.load_state_dict(torch.load( checkpoint_saved_6 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_6.load_state_dict(torch.load(checkpoint_saved_6 + 'CP_best_F1_V.pth',map_location=device))
         net_G_6.eval()
         net_G_A_6.eval()
         net_G_V_6.eval()
@@ -407,9 +417,9 @@ if __name__ == '__main__':
         net_G_A_6.to(device=device)
         net_G_V_6.to(device=device)
         
-        net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 + 'CP_best_F1_all.pth'))
-        net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 + 'CP_best_F1_A.pth'))
-        net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 + 'CP_best_F1_V.pth'))
+        net_G_7.load_state_dict(torch.load(  checkpoint_saved_7 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_7.load_state_dict(torch.load( checkpoint_saved_7 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_7.load_state_dict(torch.load(checkpoint_saved_7 + 'CP_best_F1_V.pth',map_location=device))
         net_G_7.eval()
         net_G_A_7.eval()
         net_G_V_7.eval()
@@ -417,9 +427,9 @@ if __name__ == '__main__':
         net_G_A_7.to(device=device)
         net_G_V_7.to(device=device)
         
-        net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 + 'CP_best_F1_all.pth'))
-        net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 + 'CP_best_F1_A.pth'))
-        net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 + 'CP_best_F1_V.pth'))
+        net_G_8.load_state_dict(torch.load(  checkpoint_saved_8 + 'CP_best_F1_all.pth',map_location=device))
+        net_G_A_8.load_state_dict(torch.load( checkpoint_saved_8 + 'CP_best_F1_A.pth',map_location=device))
+        net_G_V_8.load_state_dict(torch.load(checkpoint_saved_8 + 'CP_best_F1_V.pth',map_location=device))
         net_G_8.eval()
         net_G_A_8.eval()
         net_G_V_8.eval()
@@ -431,7 +441,7 @@ if __name__ == '__main__':
             test_net(net_G_1, net_G_A_1, net_G_V_1, net_G_2, net_G_A_2, net_G_V_2, net_G_3, net_G_A_3, net_G_V_3, net_G_4, net_G_A_4, net_G_V_4, net_G_5, net_G_A_5, net_G_V_5, net_G_6, net_G_A_6, net_G_V_6, net_G_7, net_G_A_7, net_G_V_7, net_G_8, net_G_A_8, net_G_V_8, loader=test_loader, device=device, mode=mode,dataset=dataset_name)
 
 
-        FD_list_r,name_list,VD_list_r,FD_list_v,VD_list_b,width_cal_r,width_cal_b = filter_frag(data_path='../Results/M2/artery_vein/')
+        FD_list_r,name_list,VD_list_r,FD_list_v,VD_list_b,width_cal_r,width_cal_b = filter_frag(data_path=f'{AUTOMORPH_DATA}/Results/M2/artery_vein/')
         
         
         #Data4stage2 = pd.DataFrame({'Image_id':name_list, 'FD_boxC_artery':FD_list_r, 'Vessel_Density_artery':VD_list_r})

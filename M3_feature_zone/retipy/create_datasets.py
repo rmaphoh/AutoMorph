@@ -33,6 +33,7 @@ import pandas as pd
 
 from retipy import configuration, retina, tortuosity_measures
 
+AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','../..')
 
 if os.path.exists('/home/jupyter/Deep_rias/Results/M2/artery_vein/artery_binary_skeleton/.ipynb_checkpoints'):
     shutil.rmtree('/home/jupyter/Deep_rias/Results/M2/artery_vein/artery_binary_skeleton/.ipynb_checkpoints') 
@@ -40,8 +41,8 @@ if os.path.exists('/home/jupyter/Deep_rias/Results/M2/binary_vessel/binary_skele
     shutil.rmtree('/home/jupyter/Deep_rias/Results/M2/binary_vessel/binary_skeleton/.ipynb_checkpoints') 
 if os.path.exists('/home/jupyter/Deep_rias/Results/M2/artery_vein/vein_binary_skeleton/.ipynb_checkpoints'):
     shutil.rmtree('/home/jupyter/Deep_rias/Results/M2/artery_vein/vein_binary_skeleton/.ipynb_checkpoints')
-if not os.path.exists('../../Results/M3/Width/'):
-    os.makedirs('../../Results/M3/Width/')
+if not os.path.exists(f'{AUTOMORPH_DATA}/Results/M3/Width/'):
+    os.makedirs(f'{AUTOMORPH_DATA}/Results/M3/Width/')
 
 #if os.path.exists('./DDR/av_seg/raw/.ipynb_checkpoints'):
 #    shutil.rmtree('./DDR/av_seg/raw/.ipynb_checkpoints') 
@@ -85,12 +86,12 @@ for filename in sorted(glob.glob(os.path.join(CONFIG.image_directory, '*.png')))
     #hf.create_dataset('tags', data=window.tags)
     #hf.close()
     Data4stage2 = pd.DataFrame({'Order':vessel_count_list, 'Width':w1_list})
-    Data4stage2.to_csv('../../Results/M3/Width/width_results_{}.csv'.format(segmentedImage._file_name), index = None, encoding='utf8')
+    Data4stage2.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Width/width_results_{segmentedImage._file_name}.csv', index = None, encoding='utf8')
 
-Exit_file = pd.read_csv('../../Results/M3/Binary_Features_Measurement.csv')
+Exit_file = pd.read_csv(f'{AUTOMORPH_DATA}/Results/M3/Binary_Features_Measurement.csv')
 Data4stage2 = pd.DataFrame({'Distance_Tortuosity':t2_list, 'Squared_Curvature_Tortuosity':t4_list, 'Tortuosity_density':t5_list})
 Data4stage2 = pd.concat([Exit_file, Data4stage2], axis=1)
-Data4stage2.to_csv('../../Results/M3/Binary_Tortuosity_Measurement.csv', index = None, encoding='utf8')
+Data4stage2.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Binary_Tortuosity_Measurement.csv', index = None, encoding='utf8')
 
 
     
@@ -121,12 +122,12 @@ for filename in sorted(glob.glob(os.path.join(Artery_PATH, '*.png'))):
     #hf.close()
     print(filename.split('/')[-1])
     Data4stage2 = pd.DataFrame({'Order':vessel_count_list, 'Width':w1_list})
-    Data4stage2.to_csv('../../Results/M3/Width/artery_width_results_{}.csv'.format(segmentedImage._file_name), index = None, encoding='utf8')
+    Data4stage2.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Width/artery_width_results_{segmentedImage._file_name}.csv', index = None, encoding='utf8')
     
-Exit_file = pd.read_csv('../../Results/M3/Artery_Features_Measurement.csv')    
+Exit_file = pd.read_csv(f'{AUTOMORPH_DATA}/Results/M3/Artery_Features_Measurement.csv')    
 Data4stage2 = pd.DataFrame({'Tortuosity':t2_list, 'Squared_Curvature_Tortuosity':t4_list, 'Tortuosity_density':t5_list})
 Data4stage2 = pd.concat([Exit_file, Data4stage2], axis=1)
-Data4stage2.to_csv('../../Results/M3/Artery_Tortuosity_Measurement.csv', index = None, encoding='utf8')
+Data4stage2.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Artery_Tortuosity_Measurement.csv', index = None, encoding='utf8')
 
 ####################################3
 t2_list = []
@@ -154,10 +155,10 @@ for filename in sorted(glob.glob(os.path.join(Vein_PATH, '*.png'))):
     #hf.create_dataset('tags', data=window.tags)
     #hf.close()
     Data4stage2 = pd.DataFrame({'Order':vessel_count_list, 'Width':w1_list})
-    Data4stage2.to_csv('../../Results/M3/Width/vein_width_results_{}.csv'.format(segmentedImage._file_name), index = None, encoding='utf8')
+    Data4stage2.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Width/vein_width_results_{segmentedImage._file_name}.csv', index = None, encoding='utf8')
     
-Exit_file = pd.read_csv('../../Results/M3/Vein_Features_Measurement.csv') 
+Exit_file = pd.read_csv(f'{AUTOMORPH_DATA}/Results/M3/Vein_Features_Measurement.csv') 
 Data4stage2 = pd.DataFrame({'Image_id':name_list, 'Tortuosity':t2_list, 'Squared_Curvature_Tortuosity':t4_list, 'Tortuosity_density':t5_list})
 Data4stage2 = pd.concat([Exit_file, Data4stage2], axis=1)
-Data4stage2.to_csv('../../Results/M3/Vein_Tortuosity_Measurement.csv', index = None, encoding='utf8')
+Data4stage2.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Vein_Tortuosity_Measurement.csv', index = None, encoding='utf8')
 
