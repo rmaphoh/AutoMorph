@@ -11,7 +11,7 @@ if [ -z "${AUTOMORPH_DATA}" ]; then
   echo "AUTOMORPH_DATA not set, using default directory"
 else
   rm -rf ${AUTOMORPH_DATA}/Results/*
-  echo "AUTOMORPH_DATA set to ${AUTOMORPH_DATA}
+  echo "AUTOMORPH_DATA set to ${AUTOMORPH_DATA}"
 fi
 
 # STEP 1 IMAGE PREPROCESSING (EXTRA BACKGROUND REMOVE, SQUARE)
