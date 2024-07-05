@@ -9,11 +9,9 @@ python automorph_data.py
 if [ -z "${AUTOMORPH_DATA}" ]; then
   rm -rf ./Results/*
   echo "AUTOMORPH_DATA not set, using default directory"
-  ls -la . 
 else
   rm -rf ${AUTOMORPH_DATA}/Results/*
   echo "AUTOMORPH_DATA set to ${AUTOMORPH_DATA}"
-  ls -la ${AUTOMORPH_DATA}
 fi
 
 # STEP 1 IMAGE PREPROCESSING (EXTRA BACKGROUND REMOVE, SQUARE)
