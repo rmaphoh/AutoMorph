@@ -18,6 +18,7 @@ from FD_cal import fractal_dimension,vessel_density
 import shutil
 
 AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
+NUM_WORKERS = int(os.getenv('NUM_WORKERS', 8)) # use num_workers=0 to disable multiprocessing
 
 def filter_frag(data_path):
     if os.path.isdir(data_path + 'resize_binary/.ipynb_checkpoints'):
@@ -173,7 +174,7 @@ def test_net(data_path, batch_size, device, dataset_train, dataset_test, image_s
     VD_list = []
     
     dataset_data = SEDataset_out(test_dir, test_label, mask_dir, image_size, dataset_test, threshold, uniform='True', train_or=False)
-    test_loader = DataLoader(dataset_data, batch_size=batch_size, shuffle=False, num_workers=8, pin_memory=False, drop_last=False)
+    test_loader = DataLoader(dataset_data, batch_size=batch_size, shuffle=False, num_workers=NUM_WORKERS, pin_memory=False, drop_last=False)
     
     dir_checkpoint_1="./Saved_model/train_on_{}/{}_savebest_randomseed_{}/".format(dataset_train,job_name,24)
     dir_checkpoint_2="./Saved_model/train_on_{}/{}_savebest_randomseed_{}/".format(dataset_train,job_name,26)

@@ -37,7 +37,7 @@ def InceptionV3_fl(pretrained):
 
 
 def Efficientnet_fl(pretrained):
-    model = EfficientNet.from_pretrained('efficientnet-b4')
+    model = EfficientNet.from_pretrained('efficientnet-b4',weights_path="./efficientnet-b4-6ed6700e.pth")
     model._fc = nn.Identity()
     net_fl = nn.Sequential(
             nn.Linear(1792, 256),

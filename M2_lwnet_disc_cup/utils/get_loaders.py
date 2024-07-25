@@ -13,6 +13,8 @@ import torch
 import logging
 from glob import glob
 
+NUM_WORKERS = int(os.getenv('NUM_WORKERS', 8)) # use num_workers=0 to disable multiprocessing
+
 class TrainDataset(Dataset):
     def __init__(self, csv_path, transforms=None, label_values=None):
         
@@ -220,7 +222,7 @@ def get_test_dataset(data_path, csv_path='test.csv', tg_size=(512, 512)):
     #path_test_csv = osp.join(data_path, csv_path)
     path_test_csv = data_path
     test_dataset = TestDataset(csv_path=path_test_csv, tg_size=tg_size)
-    test_loader = DataLoader(dataset=test_dataset, batch_size=16, num_workers=8, pin_memory=False)
+    test_loader = DataLoader(dataset=test_dataset, batch_size=16, num_workers=NUM_WORKERS, pin_memory=False)
 
     return test_loader
 
