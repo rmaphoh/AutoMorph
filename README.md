@@ -54,8 +54,8 @@ Zero experience in Docker? No worries [DOCKER.md](DOCKER.md).
 
 ### Environment variables
 A few optional environment variables are available for all pipelines:
-- AUTOMORPH_DATA : the directory where the Results are stored. If not defined, "Results" subdirectory created in the current directory.
-- NUM_WORKERS : defines a number of workers for the dataloader. Default is 8. If NUM_WORKERS is set to 0, the dataloader will be single-threaded.
+- AUTOMORPH_DATA : the directory where the Results are stored. If not defined, the "Results" subdirectory is created in the current directory. If AUTOMORPH_DATA defined outside of source directory (for example, /tmp/AutoMorh ) source directory can be made read-only - for deployment inside of AWS Lambda.
+- NUM_WORKERS : defines a number of workers for the dataloader. The default is 8. If NUM_WORKERS is set to 0, the dataloader will be single-threaded.
 
 ### Memory/ram error
 
