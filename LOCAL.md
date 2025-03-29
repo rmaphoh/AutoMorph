@@ -23,17 +23,18 @@ git clone https://github.com/rmaphoh/AutoMorph.git
 cd AutoMorph
 ```
 
-Step 3: install pytorch 2.3
+Step 3: install pytorch 2.3.1
 check CUDA version with ```nvcc --version```.
-For CUDA cuda_12.1.r12.1/compiler.32688072_0 run install 
+For CUDA cuda_12.1 run install 
 ```bash
-conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y
+conda install pytorch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 pytorch-cuda=12.1 -c pytorch -c nvidia -y
 ```
 
 Step 4: install other packages:
 ```bash
 pip install --ignore-installed certifi
 pip install -r requirement.txt
+pip install efficientnet_pytorch==0.7.1 --no-deps 
 ```
 
 ### Running
