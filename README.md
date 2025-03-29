@@ -63,7 +63,7 @@ We use Tesla T4 (16Gb) and 32vCPUs (120Gb). When you meet memory/ram issue in ru
 
 ### Invalid results
 
-In csv files, invalid values (e.g., optic disc segmentation failure) are indicated with -1.  
+In csv files, invalid values (e.g., optic disc segmentation failure) are indicated with NAN values.  
 
 
 ### Components

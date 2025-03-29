@@ -27,6 +27,10 @@ Macular_all = Macular_whole_image.merge(Macular_zone, how = 'outer', on = ['Name
                                                                          'CDR_vertical', 'CDR_horizontal'])
 
 
+# replace all -1 with empty string
+Disc_all.replace(-1, "", inplace=True)
+Macular_all.replace(-1, "", inplace=True)
+
 Disc_all.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Disc_Features.csv', index=False)
 Macular_all.to_csv(f'{AUTOMORPH_DATA}/Results/M3/Macular_Features.csv', index=False)
 
