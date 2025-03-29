@@ -3,6 +3,7 @@ numpy>=1.23.5
 opencv-python-headless==4.10.0.84
 pandas==2.2.0
 Pillow==10.3.0
+pyarrow==19.0.1
 
 # for M1_Retinal_Image_quality_EyePACS
 # torch==2.3.1				# installed by conda
