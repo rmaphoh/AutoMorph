@@ -12,6 +12,7 @@ scipy==1.14.0
 
 # for M2_Vessel_seg
 scikit-image==0.24.0
+fsspec==2025.3.0
 
 # for M3_feature_zone/retipy
 h5py==3.11.0
