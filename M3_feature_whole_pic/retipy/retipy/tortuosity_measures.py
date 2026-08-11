@@ -454,31 +454,30 @@ def evaluate_window(window: Window, min_pixels_per_vessel=10, sampling_size=6, r
         w1_list_average = []
         vessel_count_list = []
 
+        # Per-vessel values, aggregated by mean, as the original code did. The exploding arc-chord
+        # ratios that make a mean fragile came from very short segments, and min_pixels_per_vessel
+        # already excludes those, so the mean's sensitivity to them is bounded here.
+        t2_values, t4_values, td_values = [], [], []
+
         for vessel in vessels:
             vessel_count_1 += 1
 
-            if len(vessel[0]) > min_pixels_per_vessel:
-                s1=time.time()
+            # Only vessels long enough to have a measurable shape. Curvature and arc-chord ratio on
+            # a short fragment are noise: the chord spans a few pixels, so small wobbles dominate.
+            #
+            # The threshold belongs to the caller. Note that the create_datasets_* scripts pass
+            # CONFIG.pixels_per_window for it — 15, from resources/retipy.config — so that setting
+            # controls both the window size and the shortest vessel measured, despite its name.
+            if len(vessel[0]) >= min_pixels_per_vessel:
                 vessel_count += 1
-                
-                s2=time.time()
-                t2 += distance_measure_tortuosity(vessel[0], vessel[1])
-                
-                s4=time.time()
-                t4 += squared_curvature_tortuosity(vessel[0], vessel[1])
-                
-                s5=time.time()
-                td += tortuosity_density(vessel[0], vessel[1])
-                
-                s6=time.time()
-                
+                t2_values.append(distance_measure_tortuosity(vessel[0], vessel[1]))
+                t4_values.append(squared_curvature_tortuosity(vessel[0], vessel[1]))
+                td_values.append(tortuosity_density(vessel[0], vessel[1]))
                 vessel_count_list.append(vessel_count)
-                #tfi += fractal_tortuosity_curve(vessel[0], vessel[1])
-                s7=time.time()
-        
+
         if vessel_count > 0:
-            t2 = t2/vessel_count
-            t4 = t4/vessel_count
-            td = td/vessel_count
-    
+            t2 = float(np.mean(t2_values))
+            t4 = float(np.mean(t4_values))
+            td = float(np.mean(td_values))
+
     return FD_binary,VD_binary,Average_width, t2, t4, td

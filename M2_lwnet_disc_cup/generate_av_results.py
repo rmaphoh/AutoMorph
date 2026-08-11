@@ -18,6 +18,9 @@ import pandas as pd
 from skimage.morphology import remove_small_objects
 import logging
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from automorph_device import select_device
+
 AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
 
 # argument parsing
@@ -619,16 +622,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = parser.parse_args()
     results_path = args.results_path
-    # Check if CUDA is available
-    if torch.cuda.is_available():
-        logging.info("CUDA is available. Using CUDA...")
-        device = torch.device("cuda:0")
-    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
-        logging.info("MPS is available. Using MPS...")
-        device = torch.device("mps")
-    else:
-        logging.info("Neither CUDA nor MPS is available. Using CPU...")
-        device = torch.device("cpu")
+    device = select_device()
 
     logging.info(f'Using device {device}')
 

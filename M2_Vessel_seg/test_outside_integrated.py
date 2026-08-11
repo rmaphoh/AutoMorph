@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+import sys
 import torch
 import numpy as np
 from tqdm import tqdm
@@ -17,8 +18,22 @@ from skimage import io
 from FD_cal import fractal_dimension,vessel_density
 import shutil
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from automorph_device import select_device
+
 AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
 NUM_WORKERS = int(os.getenv('NUM_WORKERS', 8)) # use num_workers=0 to disable multiprocessing
+
+# Probability above which an averaged ensemble pixel counts as vessel.
+#
+# 0.2, not the 0.5 you would assume for a sigmoid. At 0.5 this ensemble recovers about three quarters
+# of the expert-annotated vessel while inventing almost none — sensitivity 0.736 against specificity
+# 0.995 over 32 FIVES images — so 0.5 discards probability mass that is genuinely vessel. Lowering
+# it to 0.2 raises Dice from 0.825 to 0.855 and removes a 21% low bias in vessel density.
+#
+# 0.2 is the Dice optimum over a sweep of the saved sigmoid maps, and the maximum is broad: 0.15 to
+# 0.25 all land within 0.002.
+VESSEL_THRESHOLD = float(os.getenv('AUTOMORPH_VESSEL_THRESHOLD', 0.2))
 
 def filter_frag(data_path):
     if os.path.isdir(data_path + 'resize_binary/.ipynb_checkpoints'):
@@ -148,14 +163,14 @@ def segment_fundus(data_path, net_1, net_2, net_3, net_4, net_5, net_6, net_7, n
 
                 save_image(torch.unsqueeze(mask_pred_sigmoid[i,...], 0), seg_results_small_path+n_img_name+'.png')
                 mask_pred_resize_bin=torch.zeros(torch.unsqueeze(mask_pred_sigmoid[i,...], 0).shape)
-                mask_pred_resize_bin[torch.unsqueeze(mask_pred_sigmoid[i,...], 0)>=0.5]=1
+                mask_pred_resize_bin[torch.unsqueeze(mask_pred_sigmoid[i,...], 0)>=VESSEL_THRESHOLD]=1
                 save_image(mask_pred_resize_bin, seg_results_small_binary_path+n_img_name+'.png')
 
                 mask_pred_img = Image.open(seg_results_small_path+n_img_name+'.png').resize((n_ori_width,n_ori_height)).convert('L') 
                 mask_pred_tensor = torchvision.transforms.ToTensor()(mask_pred_img)
 
                 mask_pred_numpy_bin=torch.zeros(mask_pred_tensor.shape)
-                mask_pred_numpy_bin[mask_pred_tensor>=0.5]=1
+                mask_pred_numpy_bin[mask_pred_tensor>=VESSEL_THRESHOLD]=1
 
                 save_image(mask_pred_tensor, seg_results_raw_path+n_img_name+'.png')
                 save_image(mask_pred_numpy_bin, seg_results_raw_binary_path+n_img_name+'.png')
@@ -282,16 +297,7 @@ if __name__ == '__main__':
     
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
-    # Check if CUDA is available
-    if torch.cuda.is_available():
-        logging.info("CUDA is available. Using CUDA...")
-        device = torch.device("cuda:0")
-    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
-        logging.info("MPS is available. Using MPS...")
-        device = torch.device("mps")
-    else:
-        logging.info("Neither CUDA nor MPS is available. Using CPU...")
-        device = torch.device("cpu")
+    device = select_device()
 
     logging.info(f'Using device {device}')
 
