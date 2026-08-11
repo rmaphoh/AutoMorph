@@ -13,7 +13,11 @@ from dataset import BasicDataset_OUT
 from torch.utils.data import DataLoader
 from model import Resnet101_fl, InceptionV3_fl, Densenet161_fl, Resnext101_32x8d_fl, MobilenetV2_fl, Vgg16_bn_fl, Efficientnet_fl
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from automorph_device import select_device
+
 AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
+NUM_WORKERS = int(os.getenv('NUM_WORKERS', 8)) # use num_workers=0 to disable multiprocessing
 
 def test_net(model_fl_1,
             model_fl_2,
@@ -30,17 +34,17 @@ def test_net(model_fl_1,
               image_size=(512,512),
               ):
 
-    storage_path ="Ensemble_exp_{}/{}/train_on_{}/test_on_{}/".format(args.task, args.load, args.model, args.dataset)
+    #storage_path ="Ensemble_exp_{}/{}/train_on_{}/test_on_{}/".format(args.task, args.load, args.model, args.dataset)
     n_classes = args.n_class
     # create files
 
-    if not os.path.isdir(storage_path):
-        os.makedirs(storage_path)
+    # if not os.path.isdir(storage_path):
+    #     os.makedirs(storage_path)
     
     dataset = BasicDataset_OUT(test_dir, image_size, n_classes, train_or=False)
         
     n_test = len(dataset)
-    val_loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=8, pin_memory=False, drop_last=False)
+    val_loader = DataLoader(dataset, batch_size, shuffle=False, num_workers=NUM_WORKERS, pin_memory=False, drop_last=False)
     
     prediction_decode_list = []
     filename_list = []
@@ -173,16 +177,7 @@ if __name__ == '__main__':
     args = get_args()
     
 
-    # Check if CUDA is available
-    if torch.cuda.is_available():
-        logging.info("CUDA is available. Using CUDA...")
-        device = torch.device("cuda",args.local_rank)
-    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
-        logging.info("MPS is available. Using MPS...")
-        device = torch.device("mps")
-    else:
-        logging.info("Neither CUDA nor MPS is available. Using CPU...")
-        device = torch.device("cpu")
+    device = select_device(args.local_rank)
 
     logging.info(f'Using device {device}')
 

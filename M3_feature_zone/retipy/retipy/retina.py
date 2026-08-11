@@ -464,12 +464,81 @@ class Window(Retina):
         return windows, windows_position
 
 
+def _eight_neighbours(pixel):
+    """The eight positions surrounding a pixel."""
+    row, column = pixel
+    return [
+        (row + dr, column + dc)
+        for dr in (-1, 0, 1)
+        for dc in (-1, 0, 1)
+        if not (dr == 0 and dc == 0)
+    ]
+
+
+def order_as_path(pixels):
+    """Order a connected set of pixels into a traced path, walking neighbour to neighbour.
+
+    Every tortuosity measure treats consecutive points as consecutive positions along the vessel:
+    ``_curve_length`` sums the distance between successive points, ``_chord_length`` takes the first
+    and last, ``squared_curvature_tortuosity`` differentiates, and ``tortuosity_density`` splits the
+    curve at inflections found by index. All of them are meaningless unless the points arrive in
+    path order.
+
+    A flood fill returns pixels in *discovery* order, which is not path order: seeded in the middle
+    of a segment it expands both ways at once, so the sequence jumps back and forth across the seed.
+
+    This walks instead. It starts at an endpoint — a pixel with a single neighbour in the set — and
+    steps to the nearest unvisited neighbour each time, preferring 4-connected steps so the trace
+    hugs the vessel. Every consecutive pair is therefore adjacent, at most ``sqrt(2)`` apart.
+
+    A set with a branch point cannot be one path. The walk is tried from each endpoint and the
+    longest simple path is returned, which follows the trunk and drops the short spur — better than
+    a sequence that teleports between branches. Intersections are normally removed before this
+    point, so branches are rare.
+
+    :param pixels: connected pixel positions as ``(row, column)`` tuples.
+    :return: the same positions ordered as a path, possibly shorter if the set branches.
+    """
+    positions = {tuple(pixel) for pixel in pixels}
+    if len(positions) < 2:
+        return sorted(positions)
+
+    adjacency = {
+        position: [
+            neighbour for neighbour in _eight_neighbours(position) if neighbour in positions
+        ]
+        for position in positions
+    }
+
+    def walk(start):
+        path = [start]
+        visited = {start}
+        while True:
+            candidates = [
+                neighbour for neighbour in adjacency[path[-1]] if neighbour not in visited
+            ]
+            if not candidates:
+                return path
+            # nearest first (4-connected before diagonal), then lexicographic to stay deterministic
+            step = min(
+                candidates,
+                key=lambda n: ((n[0] - path[-1][0]) ** 2 + (n[1] - path[-1][1]) ** 2, n),
+            )
+            path.append(step)
+            visited.add(step)
+
+    endpoints = sorted(p for p in positions if len(adjacency[p]) == 1)
+    starts = endpoints or [min(positions)]                 # a closed loop has no endpoint
+    return max((walk(start) for start in starts), key=len)
+
+
 def detect_vessel_border(image: Retina, ignored_pixels=1):
     """
     Extracts the vessel border of the given image, this method will try to extract all vessel
     borders that does not overlap.
 
-    Returns a list of lists with the points of each vessel.
+    Returns a list of lists with the points of each vessel, each ordered as a traced path so that
+    consecutive points are adjacent — see :func:`order_as_path`.
 
     :param image: the retinal image to extract its vessels
     :param ignored_pixels: how many pixels will be ignored from borders.
@@ -580,49 +649,28 @@ def detect_vessel_border(image: Retina, ignored_pixels=1):
         return [vessel_x, vessel_y]
     '''
     
-    # 2021/10/31 remove setting of the sort & x duplication
     def vessel_extractor(window, start_x, start_y):
         """
-        Extracts a vessel using adjacent points, when each point is extracted is deleted from the
-        original image
-        & Measure width
+        Collects one connected vessel segment, clearing it from the image as it goes, and returns it
+        ordered as a traced path.
+
+        The flood fill finds *which* pixels belong to the segment; :func:`order_as_path` decides in
+        what order they are reported. Keeping those two steps apart is the point: discovery order is
+        not path order, and every tortuosity measure needs the latter.
         """
-        vessel = []
-        width_list = []
-        width_mask = np.zeros((window.np_image.shape))
+        segment = []
         pending_pixels = [[start_x, start_y]]
         while pending_pixels:
             pixel = pending_pixels.pop(0)
             if window.np_image[pixel[0], pixel[1]] > 0:
-                vessel.append(pixel)
+                segment.append((pixel[0], pixel[1]))
                 window.np_image[pixel[0], pixel[1]] = 0
 
                 # add the neighbours with value to pending list:
                 pending_pixels.extend(neighbours(pixel, window))
 
-        # sort by x position
-        '''
-        vessel.sort(key=lambda item: item[0])
-
-        # remove all repeating x values???????????
-        current_x = -1
-        filtered_vessel = []
-        for pixel in vessel:
-            if pixel[0] == current_x:
-                pass
-            else:
-                filtered_vessel.append(pixel)
-                current_x = pixel[0]
-        '''
-        filtered_vessel = vessel
-        vessel_x = []
-        vessel_y = []
-        for pixel in filtered_vessel:
-            vessel_x.append(pixel[0])
-            vessel_y.append(pixel[1])
-            
-
-        return [vessel_x, vessel_y]
+        path = order_as_path(segment)
+        return [[pixel[0] for pixel in path], [pixel[1] for pixel in path]]
     
     
     vessels = []

@@ -4,6 +4,7 @@ import argparse
 import logging
 import shutil
 import os
+import sys
 import cv2
 import torchvision
 import torch
@@ -20,7 +21,11 @@ from scripts.utils import Define_image_size
 from FD_cal import fractal_dimension,vessel_density
 from skimage.morphology import skeletonize,remove_small_objects
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+from automorph_device import select_device
+
 AUTOMORPH_DATA = os.getenv('AUTOMORPH_DATA','..')
+NUM_WORKERS = int(os.getenv('NUM_WORKERS', 8)) # use num_workers=0 to disable multiprocessing
 
 def filter_frag(data_path):
     if os.path.isdir(data_path + 'raw/.ipynb_checkpoints'):
@@ -277,26 +282,17 @@ if __name__ == '__main__':
     
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     args = get_args()
-    # Check if CUDA is available
-    if torch.cuda.is_available():
-        logging.info("CUDA is available. Using CUDA...")
-        device = torch.device("cuda:0")
-    elif torch.backends.mps.is_available():  # Check if MPS is available (for macOS)
-        logging.info("MPS is available. Using MPS...")
-        device = torch.device("mps")
-    else:
-        logging.info("Neither CUDA nor MPS is available. Using CPU...")
-        device = torch.device("cpu")
+    device = select_device()
 
     logging.info(f'Using device {device}')
 
     img_size = Define_image_size(args.uniform, args.dataset)
     dataset_name = args.dataset
     checkpoint_saved = dataset_name + '/' +args.jn + '/Discriminator_unet/'
-    csv_save = 'test_csv/' + args.jn
+    # csv_save = 'test_csv/' + args.jn
 
-    if not os.path.isdir(csv_save):
-        os.makedirs(csv_save)
+    # if not os.path.isdir(csv_save):
+    #     os.makedirs(csv_save)
 
     test_dir= f'{AUTOMORPH_DATA}/Results/M1/Good_quality/'
     test_label = "./data/{}/test/1st_manual/".format(dataset_name)
@@ -307,7 +303,7 @@ if __name__ == '__main__':
 
 
     dataset = LearningAVSegData_OOD(test_dir, test_label, test_mask, img_size, dataset_name=dataset_name, train_or=False)
-    test_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=False, num_workers=8, pin_memory=False, drop_last=False)
+    test_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=False, num_workers=NUM_WORKERS, pin_memory=False, drop_last=False)
 
 
     net_G_1 = Generator_main(input_channels=3, n_filters = 32, n_classes=4, bilinear=False)
