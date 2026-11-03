@@ -1,3 +1,27 @@
+# About this fork / このフォークについて
+
+**日本語:** このリポジトリは [rmaphoh/AutoMorph](https://github.com/rmaphoh/AutoMorph) の非公式のフォークです。元のコードは変更せず、M3（形態指標の計算）を原著の定義に合うように書き直した版を [`AutoMorph_fork/`](AutoMorph_fork/) に追加しました。主な改正点は次のとおりです。各改正の根拠、引用、変更していない点、限界は [AutoMorph_fork/README.md](AutoMorph_fork/README.md) にあります。
+
+**English:** This repository is an unofficial fork of [rmaphoh/AutoMorph](https://github.com/rmaphoh/AutoMorph). The original code is unchanged, and a version of M3 (morphology measurement) rewritten to follow the definitions in the original papers is added in [`AutoMorph_fork/`](AutoMorph_fork/). The main changes are listed below. The evidence and citations for each change, what was not changed, and the limitations are in [AutoMorph_fork/README.md](AutoMorph_fork/README.md).
+
+| 対象 / Item | 元のコード / Original code | この版 / This version | 根拠 / Evidence |
+|:---|:---|:---|:---|
+| 点の順序 / Point order | 幅優先探索の訪問順 / Breadth-first visiting order | 血管の端から順に / From one vessel end to the other | Hart 1999; Grisan 2008 |
+| 曲線 / Curve | 画素の点の列 / Pixel chain | 平滑化スプライン / Smoothing spline | Grisan 2003, 2008 |
+| 曲率の蛇行度 / Curvature tortuosity | \|∫κ\| | ∫κ²ds | Hart 1999 p.244; Grisan 2003 eq. 15 |
+| 蛇行密度 / Tortuosity density | `(n-1)/n + (1/L)Σ(…)` | `(n-1)/n × (1/L)Σ(…)` | Grisan 2003 eq. 14; Grisan 2008 eq. 19 |
+| 変曲点 / Inflection points | y の増減の変化 / Changes in the direction of y | 曲率の符号の変化 / Sign changes of curvature | Grisan 2003, 2008 |
+| 血管幅 / Vessel width | 面積÷骨格の画素数 / Area ÷ skeleton pixel count | 面積÷中心線の長さ / Area ÷ centerline length | W/cosθ の偏り / W/cosθ bias on diagonals |
+| CRAE/CRVE の幅 / width | 円環で切ったマスク / Mask cut by the annulus | 切る前のマスク / Uncut mask | 縁で幅が小さく出る / Width is lowered at the edge |
+
+M0–M2, FD, vessel density, and the Knudtson formula are unchanged. / M0〜M2、FD、血管密度、Knudtson の式は変更していません。
+
+The point order issue was reported earlier in [pull request #19 of rmaphoh/AutoMorph](https://github.com/rmaphoh/AutoMorph/pull/19). This version does not contain its code. / 点の順序の問題は [rmaphoh/AutoMorph の Pull request #19](https://github.com/rmaphoh/AutoMorph/pull/19) が先に報告しています。この版は同 PR のコードを含みません。
+
+The original AutoMorph README follows. / 以下は元の AutoMorph の README です。
+
+---
+
 # AutoMorph 2022 👀
 --Code for [AutoMorph: Automated Retinal Vascular Morphology Quantification via a Deep Learning Pipeline](https://tvst.arvojournals.org/article.aspx?articleid=2783477).
 
