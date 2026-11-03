@@ -35,6 +35,21 @@ A2〜A5 は retipy のコミット [`89cccd3`](https://github.com/alevalv/retipy
 
 このほか `retina.py` では、Windows のパス区切りを置換し、交点を探す二重ループを `np.where` に置き換えました。後者は走査の順序を変えず、計算を速くするためのものです。
 
+### Pull request #19 との関係
+
+A1 の点の順序の問題は、[rmaphoh/AutoMorph の Pull request #19](https://github.com/rmaphoh/AutoMorph/pull/19)（staskh、2026-08-11 に作成、2026-11-03 時点で未マージ）が先に報告しています。この版は #19 のコードを含みません。違いは次のとおりです。
+
+| 項目 | Pull request #19 | この版 |
+|:---|:---|:---|
+| 点の順序 | 端点から順にたどる（`order_as_path`） | 端点から順にたどる（`order_vessel_pixels`） |
+| 分岐のある区間 | 最長の経路を残す | 除く |
+| 閉じた輪 | 最小の座標の画素から順にたどる | 除く |
+| 分割のしきい値 | 0.5 → 0.2 に変更 | M2 を変更しないので 0.5 のまま |
+| 区間の下限の比較 | `>=` に変更 | `>` のまま |
+| A2〜A6、B1〜B4、B9 | 扱っていない | 上の表のとおり |
+
+M2 の骨格では、分岐点を先に消しています。手元の M2 の骨格で数えた範囲では、この版が除いた区間はありませんでした。したがって、分岐と輪の扱いの違いは、この範囲では結果に影響していません。
+
 ### 変更していない点
 
 - **M2 の血管幅:** M2 の CSV の `Vessel_Width_*` は骨格の画素数のままです。この版の血管幅は `run_m3_fork.py` の出力を使ってください。
@@ -128,6 +143,21 @@ All changes were made on 2026-11-02. In the IDs, A marks differences from the or
 A2–A5 date from retipy commit [`89cccd3`](https://github.com/alevalv/retipy-python/commit/89cccd3) (2018-03-07), and A6 from [`313df3d`](https://github.com/alevalv/retipy-python/commit/313df3d) (2017-11-13).
 
 In addition, `retina.py` now normalizes Windows path separators, and the nested loop that searches for intersections was replaced with `np.where`. The latter keeps the scan order and only speeds up the computation.
+
+### Relation to pull request #19
+
+The point order issue (A1) was reported earlier in [pull request #19 of rmaphoh/AutoMorph](https://github.com/rmaphoh/AutoMorph/pull/19) (staskh, opened on 2026-08-11 and not merged as of 2026-11-03). This version does not contain the code of #19. The differences are:
+
+| Item | Pull request #19 | This version |
+|:---|:---|:---|
+| Point order | Traced from an endpoint (`order_as_path`) | Traced from an endpoint (`order_vessel_pixels`) |
+| Segments with branches | The longest path is kept | Excluded |
+| Closed loops | Traced from the pixel with the smallest coordinates | Excluded |
+| Segmentation threshold | Changed from 0.5 to 0.2 | Remains 0.5, because M2 is unchanged |
+| Comparison for the minimum segment length | Changed to `>=` | Remains `>` |
+| A2–A6, B1–B4, and B9 | Not addressed | As in the table above |
+
+Branch points are removed from M2 skeletons beforehand. In the M2 skeletons we counted, this version excluded no segments. The different handling of branches and loops therefore did not affect the results in that range.
 
 ### What was not changed
 

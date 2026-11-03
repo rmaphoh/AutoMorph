@@ -16,6 +16,8 @@
 
 M0–M2, FD, vessel density, and the Knudtson formula are unchanged. / M0〜M2、FD、血管密度、Knudtson の式は変更していません。
 
+The point order issue was reported earlier in [pull request #19 of rmaphoh/AutoMorph](https://github.com/rmaphoh/AutoMorph/pull/19). This version does not contain its code. / 点の順序の問題は [rmaphoh/AutoMorph の Pull request #19](https://github.com/rmaphoh/AutoMorph/pull/19) が先に報告しています。この版は同 PR のコードを含みません。
+
 The original AutoMorph README follows. / 以下は元の AutoMorph の README です。
 
 ---
